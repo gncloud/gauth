@@ -1,0 +1,441 @@
+swagger: '2.0'
+info:
+  description: gncloud Authentication Server
+  version: 1.0.0
+  title: gncloud auth server
+  contact:
+    email: support@gncloud.kr
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+paths:
+############################################################
+  /token:
+    post:
+      summary: 'create token / login action'
+      description: 'create token / login action'
+      parameters: 
+        - in: body
+          name: user
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Token'
+    get:
+      summary: 'token info'
+      description: 'token info'
+      parameters: 
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+          description: "User Authorization BEARER Token"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Token'
+    delete:
+      summary: 'remove Token'
+      description: 'remove Token'
+      parameters: 
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+          description: "User Authorization BEARER Token"
+      responses:
+        200:
+          description: OK
+  /user:
+    get:
+      summary: 'read user info'
+      description: 'read user info'
+      parameters: 
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+          description: "User Authorization BEARER Token"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+    put:
+      summary: 'update user info'
+      description: 'update user info'
+      parameters: 
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+          description: "User Authorization BEARER Token"
+        - in: body
+          name: user
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+    delete:
+      summary: 'remove client in user'
+      description: 'remove client in user'
+      parameters: 
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+          description: "User Authorization BEARER Token"
+        - in: query
+          name: clientId
+          required: true
+          type: string
+          description: "client id"
+      responses:
+        200:
+          description: OK
+  /validate:
+    head:
+      summary: "token validate check"
+      description: "token validate check"
+      parameters: 
+        - in: header
+          name: Authorization
+          required: true
+          type: string
+          description: "User Authorization BEARER Token"
+      responses:
+        200:
+          description: OK
+  /users:
+    post:
+      summary: 'user sign up'
+      description: 'user sign up'
+      parameters: 
+        - in: body
+          name: user
+          required: true
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+    get:
+      summary: 'search all  user'
+      description: 'search all  user'
+      parameters: 
+        - in: query
+          name: search
+          type: string
+          description: 'search keyword'
+      responses:
+        200:
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/User'
+  /users/{userId}:
+    get:
+      summary: 'read users'
+      description: 'read users'
+      parameters: 
+        - in: path
+          name: userId
+          required: true
+          type: string
+          description: 'search userId'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+    put:
+      summary: 'update user'
+      description: 'update user'
+      parameters: 
+        - in: body
+          name: user
+          schema:
+            $ref: '#/definitions/User'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/User'
+    delete:
+      summary: 'integrated delete user'
+      description: 'integrated delete user'
+      parameters: 
+        - in: path
+          name: userId
+          required: true
+          type: string
+          description: 'user id'
+      responses:
+        200:
+          description: OK
+  /tokens:
+    get:
+      summary: 'all read token info'
+      description: 'all read token info'
+      responses:
+        200:
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/Token'
+  /tokens/{tokenId}:
+    get:
+      summary: 'read token info'
+      description: 'read token info'
+      parameters: 
+        - in: path
+          name: tokenId
+          required: true
+          type: string
+          description: "read token info"
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Token'
+    delete:
+      summary: 'delete token'
+      description: 'delete token'
+      parameters: 
+        - in: path
+          name: tokenId
+          required: true
+          type: string
+          description: 'delete token'
+      responses:
+        200:
+          description: OK
+  /scopes:
+    post:
+      summary: 'create scope'
+      description: 'create scope'
+      parameters: 
+        - in: body
+          name: scope
+          schema:
+            $ref: '#/definitions/Scope'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Scope'
+    get:
+      summary: 'read scope'
+      description: 'read scope'
+      parameters: 
+        - in: body
+          name: client
+          schema:
+            $ref: '#/definitions/Client'
+      responses:
+        200:
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/Scope'
+  /scopes/{scopeId}:
+    get:
+      summary: 'read scope'
+      description: 'read scope'
+      parameters: 
+        - in: path
+          name: scopeId
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Scope'
+    delete:
+      summary: 'delete scope'
+      description: 'delete scope'
+      parameters: 
+        - in: path
+          name: scopeId
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+    put:
+      summary: 'update scope'
+      description: 'update scope'
+      parameters: 
+        - in: path
+          name: scopeId
+          required: true
+          type: string
+        - in: body
+          name: scope
+          schema:
+            $ref: '#/definitions/Scope'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Scope'
+  /clients:
+    post:
+      summary: 'create client'
+      description: 'create client'
+      parameters: 
+        - in: body
+          name: client
+          required: true
+          schema:
+            $ref: '#/definitions/Client'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Client'
+    get:
+      summary: 'read clients'
+      description: 'read clients'
+      responses:
+        200:
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/Client'
+  /clients/{clientId}:
+    get:
+      summary: 'read client'
+      description: 'read client'
+      parameters: 
+        - in: path
+          name: clientId
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Client'
+    delete:
+      summary: 'delete client'
+      description: 'delete client'
+      parameters: 
+        - in: path
+          name: clientId
+          required: true
+          type: string
+      responses:
+        200:
+          description: OK
+    put:
+      summary: 'update client'
+      description: 'update client'
+      parameters: 
+        - in: path
+          name: clientId
+          required: true
+          type: string
+        - in: body
+          name: client
+          schema:
+            $ref: '#/definitions/Client'
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/Client'
+    
+############################################################
+definitions:
+  User:
+    type: object
+    description: 'user info'
+    properties:
+      userId:
+        type: string
+      password:
+        type: string
+      email:
+        type: string
+      name:
+        type: string
+      register_date:
+        type: string
+      phone:
+        type: string
+      address:
+        type: string
+      company:
+        type: string
+      scope:
+        type: string
+      clientId:
+        type: string
+  Client:
+    type: object
+    description: ''
+    properties:
+      clientId:
+        type: string
+      clientSecert:
+        type: string
+      description:
+        type: string
+      domain:
+        type: string
+  Token:
+    type: object
+    description: ''
+    properties:
+      tokenId:
+        type: string
+      userId:
+        type: string
+      clientId:
+        type: string
+      createTime:
+        type: string
+      expireDate:
+        type: string
+  Scope:
+    type: object
+    description: ''
+    properties:
+      scopeId:
+        type: string
+      clientId:
+        type: string
+      description:
+        type: string
+      isDefault:
+        type: string
+  UserClientScope:
+    type: object
+    description: ''
+    properties:
+      userId:
+        type: string
+      scopeId:
+        type: string
+      clientId:
+        type: string
+
+schemes:
+ - https
+ - http
+ 
+host: virtserver.swaggerhub.com
+basePath: /jwkim/AuthServer/1.0.0
