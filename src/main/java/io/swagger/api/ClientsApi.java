@@ -50,7 +50,7 @@ public interface ClientsApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/clients",
         method = RequestMethod.GET)
-    ResponseEntity<Void> clientsGet();
+    ResponseEntity<List<Client>> clientsGet();
 
 
     @ApiOperation(value = "create client", notes = "create client", response = Client.class, tags={  })

@@ -33,7 +33,7 @@ public interface UsersApi {
         @ApiResponse(code = 200, message = "OK", response = User.class) })
     @RequestMapping(value = "/users",
         method = RequestMethod.POST)
-    ResponseEntity<User> usersPost(@ApiParam(value = "" ,required=true ) @RequestBody User user);
+    ResponseEntity<User> usersPost(@ApiParam(value = "" ,required=true ) @RequestBody User user) throws ApiException;
 
 
     @ApiOperation(value = "integrated delete user", notes = "integrated delete user", response = Void.class, tags={  })

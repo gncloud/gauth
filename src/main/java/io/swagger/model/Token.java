@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -12,7 +13,7 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
 
-public class Token   {
+public class Token extends Scope implements Serializable {
   @JsonProperty("tokenId")
   private String tokenId = null;
 

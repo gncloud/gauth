@@ -34,7 +34,7 @@ public class TokenApiController implements TokenApi {
     }
 
     public ResponseEntity<Token> tokenPost(@ApiParam(value = "" ,required=true ) @RequestBody User user) {
-        // do some magic!
+
         return new ResponseEntity<Token>(HttpStatus.OK);
     }
 

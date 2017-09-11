@@ -1,5 +1,6 @@
 package io.swagger.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -12,12 +13,12 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
 
-public class Client   {
+public class Client extends Scope implements Serializable {
   @JsonProperty("clientId")
   private String clientId = null;
 
-  @JsonProperty("clientSecert")
-  private String clientSecert = null;
+  @JsonProperty("clientSecret")
+  private String clientSecret = null;
 
   @JsonProperty("description")
   private String description = null;
@@ -44,7 +45,7 @@ public class Client   {
   }
 
   public Client clientSecert(String clientSecert) {
-    this.clientSecert = clientSecert;
+    this.clientSecret = clientSecert;
     return this;
   }
 
@@ -54,11 +55,11 @@ public class Client   {
   **/
   @ApiModelProperty(value = "")
   public String getClientSecert() {
-    return clientSecert;
+    return clientSecret;
   }
 
   public void setClientSecert(String clientSecert) {
-    this.clientSecert = clientSecert;
+    this.clientSecret = clientSecert;
   }
 
   public Client description(String description) {
@@ -108,14 +109,14 @@ public class Client   {
     }
     Client client = (Client) o;
     return Objects.equals(this.clientId, client.clientId) &&
-        Objects.equals(this.clientSecert, client.clientSecert) &&
+        Objects.equals(this.clientSecret, client.clientSecret) &&
         Objects.equals(this.description, client.description) &&
         Objects.equals(this.domain, client.domain);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(clientId, clientSecert, description, domain);
+    return Objects.hash(clientId, clientSecret, description, domain);
   }
 
   @Override
@@ -124,7 +125,7 @@ public class Client   {
     sb.append("class Client {\n");
     
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
-    sb.append("    clientSecert: ").append(toIndentedString(clientSecert)).append("\n");
+    sb.append("    clientSecert: ").append(toIndentedString(clientSecret)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    domain: ").append(toIndentedString(domain)).append("\n");
     sb.append("}");

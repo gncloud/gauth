@@ -1,18 +1,17 @@
 package io.swagger.api;
 
+import io.swagger.annotations.ApiParam;
 import io.swagger.model.Client;
-
-import io.swagger.annotations.*;
-
+import io.swagger.service.ClientService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,30 +21,67 @@ import java.util.List;
 @Controller
 public class ClientsApiController implements ClientsApi {
 
+    private static Logger logger = LoggerFactory.getLogger(ClientsApiController.class);
+
+    @Autowired
+    private ClientService clientService;
+
     public ResponseEntity<Void> clientsClientIdDelete(@ApiParam(value = "",required=true ) @PathVariable("clientId") String clientId) {
-        // do some magic!
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        try {
+            clientService.deleteClient(clientId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("clientsClientIdDelete", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     public ResponseEntity<Client> clientsClientIdGet(@ApiParam(value = "",required=true ) @PathVariable("clientId") String clientId) {
-        // do some magic!
-        return new ResponseEntity<Client>(HttpStatus.OK);
+        try {
+            Client registerClient = clientService.findByClient(clientId);
+            return new ResponseEntity<Client>(registerClient, HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("clientsClientIdGet", e);
+            return new ResponseEntity<Client>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     public ResponseEntity<Client> clientsClientIdPut(@ApiParam(value = "",required=true ) @PathVariable("clientId") String clientId,
         @ApiParam(value = ""  ) @RequestBody Client client) {
-        // do some magic!
-        return new ResponseEntity<Client>(HttpStatus.OK);
+        try {
+
+            client.setClientId(clientId);
+
+            Client registerClient = clientService.updateClient(client);
+
+            if(registerClient == null){
+                throw new Exception("update client fail");
+            }
+            return new ResponseEntity<Client>(registerClient, HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("clientsClientIdPut", e);
+            return new ResponseEntity<Client>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-    public ResponseEntity<Void> clientsGet() {
-        // do some magic!
-        return new ResponseEntity<Void>(HttpStatus.OK);
+    public ResponseEntity<List<Client>> clientsGet() {
+        List<Client> registerClients = clientService.selectClients();
+        return new ResponseEntity<List<Client>>(registerClients, HttpStatus.OK);
     }
 
     public ResponseEntity<Client> clientsPost(@ApiParam(value = "" ,required=true ) @RequestBody Client client) {
-        // do some magic!
-        return new ResponseEntity<Client>(HttpStatus.OK);
+        try {
+
+            Client registerClient = clientService.insertClient(client);
+
+            if(registerClient == null){
+                throw new Exception("create client fail");
+            }
+            return new ResponseEntity<Client>(registerClient, HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("clientsPost ", e);
+            return new ResponseEntity<Client>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

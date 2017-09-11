@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="client">
+    <insert id="insertClient" parameterType="Client">
+            INSERT INTO Client
+                        (client_id,
+                        client_secret,
+                        description,
+                        domain)
+                 VALUES
+                        (#{clientId},
+                        #{clientSecret},
+                        #{description},
+                        #{domain})
+    </insert>
+
+    <select id="findByClient" resultType="Client" parameterType="String">
+        select client_id
+              , client_secret
+              , description
+              , domain
+          from Client
+          where client_id = #{param1}
+    </select>
+
+    <delete id="deleteClient" parameterType="Client">
+        DELETE FROM Client WHERE client_id = #{param1}
+    </delete>
+
+    <update id="updateClient" parameterType="Client">
+        UPDATE Client
+           SET description = #{description}
+              , domain = #{domain}
+         WHERE client_id = #{clientId}
+    </update>
+
+    <select id="selectClients" resultType="Client">
+        select client_id
+              , client_secret
+              , description
+              , domain
+          from Client
+    </select>
+
+    <select id="isDomain" resultType="Integer" parameterType="String">
+        select count(1)
+           from Client
+          where domain = #{param1}
+    </select>
+
+</mapper>

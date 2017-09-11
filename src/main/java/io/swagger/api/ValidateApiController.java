@@ -25,23 +25,7 @@ public class ValidateApiController implements ValidateApi {
     private org.slf4j.Logger logger = LoggerFactory.getLogger(ValidateApiController.class);
 
     public ResponseEntity<Void> validateHead(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
-        // do some magic!
+
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
-
-
-    @Autowired
-    private SqlSession sqlSession;
-
-    @RequestMapping(value = "/test")
-    public String test(){
-
-
-        System.out.println("test query" + sqlSession.selectOne("co.test"));
-
-
-
-        return "test";
-    }
-
 }

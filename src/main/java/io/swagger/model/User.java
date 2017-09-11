@@ -1,18 +1,21 @@
 package io.swagger.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * user info
  */
 @ApiModel(description = "user info")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-10T14:37:03.238Z")
 
-public class User   {
+public class User extends Token implements Serializable {
+
   @JsonProperty("userId")
   private String userId = null;
 
@@ -37,21 +40,15 @@ public class User   {
   @JsonProperty("company")
   private String company = null;
 
-  @JsonProperty("scope")
-  private String scope = null;
-
-  @JsonProperty("clientId")
-  private String clientId = null;
-
   public User userId(String userId) {
     this.userId = userId;
     return this;
   }
 
-   /**
+  /**
    * Get userId
    * @return userId
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getUserId() {
     return userId;
@@ -66,17 +63,21 @@ public class User   {
     return this;
   }
 
-   /**
+  /**
    * Get password
    * @return password
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getPassword() {
     return password;
   }
 
   public void setPassword(String password) {
-    this.password = password;
+    this.password = DigestUtils.sha512Hex(password);
+  }
+
+  public boolean isEqualsPassword(String password){
+    return DigestUtils.sha512Hex(password).equals(this.password);
   }
 
   public User email(String email) {
@@ -84,10 +85,10 @@ public class User   {
     return this;
   }
 
-   /**
+  /**
    * Get email
    * @return email
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getEmail() {
     return email;
@@ -102,10 +103,10 @@ public class User   {
     return this;
   }
 
-   /**
+  /**
    * Get name
    * @return name
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getName() {
     return name;
@@ -120,10 +121,10 @@ public class User   {
     return this;
   }
 
-   /**
+  /**
    * Get registerDate
    * @return registerDate
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getRegisterDate() {
     return registerDate;
@@ -138,10 +139,10 @@ public class User   {
     return this;
   }
 
-   /**
+  /**
    * Get phone
    * @return phone
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getPhone() {
     return phone;
@@ -156,10 +157,10 @@ public class User   {
     return this;
   }
 
-   /**
+  /**
    * Get address
    * @return address
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getAddress() {
     return address;
@@ -174,10 +175,10 @@ public class User   {
     return this;
   }
 
-   /**
+  /**
    * Get company
    * @return company
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getCompany() {
     return company;
@@ -185,42 +186,6 @@ public class User   {
 
   public void setCompany(String company) {
     this.company = company;
-  }
-
-  public User scope(String scope) {
-    this.scope = scope;
-    return this;
-  }
-
-   /**
-   * Get scope
-   * @return scope
-  **/
-  @ApiModelProperty(value = "")
-  public String getScope() {
-    return scope;
-  }
-
-  public void setScope(String scope) {
-    this.scope = scope;
-  }
-
-  public User clientId(String clientId) {
-    this.clientId = clientId;
-    return this;
-  }
-
-   /**
-   * Get clientId
-   * @return clientId
-  **/
-  @ApiModelProperty(value = "")
-  public String getClientId() {
-    return clientId;
-  }
-
-  public void setClientId(String clientId) {
-    this.clientId = clientId;
   }
 
 
@@ -234,27 +199,25 @@ public class User   {
     }
     User user = (User) o;
     return Objects.equals(this.userId, user.userId) &&
-        Objects.equals(this.password, user.password) &&
-        Objects.equals(this.email, user.email) &&
-        Objects.equals(this.name, user.name) &&
-        Objects.equals(this.registerDate, user.registerDate) &&
-        Objects.equals(this.phone, user.phone) &&
-        Objects.equals(this.address, user.address) &&
-        Objects.equals(this.company, user.company) &&
-        Objects.equals(this.scope, user.scope) &&
-        Objects.equals(this.clientId, user.clientId);
+            Objects.equals(this.password, user.password) &&
+            Objects.equals(this.email, user.email) &&
+            Objects.equals(this.name, user.name) &&
+            Objects.equals(this.registerDate, user.registerDate) &&
+            Objects.equals(this.phone, user.phone) &&
+            Objects.equals(this.address, user.address) &&
+            Objects.equals(this.company, user.company);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, password, email, name, registerDate, phone, address, company, scope, clientId);
+    return Objects.hash(userId, password, email, name, registerDate, phone, address, company);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class User {\n");
-    
+
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
@@ -263,8 +226,6 @@ public class User   {
     sb.append("    phone: ").append(toIndentedString(phone)).append("\n");
     sb.append("    address: ").append(toIndentedString(address)).append("\n");
     sb.append("    company: ").append(toIndentedString(company)).append("\n");
-    sb.append("    scope: ").append(toIndentedString(scope)).append("\n");
-    sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("}");
     return sb.toString();
   }
