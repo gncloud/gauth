@@ -7,10 +7,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * 
+ *
  */
 @ApiModel(description = "")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T02:54:11.646Z")
 
 public class UserClientScope   {
   @JsonProperty("userId")
@@ -27,10 +27,10 @@ public class UserClientScope   {
     return this;
   }
 
-   /**
+  /**
    * Get userId
    * @return userId
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getUserId() {
     return userId;
@@ -45,10 +45,10 @@ public class UserClientScope   {
     return this;
   }
 
-   /**
+  /**
    * Get scopeId
    * @return scopeId
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getScopeId() {
     return scopeId;
@@ -63,10 +63,10 @@ public class UserClientScope   {
     return this;
   }
 
-   /**
+  /**
    * Get clientId
    * @return clientId
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getClientId() {
     return clientId;
@@ -87,8 +87,8 @@ public class UserClientScope   {
     }
     UserClientScope userClientScope = (UserClientScope) o;
     return Objects.equals(this.userId, userClientScope.userId) &&
-        Objects.equals(this.scopeId, userClientScope.scopeId) &&
-        Objects.equals(this.clientId, userClientScope.clientId);
+            Objects.equals(this.scopeId, userClientScope.scopeId) &&
+            Objects.equals(this.clientId, userClientScope.clientId);
   }
 
   @Override
@@ -100,7 +100,7 @@ public class UserClientScope   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class UserClientScope {\n");
-    
+
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    scopeId: ").append(toIndentedString(scopeId)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");

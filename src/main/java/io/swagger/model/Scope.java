@@ -7,10 +7,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 /**
- * 
+ *
  */
 @ApiModel(description = "")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T02:51:25.021Z")
 
 public class Scope   {
   @JsonProperty("scopeId")
@@ -22,18 +22,15 @@ public class Scope   {
   @JsonProperty("description")
   private String description = null;
 
-  @JsonProperty("isDefault")
-  private String isDefault = null;
-
   public Scope scopeId(String scopeId) {
     this.scopeId = scopeId;
     return this;
   }
 
-   /**
+  /**
    * Get scopeId
    * @return scopeId
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getScopeId() {
     return scopeId;
@@ -48,10 +45,10 @@ public class Scope   {
     return this;
   }
 
-   /**
+  /**
    * Get clientId
    * @return clientId
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getClientId() {
     return clientId;
@@ -66,10 +63,10 @@ public class Scope   {
     return this;
   }
 
-   /**
+  /**
    * Get description
    * @return description
-  **/
+   **/
   @ApiModelProperty(value = "")
   public String getDescription() {
     return description;
@@ -77,24 +74,6 @@ public class Scope   {
 
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  public Scope isDefault(String isDefault) {
-    this.isDefault = isDefault;
-    return this;
-  }
-
-   /**
-   * Get isDefault
-   * @return isDefault
-  **/
-  @ApiModelProperty(value = "")
-  public String getIsDefault() {
-    return isDefault;
-  }
-
-  public void setIsDefault(String isDefault) {
-    this.isDefault = isDefault;
   }
 
 
@@ -108,25 +87,23 @@ public class Scope   {
     }
     Scope scope = (Scope) o;
     return Objects.equals(this.scopeId, scope.scopeId) &&
-        Objects.equals(this.clientId, scope.clientId) &&
-        Objects.equals(this.description, scope.description) &&
-        Objects.equals(this.isDefault, scope.isDefault);
+            Objects.equals(this.clientId, scope.clientId) &&
+            Objects.equals(this.description, scope.description);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(scopeId, clientId, description, isDefault);
+    return Objects.hash(scopeId, clientId, description);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Scope {\n");
-    
+
     sb.append("    scopeId: ").append(toIndentedString(scopeId)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
-    sb.append("    isDefault: ").append(toIndentedString(isDefault)).append("\n");
     sb.append("}");
     return sb.toString();
   }

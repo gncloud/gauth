@@ -3,6 +3,7 @@ package io.swagger.service;
 
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
+import io.swagger.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,28 +14,28 @@ import java.util.List;
 public interface ScopeService {
 
     /*
-     * scope 전체 조회
+     * scope 조회
      */
-    List<Scope> selectScope(Client client);
+    Scope selectScope(Scope scope) throws Exception;
+
+    /*
+     * 클라이언트의 scope 조회
+     */
+    List<Scope> selectClientScope(Client client) throws Exception;
 
     /*
      * scope 등록
      */
-    Scope insertScope(Scope scope);
+    Scope insertScope(Scope scope) throws Exception;
 
     /*
      * scope 삭제
      */
-    void deleteScope(String scopeId);
-
-    /*
-     * scope 조회
-     */
-    Scope findByScope(String scopeId);
+    void deleteScope(Scope scope) throws Exception;
 
     /*
      * scope 수정
      */
-    Scope updateScope(String scopeId, Scope scope);
+    Scope updateScope(Scope scope) throws Exception;
 
 }

@@ -1,6 +1,5 @@
 package io.swagger.service.impl;
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
 import io.swagger.dao.ClientDao;
 import io.swagger.model.Client;
 import io.swagger.service.ClientService;
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Base64;
 import java.util.List;
 
 /**
@@ -33,12 +33,17 @@ public class ClientServiceImpl implements ClientService {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Client insertClient(Client client) throws Exception {
 
+        // 중복 도메인 있을 경우 Exception
         Integer isDomainCount = clientDao.isDomain(client.getDomain());
         if(isDomainCount == null || isDomainCount != 0){
             throw new Exception("domain same");
         }
+
+
         initClient(client);
+
         clientDao.insertClient(client);
+
         return findByClient(client.getClientId());
     }
 
@@ -81,8 +86,9 @@ public class ClientServiceImpl implements ClientService {
      * 클라이언트 랜덤값 부여
      */
     private void initClient(Client client){
-        //TODO 랜덤값 부여 방식
-        String encodingToken = Base64.encode(client.getDomain().getBytes()).replace("==","");
+
+        String encodingToken = new String(Base64.getEncoder().encode(client.getDomain().getBytes()));
+        encodingToken = encodingToken.replaceAll("=","");
         String randomSecret = RandomUtil.randomString(10);
         client.setClientId(encodingToken);
         client.setClientSecert(randomSecret);

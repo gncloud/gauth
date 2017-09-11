@@ -17,9 +17,10 @@ public class TokenDao {
     }
 
     public Token findByToken(String tokenId) {
-        return null;
+        return sqlSession.selectOne("token.findByToken", tokenId);
     }
 
     public void deleteToken(String tokenId) {
+        sqlSession.delete("token.deleteToken", tokenId);
     }
 }

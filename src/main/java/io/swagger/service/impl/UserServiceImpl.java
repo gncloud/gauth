@@ -1,7 +1,9 @@
 package io.swagger.service.impl;
 
 import io.swagger.dao.UserDao;
-import io.swagger.model.User;
+import io.swagger.model.*;
+import io.swagger.service.ScopeService;
+import io.swagger.service.UserClientScopeService;
 import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +27,12 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private UserClientScopeService userClientScopeService;
+
+    @Autowired
+    private ScopeService scopeService;
 
     /*
      * 유저 조회
@@ -52,21 +60,29 @@ public class UserServiceImpl implements UserService {
     public User signup(User user) throws Exception {
 
         //필수 값 체크
-        if (!requiredValueCheck(user)) {
-            throw new Exception("user requred invalid");
-        }
-
-        //DB 중복 아이디 확인
         Integer isUserCount = isUserId(user.getUserId());
-        if (isUserCount != 0) {
-            throw new Exception("userId Duplicate ID");
+        if (!requiredValueCheck(user) || isUserCount != 0) {
+            throw new Exception("user requred invalid");
         }
 
         // 회원 정보 등록
         userDao.insertUser(user);
 
-        // TODO UserClientScope 등록
+        // 클라이언트의 scope 조회
+        Scope scope = new Scope();
+        scope.setClientId(user.getClientId());
+        Scope registerScope = scopeService.selectScope(scope);
+        String scopeId = new String();
+        if(registerScope != null && !"".equals(registerScope.getScopeId())){
+            scopeId = registerScope.getScopeId();
+        }
 
+        // 처음 회원 가입한 클라이언트 기본 등록
+        UserClientScope userClientScope = new UserClientScope();
+        userClientScope.setClientId(user.getClientId());
+        userClientScope.setUserId(user.getUserId());
+        userClientScope.setScopeId(scopeId);
+        userClientScopeService.insertUserClientScope(userClientScope);
 
         // 등록된 DB 유저 가져오기
         return findByUser(user.getUserId());
@@ -76,8 +92,20 @@ public class UserServiceImpl implements UserService {
      * 회원탈퇴
      * */
     @Override
-    public void deleteUser(String userId) {
-        userDao.deleteUser(userId);
+    public void deleteUser(User user) {
+
+        Integer userClientCount = userClientScopeService.findUserCount(user.getUserId());
+
+        UserClientScope userClientScope = new UserClientScope();
+        userClientScope.setUserId(user.getUserId());
+        userClientScope.setClientId(user.getClientId());
+
+        userClientScopeService.deleteUserClientScope(userClientScope);
+        // 유저와 클라이언트 관계가 마지막일 경우 회원 정보 삭제
+        if(userClientCount <= 1){
+            userDao.deleteUser(user);
+        }
+
     }
 
     /*
@@ -88,15 +116,6 @@ public class UserServiceImpl implements UserService {
     public User updateUser(User user) {
         userDao.updateUser(user);
         return userDao.findByUser(user.getUserId());
-    }
-
-    /*
-     * 토근 아이디와 회원아이디 같은지 확인
-     * */
-    @Override
-    public boolean isUserMatchToken(String token, String clientId) {
-
-        return false;
     }
 
     /*
@@ -113,16 +132,6 @@ public class UserServiceImpl implements UserService {
             String password = user.getPassword();
             if (password == null || "".equals(password)) {
                 throw new Exception("no password");
-            }
-
-            String email = user.getEmail();
-            if (email == null || "".equals(email)) {
-                throw new Exception("no email");
-            }
-
-            String name = user.getName();
-            if (name == null || "".equals(name)) {
-                throw new Exception("no name");
             }
 
             isValid = true;

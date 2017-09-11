@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="scope">
+
+    <select id="selectScope" resultType="Scope" parameterType="Client">
+        select scope_id
+             , client_id
+             , description
+          from Scope
+        where clinet_id = #{clientId}
+    </select>
+
+    <insert id="insertScope" parameterType="Scope">
+        INSERT INTO Scope
+                (scope_id,
+                client_id,
+                description)
+             VALUES
+                (#{ScopeId},
+                #{ClientId},
+                #{description})
+    </insert>
+
+    <delete id="deleteScope" parameterType="String">
+        DELETE FROM Scope
+         WHERE scope_id = #{ScopeId}
+           AND client_id = #{clientId}
+    </delete>
+
+    <update id="updateScope" parameterType="Scope">
+        UPDATE FROM Scope
+           SET description = #{description}
+         where scope_id = #{scopeId}
+           AND client_id = #{clientId}
+    </update>
+
+    <select id="selectClientScopeList" parameterType="Scope" resultType="Scope">
+        select scope_id
+             , client_id
+             , description
+          from Scope
+         where client_id = #{clientId}
+    </select>
+
+    <select id="findByScope" parameterType="Scope" resultType="Scope">
+        select scope_id
+             , client_id
+             , description
+          from Scope
+         where client_id = #{clientId}
+           AND scope_id = #{scopeId}
+    </select>
+
+
+</mapper>

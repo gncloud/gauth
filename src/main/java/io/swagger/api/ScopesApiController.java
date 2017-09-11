@@ -15,6 +15,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
 
@@ -26,24 +28,41 @@ public class ScopesApiController implements ScopesApi {
     private ScopeService scopeService;
 
 
-    public ResponseEntity<Scope> scopesGet(@ApiParam(value = ""  ) @RequestBody Client client) {
+    public ResponseEntity<List<Scope>> scopesGet(@ApiParam(value = "") @RequestBody Client client) {
         try {
-            Scope registerScope = scopeService.findByScope(client.getClientId());
-            return new ResponseEntity<Scope>(registerScope, HttpStatus.OK);
+            Scope scope = new Scope();
+            scope.setClientId(client.getClientId());
+            List<Scope> registerScope = scopeService.selectClientScope(client);
+
+            return new ResponseEntity<>(registerScope, HttpStatus.OK);
         } catch (Exception e){
             logger.error("scopesGet ", e);
-            return new ResponseEntity<Scope>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     public ResponseEntity<Scope> scopesPost(@ApiParam(value = ""  ) @RequestBody Scope scope) {
-        // do some magic!
-        return new ResponseEntity<Scope>(HttpStatus.OK);
+        try {
+            Scope registerScope = scopeService.insertScope(scope);
+            return new ResponseEntity<>(registerScope, HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("scopesPost ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-    public ResponseEntity<Void> scopesScopeIdDelete(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId) {
-        // do some magic!
-        return new ResponseEntity<Void>(HttpStatus.OK);
+    public ResponseEntity<Void> scopesScopeIdDelete(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId
+                                                    , @ApiParam(value = ""  )  @RequestBody Scope scope) {
+        try {
+
+            scope.setScopeId(scopeId);
+            scopeService.deleteScope(scope);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("scopesPost ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     public ResponseEntity<Scope> scopesScopeIdGet(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId) {

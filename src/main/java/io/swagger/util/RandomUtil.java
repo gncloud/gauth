@@ -1,7 +1,8 @@
 package io.swagger.util;
 
-import com.sun.org.apache.xml.internal.security.exceptions.Base64DecodingException;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import java.util.Calendar;
 
 public class RandomUtil {
 

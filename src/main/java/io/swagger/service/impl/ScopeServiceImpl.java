@@ -3,6 +3,8 @@ package io.swagger.service.impl;
 import io.swagger.dao.ScopeDao;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
+import io.swagger.model.User;
+import io.swagger.model.UserClientScope;
 import io.swagger.service.ScopeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,49 +22,97 @@ public class ScopeServiceImpl implements ScopeService {
     @Autowired
     private ScopeDao scopeDao;
 
+    @Autowired
+    private UserClientScope userClientScope;
+
     /*
-     * scope 전체 조회
+     * scope 조회
+     * client id, scope id reqired
      */
     @Override
-    public List<Scope> selectScope(Client client) {
-        return scopeDao.selectScope(client);
+    public Scope selectScope(Scope scope) throws Exception {
+
+        if(!isClientId(scope.getClientId()) || !isScopeId(scope.getScopeId())){
+            throw new Exception("client id invalid");
+        }
+
+
+        return scopeDao.findByScope(scope);
     }
 
     /*
+     * 클라이언트의 scope 조회
+     * client id reqired
+     */
+    @Override
+    public List<Scope> selectClientScope(Client client) throws Exception {
+        if(!isClientId(client.getClientId())){
+            throw new Exception("client id invalid");
+        }
+
+        Scope scope = new Scope();
+        scope.setClientId(client.getClientId());
+
+        return scopeDao.selectClientScopeList(scope);
+    }
+
+
+    /*
      * scope 등록
+     * client id reqired
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Scope insertScope(Scope scope) {
+    public Scope insertScope(Scope scope) throws Exception {
+        if(!isClientId(scope.getClientId())){
+            throw new Exception("client id invalid");
+        }
 
+        scopeDao.insertScope(scope);
 
-
-        return null;
+        return scopeDao.findByScope(scope);
     }
 
     /*
      * scope 삭제
+     * client id, scope id reqired
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void deleteScope(String scopeId) {
+    public void deleteScope(Scope scope) throws Exception {
+        if(!isClientId(scope.getClientId()) || !isScopeId(scope.getScopeId())){
+            throw new Exception("client id invalid");
+        }
 
-    }
 
-    /*
-     * scope 조회
-     */
-    @Override
-    public Scope findByScope(String scopeId) {
-        return null;
+        scopeDao.deleteScope(scope);
+
     }
 
     /*
      * scope 수정
+     * client id, scope id reqired
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Scope updateScope(String scopeId, Scope scope) {
-        return null;
+    public Scope updateScope(Scope scope) throws Exception {
+        if(!isClientId(scope.getClientId()) || !isScopeId(scope.getScopeId())){
+            throw new Exception("client id invalid");
+        }
+
+
+        scopeDao.updateScope(scope);
+
+        return scopeDao.findByScope(scope);
     }
+
+    private boolean isClientId(String clientId){
+        return !(clientId == null || "".equals(clientId));
+    }
+
+    private boolean isScopeId(String scopeId){
+        return !(scopeId == null || "".equals(scopeId));
+    }
+
+
 }

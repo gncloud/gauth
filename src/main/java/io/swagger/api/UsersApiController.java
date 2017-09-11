@@ -43,7 +43,9 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<Void> usersUserIdDelete(@ApiParam(value = "user id", required = true) @PathVariable("userId") String userId) {
         try {
-            userService.deleteUser(userId);
+            User user = new User();
+            user.setUserId(userId);
+            userService.deleteUser(user);
             return new ResponseEntity<>(OK);
         } catch (Exception e){
             logger.error("usersUserIdDelete", e);

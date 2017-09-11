@@ -1,60 +1,69 @@
-import io.swagger.Swagger2SpringBoot;
-import io.swagger.api.ClientsApiController;
 import io.swagger.model.Client;
-import io.swagger.service.ClientService;
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
+import org.springframework.web.client.RestTemplate;
+import org.testng.annotations.Test;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import java.net.URI;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(ClientsApiController.class)
-@ActiveProfiles("test")
 public class ClientApiTest {
 
-    @Autowired
-    private WebApplicationContext context;
 
-    @Autowired
-    private MockMvc mockMvc;
+    org.slf4j.Logger logger = LoggerFactory.getLogger(ClientApiTest.class);
 
-    @Before
-    public void setup(){
-        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context).build();
+
+
+
+    private void post(String url, Client client){
+        ResponseEntity responseEntity = null;
+        try {
+
+            HttpHeaders httpHeaders = new HttpHeaders();
+            httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Client> httpEntity = new HttpEntity<>(client, httpHeaders);
+
+            RestTemplate restTemplate = new RestTemplate();
+            responseEntity = restTemplate.exchange(new URI(url)
+                    , HttpMethod.POST
+                    , httpEntity
+                    , Client.class);
+
+            responsePrint(responseEntity);
+        }catch (Exception e) {
+            logger.error("post api request error ", e);
+        }
     }
+
+    private void responsePrint(ResponseEntity responseEntity){
+
+        if(responseEntity != null){
+            System.out.println(responseEntity.getStatusCode());
+            System.out.println(responseEntity.getBody().toString());
+        }else{
+            System.out.println("responsePrint null Pointer");
+        }
+    }
+
 
     @Test
     public void ClientTest() throws Exception {
 
-
-        // client add
         Client client1 = new Client();
-        client1.setDescription("test1");
+        client1.setDescription("test");
         client1.setDomain("http://cloud.gncloud.io");
+        client1.setIsDefault("user");
 
-        final ResultActions actualResult;
+        post("http://localhost:8080/v1/clients", client1);
 
-        actualResult = mockMvc.perform(post("/v1/clients")
-                .contentType(MediaType.APPLICATION_JSON_UTF8)
-                .accept(MediaType.APPLICATION_JSON_UTF8)
-        ).andDo(print());
+
+
+
+
+//        final ResultActions actualResult;
+//        actualResult = mockMvc.perform(post("/v1/clients")
+//                .contentType(MediaType.APPLICATION_JSON_UTF8)
+//                .accept(MediaType.APPLICATION_JSON_UTF8)
+//        ).andDo(print());
 
 
 

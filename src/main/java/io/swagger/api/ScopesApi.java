@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
 
 @Api(value = "scopes", description = "the scopes API")
@@ -20,7 +22,7 @@ public interface ScopesApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/scopes",
         method = RequestMethod.GET)
-    ResponseEntity<Scope> scopesGet(@ApiParam(value = ""  ) @RequestBody Client client);
+    ResponseEntity<List<Scope>> scopesGet(@ApiParam(value = "") @RequestBody Client client);
 
 
     @ApiOperation(value = "create scope", notes = "create scope", response = Scope.class, tags={  })
@@ -36,7 +38,7 @@ public interface ScopesApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/scopes/{scopeId}",
         method = RequestMethod.DELETE)
-    ResponseEntity<Void> scopesScopeIdDelete(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId);
+    ResponseEntity<Void> scopesScopeIdDelete(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId, @ApiParam(value = ""  )  @RequestBody Scope scope);
 
 
     @ApiOperation(value = "read scope", notes = "read scope", response = Scope.class, tags={  })

@@ -44,8 +44,8 @@ public class UserDao {
     /*
      * 유저 삭제
      * */
-    public void deleteUser(String userId){
-        sqlSession.delete("users.deleteUser", userId);
+    public void deleteUser(User user){
+        sqlSession.delete("users.deleteUser", user);
     }
 
     /*

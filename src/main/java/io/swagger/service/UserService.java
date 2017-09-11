@@ -1,5 +1,6 @@
 package io.swagger.service;
 
+import io.swagger.model.Token;
 import io.swagger.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public interface UserService {
-
 
     /*
      * 유저 조회
@@ -37,15 +37,11 @@ public interface UserService {
     /*
      * 회원탈퇴
      * */
-    void deleteUser(String userId);
+    void deleteUser(User user);
 
     /*
      * 회원 정보 수정
      * */
     User updateUser(User user);
 
-    /*
-     * 토근 아이디와 회원아이디 같은지 확인
-     * */
-    boolean isUserMatchToken(String token, String clientId);
 }
