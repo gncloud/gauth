@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * 유저 관리를 위한 service 인터페이스
  *
@@ -68,24 +70,22 @@ public class UserServiceImpl implements UserService {
         // 회원 정보 등록
         userDao.insertUser(user);
 
-        // 클라이언트의 scope 조회
-        Scope scope = new Scope();
-        scope.setClientId(user.getClientId());
-        Scope registerScope = scopeService.selectScope(scope);
-        String scopeId = new String();
-        if(registerScope != null && !"".equals(registerScope.getScopeId())){
-            scopeId = registerScope.getScopeId();
-        }
+        // 클라이언트의 default scope 조회
+        Scope registerScope = scopeService.findByDefailtScope(user.getClientId());
 
         // 처음 회원 가입한 클라이언트 기본 등록
         UserClientScope userClientScope = new UserClientScope();
         userClientScope.setClientId(user.getClientId());
         userClientScope.setUserId(user.getUserId());
-        userClientScope.setScopeId(scopeId);
+        if(registerScope != null){
+            userClientScope.setScopeId(registerScope.getScopeId());
+        }
+
         userClientScopeService.insertUserClientScope(userClientScope);
 
         // 등록된 DB 유저 가져오기
-        return findByUser(user.getUserId());
+        User registerUser = findByUser(user.getUserId());
+        return registerUser;
     }
 
     /*
@@ -94,14 +94,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(User user) {
 
-
+        // 토큰 정보로 접근 하였을 경우 유저 조회
         String token = user.getTokenId();
         User targetUser = new User();
+
         if(token != null && !"".equals(token)){
             targetUser = fienByTokenToUserInfo(token);
         }else{
             targetUser = user;
         }
+
 
         // 유저,클라이언트 관계 데이터 삭제
         UserClientScope userClientScope = new UserClientScope();
@@ -110,10 +112,11 @@ public class UserServiceImpl implements UserService {
 
         userClientScopeService.deleteUserClientScope(userClientScope);
 
-        // 클라이언트 관계 갯수 조회
+        // 유저와 클라이언트 마지막 확인 후 마지막 이면 유저 정보 삭제 조회
         Integer userClientCount = userClientScopeService.findUserCount(targetUser.getUserId());
+
         // 유저와 클라이언트 관계가 마지막일 경우 회원 정보 삭제
-        if(userClientCount <= 1){
+        if(userClientCount == 0){
             userDao.deleteUser(user);
         }
 
@@ -145,6 +148,13 @@ public class UserServiceImpl implements UserService {
         return userDao.fienByTokenToUserInfo(token);
     }
 
+    /*
+     * 유저 전체 조회
+     */
+    @Override
+    public List<User> findByUsers(String search) {
+        return userDao.findByUsers(search);
+    }
 
     /*
      * 필수값 유효성 체크

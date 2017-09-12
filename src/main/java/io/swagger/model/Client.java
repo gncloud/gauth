@@ -1,22 +1,22 @@
 package io.swagger.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Objects;
 
 /**
  *
  */
 @ApiModel(description = "")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T02:54:11.646Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T01:03:22.360Z")
 
 public class Client   {
   @JsonProperty("clientId")
   private String clientId = null;
 
-  @JsonProperty("clientSecert")
+  @JsonProperty("clientSecret")
   private String clientSecret = null;
 
   @JsonProperty("description")
@@ -24,9 +24,6 @@ public class Client   {
 
   @JsonProperty("domain")
   private String domain = null;
-
-  @JsonProperty("isDefault")
-  private String isDefault = null;
 
   public Client clientId(String clientId) {
     this.clientId = clientId;
@@ -46,22 +43,22 @@ public class Client   {
     this.clientId = clientId;
   }
 
-  public Client clientSecert(String clientSecert) {
-    this.clientSecret = clientSecert;
+  public Client clientSecret(String clientSecret) {
+    this.clientSecret = clientSecret;
     return this;
   }
 
   /**
-   * Get clientSecert
-   * @return clientSecert
+   * Get clientSecret
+   * @return clientSecret
    **/
   @ApiModelProperty(value = "")
-  public String getClientSecert() {
+  public String getClientSecret() {
     return clientSecret;
   }
 
-  public void setClientSecert(String clientSecert) {
-    this.clientSecret = clientSecert;
+  public void setClientSecret(String clientSecret) {
+    this.clientSecret = clientSecret;
   }
 
   public Client description(String description) {
@@ -100,24 +97,6 @@ public class Client   {
     this.domain = domain;
   }
 
-  public Client isDefault(String isDefault) {
-    this.isDefault = isDefault;
-    return this;
-  }
-
-  /**
-   * Get isDefault
-   * @return isDefault
-   **/
-  @ApiModelProperty(value = "")
-  public String getIsDefault() {
-    return isDefault;
-  }
-
-  public void setIsDefault(String isDefault) {
-    this.isDefault = isDefault;
-  }
-
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -131,13 +110,12 @@ public class Client   {
     return Objects.equals(this.clientId, client.clientId) &&
             Objects.equals(this.clientSecret, client.clientSecret) &&
             Objects.equals(this.description, client.description) &&
-            Objects.equals(this.domain, client.domain) &&
-            Objects.equals(this.isDefault, client.isDefault);
+            Objects.equals(this.domain, client.domain);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(clientId, clientSecret, description, domain, isDefault);
+    return Objects.hash(clientId, clientSecret, description, domain);
   }
 
   @Override
@@ -146,10 +124,9 @@ public class Client   {
     sb.append("class Client {\n");
 
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
-    sb.append("    clientSecert: ").append(toIndentedString(clientSecret)).append("\n");
+    sb.append("    clientSecret: ").append(toIndentedString(clientSecret)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    domain: ").append(toIndentedString(domain)).append("\n");
-    sb.append("    isDefault: ").append(toIndentedString(isDefault)).append("\n");
     sb.append("}");
     return sb.toString();
   }

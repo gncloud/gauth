@@ -3,8 +3,6 @@ package io.swagger.service;
 
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
-import io.swagger.model.User;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,4 +36,8 @@ public interface ScopeService {
      */
     Scope updateScope(Scope scope) throws Exception;
 
+    /*
+     * 클라이언트의 default scope 조회
+     */
+    Scope findByDefailtScope(String clientId);
 }

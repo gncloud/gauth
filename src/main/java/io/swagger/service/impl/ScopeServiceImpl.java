@@ -3,8 +3,6 @@ package io.swagger.service.impl;
 import io.swagger.dao.ScopeDao;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
-import io.swagger.model.User;
-import io.swagger.model.UserClientScope;
 import io.swagger.service.ScopeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,21 +20,15 @@ public class ScopeServiceImpl implements ScopeService {
     @Autowired
     private ScopeDao scopeDao;
 
-    @Autowired
-    private UserClientScope userClientScope;
-
     /*
      * scope 조회
      * client id, scope id reqired
      */
     @Override
     public Scope selectScope(Scope scope) throws Exception {
-
         if(!isClientId(scope.getClientId()) || !isScopeId(scope.getScopeId())){
             throw new Exception("client id invalid");
         }
-
-
         return scopeDao.findByScope(scope);
     }
 
@@ -68,8 +60,14 @@ public class ScopeServiceImpl implements ScopeService {
             throw new Exception("client id invalid");
         }
 
+        if(scope.getIsDefault() != null && !"0".equals(scope.getIsDefault())){
+            Client client = new Client();
+            client.setClientId(scope.getClientId());
+            scopeDao.updateDefaultN(client);
+        }else{
+            scope.setIsDefault("0");
+        }
         scopeDao.insertScope(scope);
-
         return scopeDao.findByScope(scope);
     }
 
@@ -83,7 +81,6 @@ public class ScopeServiceImpl implements ScopeService {
         if(!isClientId(scope.getClientId()) || !isScopeId(scope.getScopeId())){
             throw new Exception("client id invalid");
         }
-
 
         scopeDao.deleteScope(scope);
 
@@ -114,5 +111,7 @@ public class ScopeServiceImpl implements ScopeService {
         return !(scopeId == null || "".equals(scopeId));
     }
 
-
+    public Scope findByDefailtScope(String clientId){
+        return scopeDao.findByDefailtScope(clientId);
+    }
 }

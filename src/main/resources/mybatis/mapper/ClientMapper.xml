@@ -6,14 +6,12 @@
                         (client_id,
                         client_secret,
                         description,
-                        domain,
-                        is_default)
+                        domain)
                  VALUES
                         (#{clientId},
                         #{clientSecret},
                         #{description},
-                        #{domain},
-                        #{isDefault})
+                        #{domain})
     </insert>
 
     <select id="findByClient" resultType="Client" parameterType="String">
@@ -21,7 +19,6 @@
               , client_secret
               , description
               , domain
-              , is_default
           from Client
           where client_id = #{param1}
     </select>
@@ -34,7 +31,6 @@
         UPDATE Client
            SET description = #{description}
               , domain = #{domain}
-              , is_default = #{isDefault}
          WHERE client_id = #{clientId}
     </update>
 
@@ -43,7 +39,6 @@
               , client_secret
               , description
               , domain
-              , is_default
           from Client
     </select>
 

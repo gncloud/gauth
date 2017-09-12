@@ -23,7 +23,7 @@ public interface UserClientScopeService {
     /*
      * 유저 클라이언트 등록
      */
-    void insertUserClientScope(UserClientScope userClientScope);
+    UserClientScope insertUserClientScope(UserClientScope userClientScope);
 
     /*
      * 유저 클라이언트 삭제
@@ -38,12 +38,7 @@ public interface UserClientScopeService {
     /*
      * 클라이언트로 관계 조회
      */
-    List<UserClientScope> selectUserMappingList(Client client);
-
-    /*
-     * 유저, 클라이언트로 관계 조회
-     */
-    List<UserClientScope> findUserMapping(UserClientScope userClientScope);
+    List<UserClientScope> selectClientMappingList(Client client);
 
     /*
      * 클라이언트 등록된 관계 수

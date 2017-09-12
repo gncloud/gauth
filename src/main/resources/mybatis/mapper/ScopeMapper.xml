@@ -2,54 +2,67 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="scope">
 
-    <select id="selectScope" resultType="Scope" parameterType="Client">
+    <select id="selectClientScopeList" parameterType="Scope" resultType="Scope">
         select scope_id
-             , client_id
-             , description
-          from Scope
-        where clinet_id = #{clientId}
+        , client_id
+        , description
+        , is_default
+        from Scope
+        where client_id = #{clientId}
     </select>
 
     <insert id="insertScope" parameterType="Scope">
         INSERT INTO Scope
-                (scope_id,
-                client_id,
-                description)
-             VALUES
-                (#{ScopeId},
-                #{ClientId},
-                #{description})
+        (scope_id,
+        client_id,
+        description,
+        is_default)
+        VALUES
+        (#{scopeId},
+        #{clientId},
+        #{description},
+        #{isDefault}
+        )
     </insert>
 
-    <delete id="deleteScope" parameterType="String">
+    <delete id="deleteScope" parameterType="Scope">
         DELETE FROM Scope
-         WHERE scope_id = #{ScopeId}
-           AND client_id = #{clientId}
+        WHERE scope_id = #{scopeId}
+        AND client_id = #{clientId}
     </delete>
-
-    <update id="updateScope" parameterType="Scope">
-        UPDATE FROM Scope
-           SET description = #{description}
-         where scope_id = #{scopeId}
-           AND client_id = #{clientId}
-    </update>
-
-    <select id="selectClientScopeList" parameterType="Scope" resultType="Scope">
-        select scope_id
-             , client_id
-             , description
-          from Scope
-         where client_id = #{clientId}
-    </select>
 
     <select id="findByScope" parameterType="Scope" resultType="Scope">
         select scope_id
-             , client_id
-             , description
-          from Scope
-         where client_id = #{clientId}
-           AND scope_id = #{scopeId}
+        , client_id
+        , description
+        , is_default
+        from Scope
+        where client_id = #{clientId}
+        AND scope_id = #{scopeId}
     </select>
 
+    <update id="updateScope" parameterType="Scope">
+        UPDATE Scope
+        SET description = #{description}
+        where scope_id = #{scopeId}
+        AND client_id = #{clientId}
+    </update>
+
+    <update id="updateDefaultN" parameterType="Scope">
+        UPDATE Scope
+        SET is_default = 0
+        where client_id = #{clientId}
+    </update>
+
+    <select id="findByDefailtScope" parameterType="String" resultType="Scope">
+        select scope_id
+        , client_id
+        , description
+        , is_default
+        from Scope
+        where is_default != 0
+          AND client_id = #{param1}
+         limit 1
+    </select>
 
 </mapper>

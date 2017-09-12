@@ -1,16 +1,16 @@
 package io.swagger.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Objects;
 
 /**
  *
  */
 @ApiModel(description = "")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-11T02:51:25.021Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T01:03:22.360Z")
 
 public class Scope   {
   @JsonProperty("scopeId")
@@ -21,6 +21,9 @@ public class Scope   {
 
   @JsonProperty("description")
   private String description = null;
+
+  @JsonProperty("isDefault")
+  private String isDefault = null;
 
   public Scope scopeId(String scopeId) {
     this.scopeId = scopeId;
@@ -76,6 +79,24 @@ public class Scope   {
     this.description = description;
   }
 
+  public Scope isDefault(String isDefault) {
+    this.isDefault = isDefault;
+    return this;
+  }
+
+  /**
+   * Get isDefault
+   * @return isDefault
+   **/
+  @ApiModelProperty(value = "")
+  public String getIsDefault() {
+    return isDefault;
+  }
+
+  public void setIsDefault(String isDefault) {
+    this.isDefault = isDefault;
+  }
+
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -88,12 +109,13 @@ public class Scope   {
     Scope scope = (Scope) o;
     return Objects.equals(this.scopeId, scope.scopeId) &&
             Objects.equals(this.clientId, scope.clientId) &&
-            Objects.equals(this.description, scope.description);
+            Objects.equals(this.description, scope.description) &&
+            Objects.equals(this.isDefault, scope.isDefault);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(scopeId, clientId, description);
+    return Objects.hash(scopeId, clientId, description, isDefault);
   }
 
   @Override
@@ -104,6 +126,7 @@ public class Scope   {
     sb.append("    scopeId: ").append(toIndentedString(scopeId)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
+    sb.append("    isDefault: ").append(toIndentedString(isDefault)).append("\n");
     sb.append("}");
     return sb.toString();
   }

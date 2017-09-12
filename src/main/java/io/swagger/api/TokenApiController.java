@@ -37,6 +37,7 @@ public class TokenApiController implements TokenApi {
     public ResponseEntity<Token> tokenGet(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
             Token registerToken = tokenService.findByToken(authorization);
+
             return new ResponseEntity<>(registerToken, HttpStatus.OK);
         } catch (Exception e){
             logger.error("tokenGet ", e);

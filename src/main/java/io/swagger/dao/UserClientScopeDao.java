@@ -2,6 +2,7 @@ package io.swagger.dao;
 
 import io.swagger.model.Client;
 import io.swagger.model.User;
+import io.swagger.model.UserClientScope;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -18,4 +19,26 @@ public class UserClientScopeDao {
     public Integer findUserCount(String userId) {
         return sqlSession.selectOne("userClientScope.findUserCount", userId);
     }
+
+    public void insertUserClientScope(UserClientScope userClientScope) {
+        sqlSession.insert("userClientScope.insertUserClientScope", userClientScope);
+    }
+
+    public UserClientScope findByUserClientScope(UserClientScope userClientScope) {
+        return sqlSession.selectOne("userClientScope.findByUserClientScope", userClientScope);
+    }
+
+    public void deleteUserClientScope(UserClientScope userClientScope) {
+        sqlSession.delete("userClientScope.deleteUserClientScope", userClientScope);
+    }
+
+
+    public List<UserClientScope> fintUserMappingList(User user) {
+        return sqlSession.selectList("userClientScope.fintUserMappingList", user);
+    }
+
+    public List<UserClientScope> fintClientMappingList(Client client) {
+        return sqlSession.selectList("userClientScope.fintClientMappingList", client);
+    }
+
 }

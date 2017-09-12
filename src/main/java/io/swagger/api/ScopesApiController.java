@@ -1,10 +1,8 @@
 package io.swagger.api;
 
+import io.swagger.annotations.ApiParam;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
-
-import io.swagger.annotations.*;
-
 import io.swagger.service.ScopeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -66,16 +65,16 @@ public class ScopesApiController implements ScopesApi {
     }
 
     public ResponseEntity<Scope> scopesScopeIdGet(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId
-                                                , @ApiParam(value = "" )  @RequestBody Client client) {
+                                                , @ApiParam(value = "" )  @RequestParam String client) {
         try {
 
             Scope scope = new Scope();
             scope.setScopeId(scopeId);
-            scope.setClientId(client.getClientId());
+            scope.setClientId(client);
 
-            scopeService.selectScope(scope);
+            Scope registerScope = scopeService.selectScope(scope);
 
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>(registerScope, HttpStatus.OK);
         } catch (Exception e){
             logger.error("scopesScopeIdGet ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

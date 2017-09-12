@@ -5,10 +5,7 @@ import io.swagger.model.Scope;
 
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -46,7 +43,7 @@ public interface ScopesApi {
         @ApiResponse(code = 200, message = "OK", response = Scope.class) })
     @RequestMapping(value = "/scopes/{scopeId}",
         method = RequestMethod.GET)
-    ResponseEntity<Scope> scopesScopeIdGet(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId, @ApiParam(value = ""  )  @RequestBody Client client);
+    ResponseEntity<Scope> scopesScopeIdGet(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId, @ApiParam(value = ""  )  @RequestParam String client);
 
 
     @ApiOperation(value = "update scope", notes = "update scope", response = Scope.class, tags={  })

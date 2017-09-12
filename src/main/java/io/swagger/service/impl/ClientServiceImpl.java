@@ -39,7 +39,6 @@ public class ClientServiceImpl implements ClientService {
             throw new Exception("domain same");
         }
 
-
         initClient(client);
 
         clientDao.insertClient(client);
@@ -86,14 +85,19 @@ public class ClientServiceImpl implements ClientService {
      * 클라이언트 랜덤값 부여
      */
     private void initClient(Client client){
+        String target = client.getDomain();
+        target = target.replace("http://","");
+        int queryIndex = target.indexOf("?");
+        target = target.substring(0, queryIndex == -1 ? target.length() : queryIndex);
 
-        String encodingToken = new String(Base64.getEncoder().encode(client.getDomain().getBytes()));
+        String encodingToken = new String(Base64.getEncoder().encode(target.getBytes()));
         encodingToken = encodingToken.replaceAll("=","");
+
+
         String randomSecret = RandomUtil.randomString(10);
         client.setClientId(encodingToken);
-        client.setClientSecert(randomSecret);
+        client.setClientSecret(randomSecret);
     }
-
 
 
 

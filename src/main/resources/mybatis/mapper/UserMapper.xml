@@ -1,48 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="users">
-        <insert id="insertUser" parameterType="User">
-                INSERT INTO User
-                        (user_id,
-                        password,
-                        email,
-                        name,
-                        register_date,
-                        phone,
-                        address,
-                        company)
-                        VALUES
-                        (
-                        #{userId},
-                        #{password},
-                        #{email},
-                        #{name},
-                        now(),
-                        #{phone, jdbcType=NVARCHAR},
-                        #{address, jdbcType=NVARCHAR},
-                        #{company, jdbcType=NVARCHAR}
-                        )
-        </insert>
-        <delete id="deleteUser" parameterType="User">
-            DELETE FROM User WHERE user_id = #{userId}
-        </delete>
-        <select id="isUserId" resultType="Integer" parameterType="String">
-                SELECT count(*)
-                  FROM User
-                 where upper(user_id) = upper(#{param1})
-        </select>
-        <select id="findByUser" resultType="User" parameterType="String">
-                SELECT user_id,
-                       password,
-                       email,
-                       name,
-                       register_date,
-                       phone,
-                       address,
-                       company
-                 FROM User
-                WHERE user_id = #{param1}
-        </select>
+<mapper namespace="user">
 
+    <insert id="insertUser" parameterType="User">
+            INSERT INTO User
+                    (user_id,
+                    password,
+                    email,
+                    name,
+                    register_date,
+                    phone,
+                    address,
+                    company)
+                    VALUES
+                    (
+                    #{userId},
+                    #{password},
+                    #{email},
+                    #{name},
+                    now(),
+                    #{phone, jdbcType=NVARCHAR},
+                    #{address, jdbcType=NVARCHAR},
+                    #{company, jdbcType=NVARCHAR}
+                    )
+    </insert>
 
+    <delete id="deleteUser" parameterType="User">
+        DELETE FROM User WHERE user_id = #{userId}
+    </delete>
+
+    <select id="isUserId" resultType="Integer" parameterType="String">
+            SELECT count(*)
+              FROM User
+             where upper(user_id) = upper(#{param1})
+    </select>
+
+    <select id="findByUser" resultType="User" parameterType="String">
+            SELECT user_id,
+                   password,
+                   email,
+                   name,
+                   register_date,
+                   phone,
+                   address,
+                   company
+             FROM User
+            WHERE user_id = #{param1}
+    </select>
+
+    <update id="updateUser" parameterType="User">
+        UPDATE User
+           SET password = #{password},
+               email = #{email},
+               name = #{name},
+               phone = #{phone},
+               address = #{address},
+               company = #{company}
+         WHERE user_id = #{userId}
+    </update>
+
+    <select id="fienByTokenToUserInfo" parameterType="String" resultType="User">
+        SELECT user_id,
+               password,
+               email,
+               name,
+               register_date,
+               phone,
+               address,
+               company
+         FROM User
+        where user_id = (select user_id
+                           from Token
+                          where token_id = #{tokenId})
+    </select>
+
+    <select id="findByUsers" resultType="User" parameterType="String">
+        SELECT user_id,
+               password,
+               email,
+               name,
+               register_date,
+               phone,
+               address,
+               company
+         FROM User
+         <if test="_parameter != null and _parameter != ''">
+         WHERE user_id = #{_parameter}
+             or email = #{_parameter}
+             or company = #{_parameter}
+             or name = #{_parameter}
+         </if>
+
+    </select>
 </mapper>

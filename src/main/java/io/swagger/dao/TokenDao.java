@@ -30,6 +30,6 @@ public class TokenDao {
     }
 
     public List<Token> selectTokens() {
-        return sqlSession.selectOne("token.selectTokens");
+        return sqlSession.selectList("token.selectTokens");
     }
 }

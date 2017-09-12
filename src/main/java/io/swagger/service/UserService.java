@@ -1,10 +1,10 @@
 package io.swagger.service;
 
-import io.swagger.model.Token;
 import io.swagger.model.User;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 /**
  * 유저 관리를 위한 service 인터페이스
@@ -48,4 +48,9 @@ public interface UserService {
      * 토큰으로 회원 정보 조회
      */
     User fienByTokenToUserInfo(String token);
+
+    /*
+     * 유저 전체 조회
+     */
+    List<User> findByUsers(String search);
 }

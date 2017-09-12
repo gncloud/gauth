@@ -1,19 +1,13 @@
 package io.swagger.service.impl;
 
-import io.swagger.dao.ClientDao;
 import io.swagger.dao.UserClientScopeDao;
 import io.swagger.model.Client;
 import io.swagger.model.User;
 import io.swagger.model.UserClientScope;
-import io.swagger.service.ClientService;
 import io.swagger.service.UserClientScopeService;
-import io.swagger.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
 import java.util.List;
 
 /**
@@ -34,8 +28,9 @@ public class UserClientScopeImpl implements UserClientScopeService {
      * 유저 클라이언트 등록
      */
     @Override
-    public void insertUserClientScope(UserClientScope userClientScope){
-
+    public UserClientScope insertUserClientScope(UserClientScope userClientScope){
+        userClientScopeDao.insertUserClientScope(userClientScope);
+        return userClientScopeDao.findByUserClientScope(userClientScope);
     }
 
     /*
@@ -43,7 +38,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      */
     @Override
     public void deleteUserClientScope(UserClientScope userClientScope){
-
+        userClientScopeDao.deleteUserClientScope(userClientScope);
     }
 
     /*
@@ -51,24 +46,17 @@ public class UserClientScopeImpl implements UserClientScopeService {
      */
     @Override
     public List<UserClientScope> selectUserMappingList(User user){
-        return null;
+        return userClientScopeDao.fintUserMappingList(user);
     }
 
     /*
      * 클라이언트로 관계 조회
      */
     @Override
-    public List<UserClientScope> selectUserMappingList(Client client){
-        return null;
+    public List<UserClientScope> selectClientMappingList(Client client){
+        return userClientScopeDao.fintClientMappingList(client);
     }
 
-    /*
-     * 유저, 클라이언트로 관계 조회
-     */
-    @Override
-    public List<UserClientScope> findUserMapping(UserClientScope userClientScope){
-        return null;
-    }
 
     /*
      * 클라이언트 등록된 관계 수

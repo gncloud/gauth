@@ -1,17 +1,9 @@
 package io.swagger.api;
 
-import io.swagger.model.User;
-
 import io.swagger.annotations.*;
+import io.swagger.model.User;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,7 +17,7 @@ public interface UsersApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/users",
         method = RequestMethod.GET)
-    ResponseEntity<Void> usersGet(@ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search);
+    ResponseEntity<List<User>> usersGet(@ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search);
 
 
     @ApiOperation(value = "user sign up", notes = "user sign up", response = User.class, tags={  })
@@ -57,6 +49,6 @@ public interface UsersApi {
         @ApiResponse(code = 200, message = "OK", response = User.class) })
     @RequestMapping(value = "/users/{userId}",
         method = RequestMethod.PUT)
-    ResponseEntity<User> usersUserIdPut(@ApiParam(value = ""  ) @RequestBody User user);
+    ResponseEntity<User> usersUserIdPut(@ApiParam(value = "update userId",required=true ) @PathVariable("userId") String userId, @ApiParam(value = ""  ) @RequestBody User user);
 
 }

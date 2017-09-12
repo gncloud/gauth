@@ -11,11 +11,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -71,8 +69,13 @@ public class TokenServiceImpl implements TokenService{
     /*
      * 토큰 아이디로 토큰 정보 조회
      */
-    public Token findByToken(String tokenId){
-        return tokenDao.findByToken(tokenId);
+    public Token findByToken(String tokenId) throws Exception {
+
+        Token registerToken = tokenDao.findByToken(tokenId);
+        if(registerToken == null){
+            throw new Exception("Token invalid");
+        }
+        return registerToken;
     }
 
     /*
@@ -94,18 +97,36 @@ public class TokenServiceImpl implements TokenService{
      * 토큰 유효성 검사
      */
     @Override
-    public boolean isTokenValidate(String token) throws Exception {
+    public boolean isTokenValidate(String token) {
+        boolean isValid = false;
+        try {
+            // 토큰으로 유저 정보 조회 없을시 Exception
+            User registerUser = userService.fienByTokenToUserInfo(token);
+            if(registerUser == null){
+                logger.debug("user no data Token : {}", token);
+            }else{
 
-        Token registerToken = findByToken(token);
+                // DB 저장된 토큰 정보 조회
+                Token registerToken = tokenDao.findByToken(token);
 
-        if(registerToken == null){
-            throw new Exception("no data");
+                // 토큰 만료 시간 확인
+                Date expiredDate = new SimpleDateFormat("yyyy-M-d H:m:s").parse(registerToken.getExpireDate());
+
+                Date nowDate = Calendar.getInstance().getTime();
+                int compare = nowDate.compareTo(expiredDate);
+
+                // 현재보다 미래 시간에 만료 될 경우
+                if(compare < 0){
+                    logger.debug("isTokenValidate Token : {}, valid nowDate {}, expireDate {}", token, nowDate, expiredDate);
+                    isValid = true;
+                }else{
+                    logger.debug("isTokenValidate Token : {}, invalid nowDate {}, expireDate {}", token, nowDate, expiredDate);
+                }
+            }
+        } catch (ParseException e) {
+            logger.error("format error ", e);
         }
-
-        String userId = registerToken.getUserId();
-        String expireDate = registerToken.getExpireDate();
-
-        return generateToken(userId, expireDate).equals(token);
+        return isValid;
     }
 
     /*

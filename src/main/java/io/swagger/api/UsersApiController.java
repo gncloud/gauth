@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -26,9 +28,9 @@ public class UsersApiController implements UsersApi {
     private UserService userService;
 
 
-    public ResponseEntity<Void> usersGet(@ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search) {
-        // do some magic!
-        return new ResponseEntity<Void>(OK);
+    public ResponseEntity<List<User>> usersGet(@ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search) {
+        List<User> registerUsers = userService.findByUsers(search);
+        return new ResponseEntity<List<User>>(registerUsers, OK);
     }
 
     public ResponseEntity<User> usersPost(@ApiParam(value = "", required = true) @RequestBody User user) throws ApiException {
@@ -63,8 +65,9 @@ public class UsersApiController implements UsersApi {
         }
     }
 
-    public ResponseEntity<User> usersUserIdPut(@ApiParam(value = "") @RequestBody User user) {
+    public ResponseEntity<User> usersUserIdPut(@PathVariable("userId") String userId, @ApiParam(value = "") @RequestBody User user) {
         try {
+            user.setUserId(userId);
             User registerUser = userService.updateUser(user);
             return new ResponseEntity<User>(registerUser, OK);
         } catch (Exception e){

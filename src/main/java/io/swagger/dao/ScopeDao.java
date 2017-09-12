@@ -2,12 +2,9 @@ package io.swagger.dao;
 
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
-import io.swagger.model.User;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -37,7 +34,11 @@ public class ScopeDao {
         sqlSession.update("scope.updateScope", scope);
     }
 
+    public void updateDefaultN(Client client){
+        sqlSession.update("scope.updateDefaultN", client);
+    }
 
-
-
+    public Scope findByDefailtScope(String clientId){
+        return sqlSession.selectOne("scope.findByDefailtScope", clientId);
+    }
 }

@@ -1,13 +1,10 @@
 package io.swagger.api;
 
+import io.swagger.annotations.ApiParam;
 import io.swagger.model.Token;
-
-import io.swagger.annotations.*;
-
 import io.swagger.service.TokenService;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,7 +28,7 @@ public class TokensApiController implements TokensApi {
     public ResponseEntity<List<Token>> tokensGet() {
         try {
             List<Token> registerTokenList = tokenService.selectToken();
-            return new ResponseEntity<>(OK);
+            return new ResponseEntity<>(registerTokenList, OK);
         } catch (Exception e){
             logger.error("tokensGet", e);
             return new ResponseEntity<>(BAD_REQUEST);
@@ -40,7 +37,7 @@ public class TokensApiController implements TokensApi {
 
     public ResponseEntity<Void> tokensTokenIdDelete(@ApiParam(value = "delete token",required=true ) @PathVariable("tokenId") String tokenId) {
         try {
-            tokensTokenIdDelete(tokenId);
+            tokenService.deleteToekn(tokenId);
             return new ResponseEntity<>(OK);
         } catch (Exception e){
             logger.error("tokensTokenIdDelete", e);

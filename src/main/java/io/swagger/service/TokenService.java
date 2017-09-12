@@ -18,7 +18,7 @@ public interface TokenService {
     /*
      * 토큰 아이디로 토큰 정보 조회
      */
-    Token findByToken(String tokenId);
+    Token findByToken(String tokenId) throws Exception;
 
     /*
      * 토큰 아이디로 토큰 정보 삭제

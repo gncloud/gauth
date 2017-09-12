@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Objects;
 @ApiModel(description = "user info")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-10T14:37:03.238Z")
 
-public class User extends Token implements Serializable {
+public class User extends Token {
 
   @JsonProperty("userId")
   private String userId = null;
