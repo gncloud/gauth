@@ -1,5 +1,6 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.Swagger2SpringBoot;
+import io.swagger.model.Client;
 import io.swagger.model.Scope;
 import org.junit.Before;
 import org.junit.Test;
@@ -125,13 +126,18 @@ public class RestClientApiTest {
     @Test
     public void clientTest() {
         // 클라이언트
-//        Client client = new Client();
-//        client.setDescription("aaaa");
-//        client.setDomain("bb.gncloud.io");
-        //request("/clients","post", client);
-        //request("/clients","get", null);
-        //request("/clients/Yi5nbmNsb3VkLmlv","put", client);
-        //request("/clients/Z25jbG91ZC5pbw","delete", client);
+        Client client = new Client();
+        client.setClientId("gncloud");
+        client.setDescription("aaaa");
+        client.setDomain("cc.gncloud.io");
+
+
+
+
+        request("/clients", "post", client);
+        request("/clients","get", null);
+        request("/clients/gncloud","put", client);
+        request("/clients/gncloud","delete", client);
     }
 
     @Test
@@ -160,13 +166,16 @@ public class RestClientApiTest {
 //        scope.setIsDefault("N");
 //        request("/scopes", "post", scope);
 //        스코프조회
-//request("/scopes/user1?client=Yi5nbmNsb3VkLmlv", "get", null);
+//        request("/scopes/user1?client=Yi5nbmNsb3VkLmlv", "get", null);
+
 //        클라이언트의 전체 스코프 조회
         //request("/scopes", "get", client);
+
         // 디스크립션 수정
 //        scope.setDescription("update user2 desc");
 //        scope.setClientId("Yi5nbmNsb3VkLmlv");
 //        request("/scopes/user1", "put", scope);
+
 //        스코프 삭제
 //        scope = new Scope();
 //        scope.setClientId("Yi5nbmNsb3VkLmlv");
@@ -215,7 +224,7 @@ public class RestClientApiTest {
 //        request("/users/joon2","put", user);
 
 
-        // user delete
+
 
 //        User user = new User();
 //        user.setUserId("deleteUser1");
@@ -228,6 +237,9 @@ public class RestClientApiTest {
 //        user.setCompany("gncloud");
 //        request("/users/joon2","post", user);
 
+
+
+//        request("/users/deleteUser2","delete", null);
 
 
 
@@ -271,9 +283,9 @@ public class RestClientApiTest {
 //        request("/tokens/e3b24cbe0909fa33000fb399a28cea3185b18938efe486a4e922ce9f45752df9", "get", null);
 
         // 토큰 유효성 체크
-        HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.set("authorization","e3b24cbe0909fa33000fb399a28cea3185b18938efe486a4e922ce9f45752df9");
-        request("/validate", "head", null, httpHeaders);
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.set("authorization","e3b24cbe0909fa33000fb399a28cea3185b18938efe486a4e922ce9f45752df9");
+//        request("/validate", "head", null, httpHeaders);
 
     }
 

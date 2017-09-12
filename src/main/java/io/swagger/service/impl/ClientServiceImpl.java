@@ -87,6 +87,7 @@ public class ClientServiceImpl implements ClientService {
     private void initClient(Client client){
         String target = client.getDomain();
         target = target.replace("http://","");
+        target = target.replace("https://","");
         int queryIndex = target.indexOf("?");
         target = target.substring(0, queryIndex == -1 ? target.length() : queryIndex);
 
@@ -94,8 +95,8 @@ public class ClientServiceImpl implements ClientService {
         encodingToken = encodingToken.replaceAll("=","");
 
 
-        String randomSecret = RandomUtil.randomString(10);
-        client.setClientId(encodingToken);
+        String randomSecret = RandomUtil.randomString(32);
+//        client.setClientId(encodingToken);
         client.setClientSecret(randomSecret);
     }
 
