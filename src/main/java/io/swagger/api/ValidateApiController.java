@@ -3,6 +3,7 @@ package io.swagger.api;
 
 import io.swagger.annotations.*;
 
+import io.swagger.service.TokenService;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,11 @@ public class ValidateApiController implements ValidateApi {
 
     private org.slf4j.Logger logger = LoggerFactory.getLogger(ValidateApiController.class);
 
+    @Autowired
+    private TokenService tokenService;
+
     public ResponseEntity<Void> validateHead(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+
 
         return new ResponseEntity<Void>(HttpStatus.OK);
     }

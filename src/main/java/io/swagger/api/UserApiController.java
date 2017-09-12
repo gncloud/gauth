@@ -33,13 +33,27 @@ public class UserApiController implements UserApi {
 
     public ResponseEntity<Void> userDelete(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
         @ApiParam(value = "client id", required = true) @RequestParam(value = "clientId", required = true) String clientId) {
-        // do some magic!
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        try{
+            User user = new User();
+            user.setTokenId(authorization);
+            user.clientId(clientId);
+            userService.deleteUser(user);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e){
+            logger.debug("userDelete : {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     public ResponseEntity<User> userGet(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
-
-        return new ResponseEntity<User>(HttpStatus.OK);
+        try{
+            User registerUser = userService.fienByTokenToUserInfo(authorization);
+            return new ResponseEntity<>(registerUser, HttpStatus.OK);
+        } catch (Exception e){
+            logger.debug("userGet : {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     public ResponseEntity<User> userPut(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
@@ -49,7 +63,7 @@ public class UserApiController implements UserApi {
             User registerUser = userService.updateUser(user);
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (Exception e){
-            logger.debug("userPut : {}", e.getMessage());
+            logger.error("userPut", e);
             return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
         }
     }

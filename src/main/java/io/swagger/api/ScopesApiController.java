@@ -52,7 +52,7 @@ public class ScopesApiController implements ScopesApi {
     }
 
     public ResponseEntity<Void> scopesScopeIdDelete(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId
-                                                    , @ApiParam(value = ""  )  @RequestBody Scope scope) {
+                                                  , @ApiParam(value = "" )  @RequestBody Scope scope) {
         try {
 
             scope.setScopeId(scopeId);
@@ -60,20 +60,41 @@ public class ScopesApiController implements ScopesApi {
 
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e){
-            logger.error("scopesPost ", e);
+            logger.error("scopesScopeIdDelete ", e);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    public ResponseEntity<Scope> scopesScopeIdGet(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId) {
-        // do some magic!
-        return new ResponseEntity<Scope>(HttpStatus.OK);
+    public ResponseEntity<Scope> scopesScopeIdGet(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId
+                                                , @ApiParam(value = "" )  @RequestBody Client client) {
+        try {
+
+            Scope scope = new Scope();
+            scope.setScopeId(scopeId);
+            scope.setClientId(client.getClientId());
+
+            scopeService.selectScope(scope);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("scopesScopeIdGet ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     public ResponseEntity<Scope> scopesScopeIdPut(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId,
         @ApiParam(value = ""  ) @RequestBody Scope scope) {
-        // do some magic!
-        return new ResponseEntity<Scope>(HttpStatus.OK);
+
+        try {
+
+            scope.setScopeId(scopeId);
+            Scope registerScope = scopeService.updateScope(scope);
+
+            return new ResponseEntity<>(registerScope, HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("scopesScopeIdPut ", e);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }

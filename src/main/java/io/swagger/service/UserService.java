@@ -44,4 +44,8 @@ public interface UserService {
      * */
     User updateUser(User user);
 
+    /*
+     * 토큰으로 회원 정보 조회
+     */
+    User fienByTokenToUserInfo(String token);
 }

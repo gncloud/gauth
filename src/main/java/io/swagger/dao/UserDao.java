@@ -27,7 +27,7 @@ public class UserDao {
     }
 
     /*
-     * 아이디 중복 확인
+     * 아이디 중복 확인 (갯수 조회)
      * */
     public int isUserId(String id) {
         return sqlSession.selectOne("users.isUserId", id);
@@ -53,5 +53,12 @@ public class UserDao {
      * */
     public void updateUser(User user) {
         sqlSession.update("users.updateUser",user);
+    }
+
+    /*
+     *  토큰으로 회원정보 조회
+     * */
+    public User fienByTokenToUserInfo(String token) {
+        return sqlSession.selectOne("users.fienByTokenToUserInfo", token);
     }
 }

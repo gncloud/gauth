@@ -46,7 +46,7 @@ public interface ScopesApi {
         @ApiResponse(code = 200, message = "OK", response = Scope.class) })
     @RequestMapping(value = "/scopes/{scopeId}",
         method = RequestMethod.GET)
-    ResponseEntity<Scope> scopesScopeIdGet(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId);
+    ResponseEntity<Scope> scopesScopeIdGet(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId, @ApiParam(value = ""  )  @RequestBody Client client);
 
 
     @ApiOperation(value = "update scope", notes = "update scope", response = Scope.class, tags={  })

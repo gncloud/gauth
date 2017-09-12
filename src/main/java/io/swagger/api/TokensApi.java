@@ -25,7 +25,7 @@ public interface TokensApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/tokens",
         method = RequestMethod.GET)
-    ResponseEntity<Void> tokensGet();
+    ResponseEntity<List<Token>> tokensGet();
 
 
     @ApiOperation(value = "delete token", notes = "delete token", response = Void.class, tags={  })

@@ -94,13 +94,24 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(User user) {
 
-        Integer userClientCount = userClientScopeService.findUserCount(user.getUserId());
 
+        String token = user.getTokenId();
+        User targetUser = new User();
+        if(token != null && !"".equals(token)){
+            targetUser = fienByTokenToUserInfo(token);
+        }else{
+            targetUser = user;
+        }
+
+        // 유저,클라이언트 관계 데이터 삭제
         UserClientScope userClientScope = new UserClientScope();
-        userClientScope.setUserId(user.getUserId());
-        userClientScope.setClientId(user.getClientId());
+        userClientScope.setUserId(targetUser.getUserId());
+        userClientScope.setClientId(targetUser.getClientId());
 
         userClientScopeService.deleteUserClientScope(userClientScope);
+
+        // 클라이언트 관계 갯수 조회
+        Integer userClientCount = userClientScopeService.findUserCount(targetUser.getUserId());
         // 유저와 클라이언트 관계가 마지막일 경우 회원 정보 삭제
         if(userClientCount <= 1){
             userDao.deleteUser(user);
@@ -114,9 +125,26 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public User updateUser(User user) {
+
+        User targetUser = new User();
+
+        // 토큰으로 왔을 시 토큰으로 아이디 조회
+        if(user.getTokenId() != null && !"".equals(user.getTokenId())){
+            targetUser = userDao.fienByTokenToUserInfo(user.getTokenId());
+            user.setUserId(targetUser.getUserId());
+        }
+
         userDao.updateUser(user);
         return userDao.findByUser(user.getUserId());
     }
+    /*
+     * 토큰으로 회원 정보 조회
+     */
+    @Override
+    public User fienByTokenToUserInfo(String token) {
+        return userDao.fienByTokenToUserInfo(token);
+    }
+
 
     /*
      * 필수값 유효성 체크
@@ -140,4 +168,5 @@ public class UserServiceImpl implements UserService {
         }
         return isValid;
     }
+
 }
