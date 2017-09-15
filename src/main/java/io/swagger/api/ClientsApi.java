@@ -25,7 +25,7 @@ public interface ClientsApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/clients/{clientId}",
         method = RequestMethod.DELETE)
-    ResponseEntity<Void> clientsClientIdDelete(@ApiParam(value = "",required=true ) @PathVariable("clientId") String clientId);
+    ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "", required = true) @PathVariable("clientId") String clientId);
 
 
     @ApiOperation(value = "read client", notes = "read client", response = Client.class, tags={  })
@@ -58,6 +58,6 @@ public interface ClientsApi {
         @ApiResponse(code = 200, message = "OK", response = Client.class) })
     @RequestMapping(value = "/clients",
         method = RequestMethod.POST)
-    ResponseEntity<Client> clientsPost(@ApiParam(value = "" ,required=true ) @RequestBody Client client);
+    ResponseEntity<?> clientsPost(@ApiParam(value = "", required = true) @RequestBody Client client);
 
 }

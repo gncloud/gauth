@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class ClientsApiController implements ClientsApi {
     @Autowired
     private ClientService clientService;
 
-    public ResponseEntity<Void> clientsClientIdDelete(@ApiParam(value = "",required=true ) @PathVariable("clientId") String clientId) {
+    public ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "", required = true) @PathVariable("clientId") String clientId) {
         try {
             clientService.deleteClient(clientId);
             return new ResponseEntity<>(HttpStatus.OK);
@@ -69,18 +68,15 @@ public class ClientsApiController implements ClientsApi {
         return new ResponseEntity<List<Client>>(registerClients, HttpStatus.OK);
     }
 
-    public ResponseEntity<Client> clientsPost(@ApiParam(value = "" ,required=true ) @RequestBody Client client) {
+    public ResponseEntity<?> clientsPost(@ApiParam(value = "", required = true) @RequestBody Client client) {
         try {
 
             Client registerClient = clientService.insertClient(client);
 
-            if(registerClient == null){
-                throw new Exception("create client fail");
-            }
             return new ResponseEntity<Client>(registerClient, HttpStatus.OK);
-        } catch (Exception e){
-            logger.error("clientsPost ", e);
-            return new ResponseEntity<Client>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            logger.error("Server Exception ", e);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

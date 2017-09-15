@@ -1,5 +1,6 @@
 package io.swagger.service.impl;
 
+import io.swagger.api.ApiException;
 import io.swagger.dao.ClientDao;
 import io.swagger.model.Client;
 import io.swagger.service.ClientService;
@@ -36,13 +37,10 @@ public class ClientServiceImpl implements ClientService {
         // 중복 도메인 있을 경우 Exception
         Integer isDomainCount = clientDao.isDomain(client.getDomain());
         if(isDomainCount == null || isDomainCount != 0){
-            throw new Exception("domain same");
+            throw new ApiException(400, "domain field");
         }
-
         initClient(client);
-
         clientDao.insertClient(client);
-
         return findByClient(client.getClientId());
     }
 

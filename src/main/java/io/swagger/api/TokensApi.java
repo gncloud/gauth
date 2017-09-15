@@ -25,7 +25,7 @@ public interface TokensApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/tokens",
         method = RequestMethod.GET)
-    ResponseEntity<List<Token>> tokensGet();
+    ResponseEntity<?> tokensGet();
 
 
     @ApiOperation(value = "delete token", notes = "delete token", response = Void.class, tags={  })
@@ -33,7 +33,7 @@ public interface TokensApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/tokens/{tokenId}",
         method = RequestMethod.DELETE)
-    ResponseEntity<Void> tokensTokenIdDelete(@ApiParam(value = "delete token",required=true ) @PathVariable("tokenId") String tokenId);
+    ResponseEntity<?> tokensTokenIdDelete(@ApiParam(value = "delete token", required = true) @PathVariable("tokenId") String tokenId);
 
 
     @ApiOperation(value = "read token info", notes = "read token info", response = Token.class, tags={  })

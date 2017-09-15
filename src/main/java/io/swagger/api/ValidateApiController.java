@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -21,11 +22,11 @@ public class ValidateApiController implements ValidateApi {
     @Autowired
     private TokenService tokenService;
 
-    public ResponseEntity<Void> validateHead(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+    public ResponseEntity<Void> validateHead(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization, @RequestParam String client) {
 
         try {
 
-            boolean isValid = tokenService.isTokenValidate(authorization);
+            boolean isValid = tokenService.isTokenValidate(authorization, client);
 
             if(isValid){
                 return new ResponseEntity<Void>(HttpStatus.OK);

@@ -45,6 +45,12 @@
         where user_id = #{userId}
     </select>
 
+    <select id="isUserClientScope" parameterType="User" resultType="Integer">
+        SELECT count(*)
+        FROM UserClientScope
+        where user_id = #{userId}
+          AND client_id = #{clientId}
+    </select>
 
 
 </mapper>
