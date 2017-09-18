@@ -1,6 +1,5 @@
 package io.swagger.service.impl;
 
-import io.swagger.api.ApiException;
 import io.swagger.dao.ClientDao;
 import io.swagger.model.Client;
 import io.swagger.service.ClientService;
@@ -35,6 +34,7 @@ public class ClientServiceImpl implements ClientService {
     public Client insertClient(Client client) throws Exception {
         client.setClientSecret(RandomUtil.randomString(32));
         clientDao.insertClient(client);
+
         return findByClient(client.getClientId());
     }
 

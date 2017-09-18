@@ -5,7 +5,6 @@ import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Token;
 import io.swagger.model.User;
 import io.swagger.service.TokenService;
-import io.swagger.service.UserClientScopeService;
 import io.swagger.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -31,9 +30,6 @@ public class TokenServiceImpl implements TokenService{
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private UserClientScopeService userClientScopeService;
 
     @Value("${user.token.timeout}")
     private String tokenTimeout;

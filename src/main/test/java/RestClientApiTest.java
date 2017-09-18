@@ -1,9 +1,7 @@
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.Swagger2SpringBoot;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +18,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 
@@ -68,14 +66,17 @@ public class RestClientApiTest {
                 throw new Exception("type Exception");
             }
 
+
             ObjectMapper objectMapper = new ObjectMapper();
             String userJson = objectMapper.writeValueAsString(body);
+            //Gson gson = new Gson();
+
 
             resultActions = this.mockMvc.perform(mockMvcBuilder
                     .contentType(contentType)
                     .content(userJson));
 
-            //resultActions.andDo(print());
+            resultActions.andDo(print());
             return resultActions.andReturn();
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,14 +103,17 @@ public class RestClientApiTest {
                 throw new Exception("type Exception");
             }
 
+
             ObjectMapper objectMapper = new ObjectMapper();
             String userJson = objectMapper.writeValueAsString(body);
+            //Gson gson = new Gson();
+
 
             resultActions = this.mockMvc.perform(mockMvcBuilder
                     .contentType(contentType)
                     .headers(headers)
                     .content(userJson));
-            //resultActions.andDo(print());
+            resultActions.andDo(print());
             return resultActions.andReturn();
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,112 +122,64 @@ public class RestClientApiTest {
         return null;
     }
 
-    private String responseContentBody(MvcResult mvcResult){
-        try {
-            return mvcResult.getResponse().getContentAsString();
-        } catch (UnsupportedEncodingException e) {
-            return new String();
-        }
-    }
-    private String objectParsor(Object object){
-        try {
-            return new ObjectMapper().writeValueAsString(object);
-        } catch (JsonProcessingException e) {
-            //ignore
-            return new String();
-        }
-    }
-
-    private void resultPrint(MvcResult mvcResult){
-        int responseStatus = 0;
-        String content = new String();
-        responseStatus  = mvcResult.getResponse().getStatus();
-        content         = responseContentBody(mvcResult);
-        System.out.println("status code"+ responseStatus);
-        System.out.println("status body"+ content);
-        Assert.assertEquals("post request status : ", responseStatus, 200);
-    }
-
-    private void resultPrint(MvcResult mvcResult, Object requestBody){
-        int responseStatus = 0;
-        String content = new String();
-        responseStatus  = mvcResult.getResponse().getStatus();
-        content         = responseContentBody(mvcResult);
-        System.out.println("status code"+ responseStatus);
-        System.out.println("status body"+ content);
-        Assert.assertEquals("post request status : ", responseStatus, 200);
-        Assert.assertEquals("get request body data", objectParsor(requestBody), content);
-    }
 
     @Test
     public void clientTest() {
-
-        // 클라이언트 정보
+        // 클라이언트
         Client client = new Client();
         client.setClientId("gncloud");
-        client.setDescription("지앤클라우드");
-        client.setDomain("http://cloud.gncloud.io");
+        client.setDescription("aaaa");
+        client.setDomain("cc.gncloud.io");
 
-        MvcResult mvcResult = null;
 
-        // 등록
-        mvcResult = request("/clients", "post", client);
-        resultPrint(mvcResult, client);
-//
-//        // 조회
-//        mvcResult = request("/clients/gncloud","get", null);
-//        resultPrint(mvcResult);
-//
-//
-//        // 수정
-//        client = new Client();
-//        client.setDescription("지앤클라우드 수정");
-//        client.setDomain("gncloud");
-//        mvcResult = request("/clients/gncloud","put", client);
-//        resultPrint(mvcResult, client);
 
-        // 삭제
-        //mvcResult = request("/clients/gncloud","delete", null);
-        //resultPrint(mvcResult);
 
+        request("/clients", "post", client);
+        request("/clients","get", null);
+        request("/clients/gncloud","put", client);
+        request("/clients/gncloud","delete", client);
     }
 
     @Test
     public void scopeTest() {
-        // 스코프 등록 정보
+        // 스코프
         Scope scope = new Scope();
-        scope.setClientId("gncloud");
-        scope.setDescription("user desc");
-        scope.setScopeId("user");
-        scope.setIsDefault("Y");
-
+//        scope.setClientId("Yi5nbmNsb3VkLmlv");
+//        scope.setDescription("user desc");
+//        scope.setScopeId("user");
 //        등록
-        request("/scopes", "post", scope);
-
+//        request("/scopes", "post", scope);
+//        등록 디폴트 등록
+//        scope.setIsDefault("Y");
+//        request("/scopes", "post", scope);
+//
+//        디폴트 한번더 추가
+//        scope.setClientId("Yi5nbmNsb3VkLmlv");
+//        scope.setDescription("user1 desc");
+//        scope.setScopeId("user1");
+//        request("/scopes", "post", scope);
+//
 //        디폴트 변경 추가
-        scope.setClientId("gncloud");
-        scope.setDescription("admin desc");
-        scope.setScopeId("admin");
-        scope.setIsDefault("N");
-        request("/scopes", "post", scope);
-
+//        scope.setClientId("Yi5nbmNsb3VkLmlv");
+//        scope.setDescription("user2 desc");
+//        scope.setScopeId("user2");
+//        scope.setIsDefault("N");
+//        request("/scopes", "post", scope);
 //        스코프조회
-        request("/scopes/user1?client=gncloud", "get", null);
+//        request("/scopes/user1?client=Yi5nbmNsb3VkLmlv", "get", null);
 
-//        클라이언트의  전체 스코프 조회
-        Client client1 = new Client();
-        client1.setClientId("gncloud");
-        request("/scopes", "get", client1);
+//        클라이언트의 전체 스코프 조회
+        //request("/scopes", "get", client);
 
-//         디스크립션 수정
-        scope.setDescription("update user2 desc");
-        scope.setClientId("Yi5nbmNsb3VkLmlv");
-        request("/scopes/user1", "put", scope);
+        // 디스크립션 수정
+//        scope.setDescription("update user2 desc");
+//        scope.setClientId("Yi5nbmNsb3VkLmlv");
+//        request("/scopes/user1", "put", scope);
 
 //        스코프 삭제
-        scope = new Scope();
-        scope.setClientId("Yi5nbmNsb3VkLmlv");
-        request("/scopes/user2", "delete", scope);
+//        scope = new Scope();
+//        scope.setClientId("Yi5nbmNsb3VkLmlv");
+//        request("/scopes/user2", "delete", scope);
     }
 
     @Test

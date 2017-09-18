@@ -55,7 +55,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      */
     @Override
     public List<UserClientScope> selectClientMappingList(Client client){
-        return userClientScopeDao.findClientMappingList(client);
+        return userClientScopeDao.fintClientMappingList(client);
     }
 
 

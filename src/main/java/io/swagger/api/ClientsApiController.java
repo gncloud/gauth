@@ -104,6 +104,9 @@ public class ClientsApiController implements ClientsApi {
 
             Client registerClient = clientService.insertClient(client);
 
+            if(registerClient == null){
+                throw new Exception("create client fail");
+            }
             return new ResponseEntity<Client>(registerClient, HttpStatus.OK);
         } catch (AccessControlException e){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

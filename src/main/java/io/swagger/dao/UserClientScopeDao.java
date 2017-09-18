@@ -38,7 +38,7 @@ public class UserClientScopeDao {
         return sqlSession.selectList("userClientScope.fintUserMappingList", user);
     }
 
-    public List<UserClientScope> findClientMappingList(Client client) {
+    public List<UserClientScope> fintClientMappingList(Client client) {
         return sqlSession.selectList("userClientScope.fintClientMappingList", client);
     }
 
