@@ -45,10 +45,6 @@ public interface UserClientScopeService {
      */
     Integer findUserCount(String userId);
 
-    /*
-     * 유저가 클라이언트 등록 여부를 확인
-     */
-    boolean isUserClientScope(User user);
 
 
 }

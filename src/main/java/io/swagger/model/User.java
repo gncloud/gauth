@@ -13,34 +13,31 @@ import java.util.Objects;
 @ApiModel(description = "user info")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-10T14:37:03.238Z")
 
-public class User {
+public class User extends Token {
 
   @JsonProperty("userId")
-  private String userId;
+  private String userId = null;
 
   @JsonProperty("password")
-  private String password;
+  private String password = null;
 
   @JsonProperty("email")
-  private String email;
+  private String email = null;
 
   @JsonProperty("name")
-  private String name;
+  private String name = null;
 
   @JsonProperty("register_date")
-  private String registerDate;
+  private String registerDate = null;
 
   @JsonProperty("phone")
-  private String phone;
+  private String phone = null;
 
   @JsonProperty("address")
-  private String address;
+  private String address = null;
 
   @JsonProperty("company")
-  private String company;
-
-  @JsonProperty("token")
-  private String token;
+  private String company = null;
 
   public User userId(String userId) {
     this.userId = userId;

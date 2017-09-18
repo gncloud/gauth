@@ -33,7 +33,7 @@ public interface TokenService {
     /*
      * 토큰 유효성 검사
      */
-    boolean isTokenValidate(String token, String client) throws Exception;
+    boolean isTokenValidate(String token) throws Exception;
 
     /*
      * 유저로 토큰 정보 조회

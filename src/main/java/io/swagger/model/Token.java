@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -13,27 +12,21 @@ import java.util.Objects;
 @ApiModel(description = "")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
 
-public class Token  {
-
-
+public class Token extends Scope  {
   @JsonProperty("tokenId")
-  private String tokenId;
+  private String tokenId = null;
 
   @JsonProperty("userId")
-  private String userId;
+  private String userId = null;
 
   @JsonProperty("clientId")
-  private String clientId;
+  private String clientId = null;
 
   @JsonProperty("createTime")
-  private String createTime;
+  private String createTime = null;
 
   @JsonProperty("expireDate")
-  private String expireDate;
-
-  @JsonProperty("scopes")
-  private List<String> scopes;
-
+  private String expireDate = null;
 
   public Token tokenId(String tokenId) {
     this.tokenId = tokenId;

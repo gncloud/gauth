@@ -54,7 +54,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      */
     @Override
     public List<UserClientScope> selectClientMappingList(Client client){
-        return userClientScopeDao.findClientMappingList(client);
+        return userClientScopeDao.fintClientMappingList(client);
     }
 
 
@@ -66,13 +66,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
         return userClientScopeDao.findUserCount(userId);
     }
 
-    /*
-     * 유저가 클라이언트 등록 여부를 확인
-     */
-    @Override
-    public boolean isUserClientScope(User user) {
-        Integer userCnt = userClientScopeDao.isUserClientScope(user);
-        return (userCnt != null && userCnt >= 1);
-    }
+
+
 
 }

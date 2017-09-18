@@ -25,9 +25,8 @@ public class TokensApiController implements TokensApi {
     @Autowired
     private TokenService tokenService;
 
-    public ResponseEntity<?> tokensGet() {
+    public ResponseEntity<List<Token>> tokensGet() {
         try {
-
             List<Token> registerTokenList = tokenService.selectToken();
             return new ResponseEntity<>(registerTokenList, OK);
         } catch (Exception e){
@@ -36,7 +35,7 @@ public class TokensApiController implements TokensApi {
         }
     }
 
-    public ResponseEntity<?> tokensTokenIdDelete(@ApiParam(value = "delete token", required = true) @PathVariable("tokenId") String tokenId) {
+    public ResponseEntity<Void> tokensTokenIdDelete(@ApiParam(value = "delete token",required=true ) @PathVariable("tokenId") String tokenId) {
         try {
             tokenService.deleteToekn(tokenId);
             return new ResponseEntity<>(OK);

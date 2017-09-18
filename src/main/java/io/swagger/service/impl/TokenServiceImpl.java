@@ -1,11 +1,9 @@
 package io.swagger.service.impl;
 
-import io.swagger.api.ApiException;
 import io.swagger.dao.TokenDao;
 import io.swagger.model.Token;
 import io.swagger.model.User;
 import io.swagger.service.TokenService;
-import io.swagger.service.UserClientScopeService;
 import io.swagger.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
@@ -31,9 +29,6 @@ public class TokenServiceImpl implements TokenService{
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private UserClientScopeService userClientScopeService;
-
     @Value("${user.token.timeout}")
     private String tokenTimeout;
 
@@ -46,12 +41,6 @@ public class TokenServiceImpl implements TokenService{
         Token isToken = findByUserToToken(user);
         if(isToken != null){
             tokenDao.deleteToken(isToken.getTokenId());
-        }
-
-        // 유저가 클라이언트에 등록 여부를 확인한다.
-        if(!userClientScopeService.isUserClientScope(user)){
-            logger.debug("user userClientScope empty");
-            throw new ApiException(401,"user userClientScope empty");
         }
 
         // 요청시간과 만료시간 생성
@@ -108,7 +97,7 @@ public class TokenServiceImpl implements TokenService{
      * 토큰 유효성 검사
      */
     @Override
-    public boolean isTokenValidate(String token, String client) {
+    public boolean isTokenValidate(String token) {
         boolean isValid = false;
         try {
             // 토큰으로 유저 정보 조회 없을시 Exception
@@ -119,8 +108,6 @@ public class TokenServiceImpl implements TokenService{
 
                 // DB 저장된 토큰 정보 조회
                 Token registerToken = tokenDao.findByToken(token);
-
-
 
                 // 토큰 만료 시간 확인
                 Date expiredDate = new SimpleDateFormat("yyyy-M-d H:m:s").parse(registerToken.getExpireDate());
