@@ -1,5 +1,6 @@
 package io.swagger.dao;
 
+import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Token;
 import io.swagger.model.User;
 import org.apache.ibatis.session.SqlSession;
@@ -21,7 +22,7 @@ public class TokenDao {
     public Token findByToken(String tokenId) {
         return sqlSession.selectOne("token.findByToken", tokenId);
     }
-    public Token findByToken(User user) {
+    public Token findByToken(AuthenticationRequest user) {
         return sqlSession.selectOne("token.findByUserToToken", user);
     }
 

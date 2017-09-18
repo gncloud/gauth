@@ -1,6 +1,7 @@
 package io.swagger.service.impl;
 
 import io.swagger.dao.UserClientScopeDao;
+import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Client;
 import io.swagger.model.User;
 import io.swagger.model.UserClientScope;
@@ -70,9 +71,17 @@ public class UserClientScopeImpl implements UserClientScopeService {
      * 유저가 클라이언트 등록 여부를 확인
      */
     @Override
-    public boolean isUserClientScope(User user) {
+    public boolean isUserClientScope(AuthenticationRequest user) {
         Integer userCnt = userClientScopeDao.isUserClientScope(user);
         return (userCnt != null && userCnt >= 1);
+    }
+
+    /*
+     * 유저와 클라이언트 ScopeId 정보 조회
+     */
+    @Override
+    public List<String> findByScopeIdList(UserClientScope userClientScope) {
+        return userClientScopeDao.findByScopeIdList(userClientScope);
     }
 
 }

@@ -1,58 +1,101 @@
 package io.swagger.api;
 
-import io.swagger.annotations.ApiParam;
+import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Token;
+
+import io.swagger.annotations.*;
+
+import io.swagger.model.User;
 import io.swagger.service.TokenService;
+import io.swagger.service.UserService;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
+import java.security.AccessControlException;
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.OK;
 
-
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
 @Controller
 public class TokensApiController implements TokensApi {
 
-    private static org.slf4j.Logger logger = LoggerFactory.getLogger(TokenApiController.class);
+    private static Logger logger = LoggerFactory.getLogger(TokensApiController.class);
 
     @Autowired
     private TokenService tokenService;
 
-    public ResponseEntity<?> tokensGet() {
-        try {
+    @Autowired
+    private UserService userService;
 
-            List<Token> registerTokenList = tokenService.selectToken();
-            return new ResponseEntity<>(registerTokenList, OK);
-        } catch (Exception e){
-            logger.error("tokensGet", e);
-            return new ResponseEntity<>(BAD_REQUEST);
-        }
-    }
-
-    public ResponseEntity<?> tokensTokenIdDelete(@ApiParam(value = "delete token", required = true) @PathVariable("tokenId") String tokenId) {
+    public ResponseEntity<?> tokensDelete(@ApiParam(value = "read token info",required=true ) @PathVariable("tokenId") String tokenId) {
         try {
             tokenService.deleteToekn(tokenId);
-            return new ResponseEntity<>(OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e){
-            logger.error("tokensTokenIdDelete", e);
-            return new ResponseEntity<>(BAD_REQUEST);
+            logger.error("tokensDelete", e);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
-    public ResponseEntity<Token> tokensTokenIdGet(@ApiParam(value = "read token info",required=true ) @PathVariable("tokenId") String tokenId) {
+    public ResponseEntity<?> tokensGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+        try {
+            tokenService.isAdminToken(authorization);
+            List<Token> registerTokenList = tokenService.selectToken();
+            return new ResponseEntity<List<Token>>(registerTokenList, HttpStatus.OK);
+        } catch (AccessControlException e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e){
+            logger.error("tokensGet", e);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> tokensPost(@ApiParam(value = "" ,required=true ) @RequestBody AuthenticationRequest user) {
+        try {
+
+            User targetUser = userService.findByUser(user.getUserId());
+            if(targetUser == null|| !targetUser.isEqualsPassword(user.getPassword())){
+                throw new Exception("invalid");
+            }
+
+            Token registerToken = tokenService.createToken(user);
+
+            return new ResponseEntity<Token>(registerToken, HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("tokensPost", e);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> tokensTokenIdDelete(@ApiParam(value = "target token",required=true ) @PathVariable("tokenId") String tokenId,
+                                                 @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+        try {
+            tokenService.isAdminToken(authorization);
+            tokenService.deleteToekn(authorization);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (AccessControlException e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e){
+            logger.error("tokensTokenIdDelete", e);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> tokensTokenIdGet(@ApiParam(value = "read token info",required=true ) @PathVariable("tokenId") String tokenId) {
         try {
             Token registerToken = tokenService.findByToken(tokenId);
-            return new ResponseEntity<>(registerToken,OK);
+            return new ResponseEntity<Token>(registerToken, HttpStatus.OK);
         } catch (Exception e){
             logger.error("tokensTokenIdGet", e);
-            return new ResponseEntity<>(BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 

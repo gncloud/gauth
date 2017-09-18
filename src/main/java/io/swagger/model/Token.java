@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,29 +12,26 @@ import java.util.Objects;
  * 
  */
 @ApiModel(description = "")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
-public class Token  {
-
-
+public class Token   {
   @JsonProperty("tokenId")
-  private String tokenId;
+  private String tokenId = null;
 
   @JsonProperty("userId")
-  private String userId;
+  private String userId = null;
 
   @JsonProperty("clientId")
-  private String clientId;
+  private String clientId = null;
 
   @JsonProperty("createTime")
-  private String createTime;
+  private String createTime = null;
 
   @JsonProperty("expireDate")
-  private String expireDate;
+  private String expireDate = null;
 
   @JsonProperty("scopes")
-  private List<String> scopes;
-
+  private List<String> scopes = new ArrayList<String>();
 
   public Token tokenId(String tokenId) {
     this.tokenId = tokenId;
@@ -125,9 +123,32 @@ public class Token  {
     this.expireDate = expireDate;
   }
 
+  public Token scopes(List<String> scopes) {
+    this.scopes = scopes;
+    return this;
+  }
+
+  public Token addScopesItem(String scopesItem) {
+    this.scopes.add(scopesItem);
+    return this;
+  }
+
+   /**
+   * Get scopes
+   * @return scopes
+  **/
+  @ApiModelProperty(value = "")
+  public List<String> getScopes() {
+    return scopes;
+  }
+
+  public void setScopes(List<String> scopes) {
+    this.scopes = scopes;
+  }
+
 
   @Override
-  public boolean equals(java.lang.Object o) {
+  public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
@@ -139,12 +160,13 @@ public class Token  {
         Objects.equals(this.userId, token.userId) &&
         Objects.equals(this.clientId, token.clientId) &&
         Objects.equals(this.createTime, token.createTime) &&
-        Objects.equals(this.expireDate, token.expireDate);
+        Objects.equals(this.expireDate, token.expireDate) &&
+        Objects.equals(this.scopes, token.scopes);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(tokenId, userId, clientId, createTime, expireDate);
+    return Objects.hash(tokenId, userId, clientId, createTime, expireDate, scopes);
   }
 
   @Override
@@ -157,6 +179,7 @@ public class Token  {
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("    createTime: ").append(toIndentedString(createTime)).append("\n");
     sb.append("    expireDate: ").append(toIndentedString(expireDate)).append("\n");
+    sb.append("    scopes: ").append(toIndentedString(scopes)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -165,7 +188,7 @@ public class Token  {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private String toIndentedString(Object o) {
     if (o == null) {
       return "null";
     }

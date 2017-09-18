@@ -1,7 +1,7 @@
 package io.swagger.service.impl;
 
-import io.swagger.api.ApiException;
 import io.swagger.dao.TokenDao;
+import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Token;
 import io.swagger.model.User;
 import io.swagger.service.TokenService;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.security.AccessControlException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -37,21 +38,15 @@ public class TokenServiceImpl implements TokenService{
     @Value("${user.token.timeout}")
     private String tokenTimeout;
 
-
     /*
      * 로그인 토큰 생성
      */
-    public Token createToken(User user) throws Exception {
-        // 기존 토큰값 있을 경우 삭제
-        Token isToken = findByUserToToken(user);
-        if(isToken != null){
-            tokenDao.deleteToken(isToken.getTokenId());
-        }
+    public Token createToken(AuthenticationRequest user) throws Exception {
 
         // 유저가 클라이언트에 등록 여부를 확인한다.
         if(!userClientScopeService.isUserClientScope(user)){
             logger.debug("user userClientScope empty");
-            throw new ApiException(401,"user userClientScope empty");
+            throw new Exception("user userClientScope empty");
         }
 
         // 요청시간과 만료시간 생성
@@ -86,6 +81,7 @@ public class TokenServiceImpl implements TokenService{
         if(registerToken == null){
             throw new Exception("Token invalid");
         }
+
         return registerToken;
     }
 
@@ -105,41 +101,66 @@ public class TokenServiceImpl implements TokenService{
     }
 
     /*
+     * 토큰 유효성 검사, 발급 클라이언트 도 확인
+     */
+    @Override
+    public Token isTokenValidate(String token, String client) throws Exception, AccessControlException{
+
+        Token registerToken = isTokenValidate(token);
+
+        // 토큰 발급 클라이언트 확인
+        String registerClientId = registerToken.getClientId();
+        if(!registerClientId.equals(client)){
+            throw new AccessControlException("invalid");
+        }
+
+        return registerToken;
+    }
+
+    /*
      * 토큰 유효성 검사
      */
     @Override
-    public boolean isTokenValidate(String token, String client) {
-        boolean isValid = false;
-        try {
-            // 토큰으로 유저 정보 조회 없을시 Exception
-            User registerUser = userService.fienByTokenToUserInfo(token);
-            if(registerUser == null){
-                logger.debug("user no data Token : {}", token);
-            }else{
+    public Token isTokenValidate(String token) throws Exception, AccessControlException, ParseException{
 
-                // DB 저장된 토큰 정보 조회
-                Token registerToken = tokenDao.findByToken(token);
+        // 토큰으로 유저 정보 조회, 없으면 Exception
+        isUser(token);
 
+        // DB 저장된 토큰 추가 정보 조회
+        Token registerToken = tokenDao.findByToken(token);
 
-
-                // 토큰 만료 시간 확인
-                Date expiredDate = new SimpleDateFormat("yyyy-M-d H:m:s").parse(registerToken.getExpireDate());
-
-                Date nowDate = Calendar.getInstance().getTime();
-                int compare = nowDate.compareTo(expiredDate);
-
-                // 현재보다 미래 시간에 만료 될 경우
-                if(compare < 0){
-                    logger.debug("isTokenValidate Token : {}, valid nowDate {}, expireDate {}", token, nowDate, expiredDate);
-                    isValid = true;
-                }else{
-                    logger.debug("isTokenValidate Token : {}, invalid nowDate {}, expireDate {}", token, nowDate, expiredDate);
-                }
-            }
-        } catch (ParseException e) {
-            logger.error("format error ", e);
+        boolean isExpireDate = isExpireDate(registerToken.getExpireDate());
+        if(!isExpireDate){
+            throw new AccessControlException("invalid");
         }
-        return isValid;
+
+        return registerToken;
+    }
+
+    /*
+     * 유저 확인
+     */
+    private void isUser(String token) throws Exception {
+        // 토큰으로 유저 정보 조회
+        User registerUser = userService.fienByTokenToUserInfo(token);
+        if(registerUser == null){
+            logger.debug("Not Found User : {}", token);
+            throw new Exception("invalid");
+        }
+    }
+
+    /*
+     * 토큰 만료 여부
+     */
+    private boolean isExpireDate(String expireDate) throws ParseException {
+        // 토큰 만료 시간 확인
+        Date expiredDate = new SimpleDateFormat("yyyy-M-d H:m:s").parse(expireDate);
+
+        Date nowDate = Calendar.getInstance().getTime();
+        int compare = nowDate.compareTo(expiredDate);
+
+        // 현재보다 미래 시간에 만료 될 경우
+        return compare < 0;
     }
 
     /*
@@ -147,16 +168,16 @@ public class TokenServiceImpl implements TokenService{
      * 유저아이디, 클라이언트아이디 필수
      */
     @Override
-    public Token findByUserToToken(User user) throws Exception {
-        user.getUserId();
-        user.getClientId();
-        if(user.getClientId() == null
-                || "".equals(user.getUserId())
-                || user.getClientId() == null
-                || "".equals(user.getClientId())){
-            throw new Exception("user invalid");
-        }
-        return tokenDao.findByToken(user);
+    public Token findByUserToToken(AuthenticationRequest authenticationRequest) throws Exception {
+        return tokenDao.findByToken(authenticationRequest);
+    }
+
+    /*
+     * admin check
+     */
+    @Override
+    public void isAdminToken(String authorization) throws AccessControlException {
+        // TODO admin 토큰인지 여부 확인
     }
 
     /*
@@ -190,6 +211,10 @@ public class TokenServiceImpl implements TokenService{
         // 유저 아이디와 만료시간으로 암호화된 값 생성
         String tokenSeed = uid + date;
         return DigestUtils.sha256Hex(tokenSeed);
+    }
+
+    private boolean isNull(String value){
+        return (value == null || "".equals(value));
     }
 
 }

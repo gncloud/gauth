@@ -26,9 +26,12 @@ public class ScopeServiceImpl implements ScopeService {
      */
     @Override
     public Scope selectScope(Scope scope) throws Exception {
-        if(!isClientId(scope.getClientId()) || !isScopeId(scope.getScopeId())){
-            throw new Exception("client id invalid");
+        String clientId = scope.getClientId();
+        String scopeId = scope.getScopeId();
+        if(isNull(clientId) || isNull(scopeId)){
+            throw new Exception("invalid");
         }
+
         return scopeDao.findByScope(scope);
     }
 
@@ -38,8 +41,9 @@ public class ScopeServiceImpl implements ScopeService {
      */
     @Override
     public List<Scope> selectClientScope(Client client) throws Exception {
-        if(!isClientId(client.getClientId())){
-            throw new Exception("client id invalid");
+        String clientId = client.getClientId();
+        if(isNull(clientId)){
+            throw new Exception("invalid");
         }
 
         Scope scope = new Scope();
@@ -48,7 +52,6 @@ public class ScopeServiceImpl implements ScopeService {
         return scopeDao.selectClientScopeList(scope);
     }
 
-
     /*
      * scope 등록
      * client id reqired
@@ -56,17 +59,18 @@ public class ScopeServiceImpl implements ScopeService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Scope insertScope(Scope scope) throws Exception {
-        if(!isClientId(scope.getClientId())){
-            throw new Exception("client id invalid");
+
+        String clientId = scope.getClientId();
+        String scopeId = scope.getScopeId();
+        if(isNull(clientId) || isNull(scopeId)){
+            throw new Exception("invalid");
         }
 
-        if(scope.getIsDefault() != null && !"0".equals(scope.getIsDefault())){
-            Client client = new Client();
-            client.setClientId(scope.getClientId());
-            scopeDao.updateDefaultN(client);
-        }else{
+        String isDefault = scope.getIsDefault();
+        if(isDefault == null || "".equals(isDefault)){
             scope.setIsDefault("0");
         }
+
         scopeDao.insertScope(scope);
         return scopeDao.findByScope(scope);
     }
@@ -78,12 +82,14 @@ public class ScopeServiceImpl implements ScopeService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteScope(Scope scope) throws Exception {
-        if(!isClientId(scope.getClientId()) || !isScopeId(scope.getScopeId())){
-            throw new Exception("client id invalid");
+
+        String clientId = scope.getClientId();
+        String scopeId = scope.getScopeId();
+        if(isNull(clientId) || isNull(scopeId)){
+            throw new Exception("invalid");
         }
 
         scopeDao.deleteScope(scope);
-
     }
 
     /*
@@ -93,25 +99,24 @@ public class ScopeServiceImpl implements ScopeService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Scope updateScope(Scope scope) throws Exception {
-        if(!isClientId(scope.getClientId()) || !isScopeId(scope.getScopeId())){
-            throw new Exception("client id invalid");
-        }
 
+        String clientId = scope.getClientId();
+        String scopeId = scope.getScopeId();
+        if(isNull(clientId) || isNull(scopeId)){
+            throw new Exception("invalid");
+        }
 
         scopeDao.updateScope(scope);
 
         return scopeDao.findByScope(scope);
     }
 
-    private boolean isClientId(String clientId){
-        return !(clientId == null || "".equals(clientId));
+    private boolean isNull(String clientId){
+        return (clientId == null || "".equals(clientId));
     }
 
-    private boolean isScopeId(String scopeId){
-        return !(scopeId == null || "".equals(scopeId));
-    }
 
-    public Scope findByDefailtScope(String clientId){
-        return scopeDao.findByDefailtScope(clientId);
+    public List<Scope> findByDefailtScopes(String clientId){
+        return scopeDao.findByDefailtScopes(clientId);
     }
 }

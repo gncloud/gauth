@@ -1,70 +1,42 @@
 package io.swagger.api;
 
+import io.swagger.model.Token;
 import io.swagger.model.User;
 
 import io.swagger.annotations.*;
 
+import io.swagger.service.TokenService;
 import io.swagger.service.UserService;
-import org.apache.log4j.spi.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
+import java.security.AccessControlException;
 import java.util.List;
-import java.util.logging.Logger;
 
 
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
 @Controller
 public class UserApiController implements UserApi {
 
-    private static org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(UserApiController.class);
+    private Logger logger = LoggerFactory.getLogger(UserApiController.class);
 
     @Autowired
     private UserService userService;
 
-    public ResponseEntity<Void> userDelete(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
-        @ApiParam(value = "client id", required = true) @RequestParam(value = "clientId", required = true) String clientId) {
-        try{
-            User user = new User();
-            user.setTokenId(authorization);
-            user.clientId(clientId);
-            userService.deleteUser(user);
-
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e){
-            logger.debug("userDelete : {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    public ResponseEntity<User> userGet(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
-        try{
+    public ResponseEntity<?> userGet(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+        try {
             User registerUser = userService.fienByTokenToUserInfo(authorization);
-            return new ResponseEntity<>(registerUser, HttpStatus.OK);
-        } catch (Exception e){
-            logger.debug("userGet : {}", e.getMessage());
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-    }
 
-    public ResponseEntity<User> userPut(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
-        @ApiParam(value = "" ,required=true ) @RequestBody User user) {
-        try{
-            user.setTokenId(authorization);
-            User registerUser = userService.updateUser(user);
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (Exception e){
-            logger.error("userPut", e);
-            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+            logger.error("userGet", e);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 

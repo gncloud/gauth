@@ -7,58 +7,37 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 /**
- * api request,response none
+ * pending user email reuqest
  */
-@ApiModel(description = "api request,response none")
+@ApiModel(description = "pending user email reuqest")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
-public class UserClientScope   {
-  @JsonProperty("userId")
-  private String userId = null;
-
-  @JsonProperty("scopeId")
-  private String scopeId = null;
+public class PendingUserRequest   {
+  @JsonProperty("email")
+  private String email = null;
 
   @JsonProperty("clientId")
   private String clientId = null;
 
-  public UserClientScope userId(String userId) {
-    this.userId = userId;
+  public PendingUserRequest email(String email) {
+    this.email = email;
     return this;
   }
 
    /**
-   * Get userId
-   * @return userId
+   * Get email
+   * @return email
   **/
   @ApiModelProperty(value = "")
-  public String getUserId() {
-    return userId;
+  public String getEmail() {
+    return email;
   }
 
-  public void setUserId(String userId) {
-    this.userId = userId;
+  public void setEmail(String email) {
+    this.email = email;
   }
 
-  public UserClientScope scopeId(String scopeId) {
-    this.scopeId = scopeId;
-    return this;
-  }
-
-   /**
-   * Get scopeId
-   * @return scopeId
-  **/
-  @ApiModelProperty(value = "")
-  public String getScopeId() {
-    return scopeId;
-  }
-
-  public void setScopeId(String scopeId) {
-    this.scopeId = scopeId;
-  }
-
-  public UserClientScope clientId(String clientId) {
+  public PendingUserRequest clientId(String clientId) {
     this.clientId = clientId;
     return this;
   }
@@ -85,24 +64,22 @@ public class UserClientScope   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UserClientScope userClientScope = (UserClientScope) o;
-    return Objects.equals(this.userId, userClientScope.userId) &&
-        Objects.equals(this.scopeId, userClientScope.scopeId) &&
-        Objects.equals(this.clientId, userClientScope.clientId);
+    PendingUserRequest pendingUserRequest = (PendingUserRequest) o;
+    return Objects.equals(this.email, pendingUserRequest.email) &&
+        Objects.equals(this.clientId, pendingUserRequest.clientId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, scopeId, clientId);
+    return Objects.hash(email, clientId);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class UserClientScope {\n");
+    sb.append("class PendingUserRequest {\n");
     
-    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
-    sb.append("    scopeId: ").append(toIndentedString(scopeId)).append("\n");
+    sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("}");
     return sb.toString();

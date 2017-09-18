@@ -1,33 +1,32 @@
 package io.swagger.api;
 
+import io.swagger.annotations.*;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
-
-import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
 @Api(value = "scopes", description = "the scopes API")
 public interface ScopesApi {
 
-    @ApiOperation(value = "read scope", notes = "read scope", response = Void.class, tags={  })
+    @ApiOperation(value = "scope info list (admin Only)", notes = "scope info list (admin Only)", response = Void.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/scopes",
         method = RequestMethod.GET)
-    ResponseEntity<List<Scope>> scopesGet(@ApiParam(value = "") @RequestBody Client client);
+    ResponseEntity<?> scopesGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                   @ApiParam(value = "") @RequestBody Client client);
 
 
-    @ApiOperation(value = "create scope", notes = "create scope", response = Scope.class, tags={  })
+    @ApiOperation(value = "create scope (admin Only)", notes = "create scope (admin Only)", response = Scope.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = Scope.class) })
     @RequestMapping(value = "/scopes",
         method = RequestMethod.POST)
-    ResponseEntity<Scope> scopesPost(@ApiParam(value = ""  ) @RequestBody Scope scope);
+    ResponseEntity<?> scopesPost(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                     @ApiParam(value = "") @RequestBody Scope scope);
 
 
     @ApiOperation(value = "delete scope", notes = "delete scope", response = Void.class, tags={  })
@@ -35,23 +34,25 @@ public interface ScopesApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/scopes/{scopeId}",
         method = RequestMethod.DELETE)
-    ResponseEntity<Void> scopesScopeIdDelete(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId, @ApiParam(value = ""  )  @RequestBody Scope scope);
+    ResponseEntity<?> scopesScopeIdDelete(@ApiParam(value = "", required = true) @PathVariable("scopeId") String scopeId,
+                                          @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                          @ApiParam(value = "clientId", required = true) @RequestParam(value = "clientId", required = true) String clientId);
 
-
-    @ApiOperation(value = "read scope", notes = "read scope", response = Scope.class, tags={  })
+    @ApiOperation(value = "scope info", notes = "scope info", response = Scope.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = Scope.class) })
     @RequestMapping(value = "/scopes/{scopeId}",
         method = RequestMethod.GET)
-    ResponseEntity<Scope> scopesScopeIdGet(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId, @ApiParam(value = ""  )  @RequestParam String client);
-
+    ResponseEntity<?> scopesScopeIdGet(@ApiParam(value = "", required = true) @PathVariable("scopeId") String scopeId,
+                                       @ApiParam(value = "clientId", required = true) @RequestParam(value = "clientId", required = true) String clientId);
 
     @ApiOperation(value = "update scope", notes = "update scope", response = Scope.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = Scope.class) })
     @RequestMapping(value = "/scopes/{scopeId}",
         method = RequestMethod.PUT)
-    ResponseEntity<Scope> scopesScopeIdPut(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId,
-        @ApiParam(value = ""  ) @RequestBody Scope scope);
+    ResponseEntity<?> scopesScopeIdPut(@ApiParam(value = "", required = true) @PathVariable("scopeId") String scopeId,
+                                           @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                           @ApiParam(value = "") @RequestBody Scope scope);
 
 }

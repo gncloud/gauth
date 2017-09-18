@@ -1,5 +1,7 @@
 package io.swagger.dao;
 
+import io.swagger.model.PendingUserRequest;
+import io.swagger.model.PendingUserResponse;
 import io.swagger.model.User;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,4 +72,19 @@ public class UserDao {
     public List<User> findByUsers(String search) {
         return sqlSession.selectList("user.findByUsers", search);
     }
+
+    /*
+     * 회원 가입 대기 유저 정보 등록
+     */
+    public void insertPendingUser(PendingUserResponse pendingUserResponse) throws Exception{
+        sqlSession.insert("user.insertPendingUser", pendingUserResponse);
+    }
+
+    /*
+     * 회원 가입 대기 유저 조회
+     */
+    public PendingUserResponse findByPendingUser(PendingUserResponse pendingUserResponse) {
+        return sqlSession.selectOne("user.findByPendingUser", pendingUserResponse);
+    }
+
 }

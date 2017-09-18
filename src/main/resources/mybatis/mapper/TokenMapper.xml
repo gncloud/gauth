@@ -27,7 +27,7 @@
          where token_id = #{tokenId}
     </select>
 
-    <select id="findByUserToToken" resultType="Token" parameterType="User">
+    <select id="findByUserToToken" resultType="Token" parameterType="AuthenticationRequest">
         select token_id,
 			   user_id,
 			   client_id,

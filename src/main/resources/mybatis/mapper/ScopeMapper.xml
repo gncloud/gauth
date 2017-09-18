@@ -54,7 +54,7 @@
         where client_id = #{clientId}
     </update>
 
-    <select id="findByDefailtScope" parameterType="String" resultType="Scope">
+    <select id="findByDefailtScopes" parameterType="String" resultType="Scope">
         select scope_id
         , client_id
         , description
@@ -62,7 +62,6 @@
         from Scope
         where is_default != 0
           AND client_id = #{param1}
-         limit 1
     </select>
 
 </mapper>

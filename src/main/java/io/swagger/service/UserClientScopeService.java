@@ -1,5 +1,6 @@
 package io.swagger.service;
 
+import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Client;
 import io.swagger.model.User;
 import io.swagger.model.UserClientScope;
@@ -48,7 +49,11 @@ public interface UserClientScopeService {
     /*
      * 유저가 클라이언트 등록 여부를 확인
      */
-    boolean isUserClientScope(User user);
+    boolean isUserClientScope(AuthenticationRequest user);
 
+    /*
+     * 유저와 클라이언트 ScopeId 정보 조회
+     */
+    List<String> findByScopeIdList(UserClientScope userClientScope);
 
 }

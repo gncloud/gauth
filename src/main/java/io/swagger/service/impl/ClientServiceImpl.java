@@ -33,13 +33,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Client insertClient(Client client) throws Exception {
-
-        // 중복 도메인 있을 경우 Exception
-        Integer isDomainCount = clientDao.isDomain(client.getDomain());
-        if(isDomainCount == null || isDomainCount != 0){
-            throw new ApiException(400, "domain field");
-        }
-        initClient(client);
+        client.setClientSecret(RandomUtil.randomString(32));
         clientDao.insertClient(client);
         return findByClient(client.getClientId());
     }
@@ -79,24 +73,6 @@ public class ClientServiceImpl implements ClientService {
         return clientDao.selectClients();
     }
 
-    /*
-     * 클라이언트 랜덤값 부여
-     */
-    private void initClient(Client client){
-        String target = client.getDomain();
-        target = target.replace("http://","");
-        target = target.replace("https://","");
-        int queryIndex = target.indexOf("?");
-        target = target.substring(0, queryIndex == -1 ? target.length() : queryIndex);
-
-        String encodingToken = new String(Base64.getEncoder().encode(target.getBytes()));
-        encodingToken = encodingToken.replaceAll("=","");
-
-
-        String randomSecret = RandomUtil.randomString(32);
-//        client.setClientId(encodingToken);
-        client.setClientSecret(randomSecret);
-    }
 
 
 

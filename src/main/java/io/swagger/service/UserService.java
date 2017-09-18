@@ -1,5 +1,7 @@
 package io.swagger.service;
 
+import io.swagger.model.PendingUserRequest;
+import io.swagger.model.PendingUserResponse;
 import io.swagger.model.User;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,4 +55,24 @@ public interface UserService {
      * 유저 전체 조회
      */
     List<User> findByUsers(String search);
+
+    /*
+     * 회원 가입 대기 유저 정보 등록
+     */
+    public PendingUserResponse insertPendingUser(PendingUserRequest pendingUserRequest) throws Exception;
+
+    /*
+     * 회원 가입 대기 유저 조회
+     */
+    public PendingUserResponse findByPendingUserInfo(String email, String activateKey);
+
+    /*
+     * 회원 삭제
+     */
+    void deleteUser(String userId);
+
+    /*
+     * 회원 가입 대기 유저 활성화
+     */
+    void pendingUserActivate(String activateKey);
 }

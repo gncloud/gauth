@@ -1,5 +1,6 @@
 package io.swagger.dao;
 
+import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Client;
 import io.swagger.model.User;
 import io.swagger.model.UserClientScope;
@@ -41,7 +42,11 @@ public class UserClientScopeDao {
         return sqlSession.selectList("userClientScope.fintClientMappingList", client);
     }
 
-    public Integer isUserClientScope(User user){
+    public Integer isUserClientScope(AuthenticationRequest user){
         return sqlSession.selectOne("userClientScope.isUserClientScoe", user);
+    }
+
+    public List<String> findByScopeIdList(UserClientScope userClientScope) {
+        return sqlSession.selectList("userClientScope.findByScopeIdList", userClientScope);
     }
 }

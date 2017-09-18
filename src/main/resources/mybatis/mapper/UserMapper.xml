@@ -92,4 +92,21 @@
          </if>
 
     </select>
+
+
+    <!--pendingUserResponse.setEmail(email);-->
+    <!--pendingUserResponse.setClientId(clientId);-->
+    <!--pendingUserResponse.setActivateKey(activateKey);-->
+    <!--pendingUserResponse.setRetryUrl(retryUrl);-->
+    <insert id="insertPendingUser" parameterType="PendingUserResponse">
+
+    </insert>
+
+    <!--one-->
+    <!--pendingUserResponse.setActivateKey(activateKey);-->
+    <!--pendingUserResponse.setEmail(email);-->
+    <select id="findByPendingUser" parameterType="PendingUserResponse" resultType="PendingUserResponse">
+
+    </select>
+
 </mapper>

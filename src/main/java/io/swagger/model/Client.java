@@ -7,10 +7,10 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 /**
- *
+ * 
  */
 @ApiModel(description = "")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T01:03:22.360Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
 public class Client   {
   @JsonProperty("clientId")
@@ -30,10 +30,10 @@ public class Client   {
     return this;
   }
 
-  /**
+   /**
    * Get clientId
    * @return clientId
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getClientId() {
     return clientId;
@@ -48,10 +48,10 @@ public class Client   {
     return this;
   }
 
-  /**
+   /**
    * Get clientSecret
    * @return clientSecret
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getClientSecret() {
     return clientSecret;
@@ -66,10 +66,10 @@ public class Client   {
     return this;
   }
 
-  /**
+   /**
    * Get description
    * @return description
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getDescription() {
     return description;
@@ -84,10 +84,10 @@ public class Client   {
     return this;
   }
 
-  /**
+   /**
    * Get domain
    * @return domain
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getDomain() {
     return domain;
@@ -99,7 +99,7 @@ public class Client   {
 
 
   @Override
-  public boolean equals(java.lang.Object o) {
+  public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
@@ -108,9 +108,9 @@ public class Client   {
     }
     Client client = (Client) o;
     return Objects.equals(this.clientId, client.clientId) &&
-            Objects.equals(this.clientSecret, client.clientSecret) &&
-            Objects.equals(this.description, client.description) &&
-            Objects.equals(this.domain, client.domain);
+        Objects.equals(this.clientSecret, client.clientSecret) &&
+        Objects.equals(this.description, client.description) &&
+        Objects.equals(this.domain, client.domain);
   }
 
   @Override
@@ -122,7 +122,7 @@ public class Client   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Client {\n");
-
+    
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("    clientSecret: ").append(toIndentedString(clientSecret)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
@@ -135,7 +135,7 @@ public class Client   {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private String toIndentedString(Object o) {
     if (o == null) {
       return "null";
     }

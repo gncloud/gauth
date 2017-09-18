@@ -38,7 +38,7 @@ public class ScopeDao {
         sqlSession.update("scope.updateDefaultN", client);
     }
 
-    public Scope findByDefailtScope(String clientId){
-        return sqlSession.selectOne("scope.findByDefailtScope", clientId);
+    public List<Scope> findByDefailtScopes(String clientId){
+        return sqlSession.selectList("scope.findByDefailtScopes", clientId);
     }
 }

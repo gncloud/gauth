@@ -1,13 +1,18 @@
 package io.swagger.service.impl;
 
 import io.swagger.dao.UserDao;
-import io.swagger.model.*;
+import io.swagger.model.PendingUserRequest;
+import io.swagger.model.PendingUserResponse;
+import io.swagger.model.User;
+import io.swagger.model.UserClientScope;
 import io.swagger.service.ScopeService;
 import io.swagger.service.UserClientScopeService;
 import io.swagger.service.UserService;
+import io.swagger.util.RandomUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +41,11 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ScopeService scopeService;
 
+    @Value("${server.host}")
+    private String serverHost;
+
+
+
     /*
      * 유저 조회
      * 유저아이디로 조회
@@ -63,29 +73,39 @@ public class UserServiceImpl implements UserService {
 
         //필수 값 체크
         Integer isUserCount = isUserId(user.getUserId());
-        if (!requiredValueCheck(user) || isUserCount != 0) {
-            throw new Exception("user requred invalid");
-        }
+//        if (userId == null || "".equals(userId)) {
+//            throw new Exception("no id");
+//        }
+//
+//        String password = user.getPassword();
+//        if (password == null || "".equals(password)) {
+//            throw new Exception("no password");
+//        }
+
+//        if (!requiredValueCheck(user) || isUserCount != 0) {
+//            throw new Exception("user requred invalid");
+//        }
 
         // 회원 정보 등록
         userDao.insertUser(user);
 
         // 클라이언트의 default scope 조회
-        Scope registerScope = scopeService.findByDefailtScope(user.getClientId());
+//        Scope registerScope = scopeService.findByDefailtScope(user.getClientId());
 
         // 처음 회원 가입한 클라이언트 기본 등록
         UserClientScope userClientScope = new UserClientScope();
-        userClientScope.setClientId(user.getClientId());
-        userClientScope.setUserId(user.getUserId());
-        if(registerScope != null){
-            userClientScope.setScopeId(registerScope.getScopeId());
-        }
+//        userClientScope.setClientId(user.getClientId());
+//        userClientScope.setUserId(user.getUserId());
+//        if(registerScope != null){
+//            userClientScope.setScopeId(registerScope.getScopeId());
+//        }
 
-        userClientScopeService.insertUserClientScope(userClientScope);
+//        userClientScopeService.insertUserClientScope(userClientScope);
 
         // 등록된 DB 유저 가져오기
-        User registerUser = findByUser(user.getUserId());
-        return registerUser;
+//        User registerUser = findByUser(user.getUserId());
+//        return registerUser;
+        return null;
     }
 
     /*
@@ -95,20 +115,20 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(User user) {
 
         // 토큰 정보로 접근 하였을 경우 유저 조회
-        String token = user.getTokenId();
+//        String token = user.getTokenId();
         User targetUser = new User();
 
-        if(token != null && !"".equals(token)){
-            targetUser = fienByTokenToUserInfo(token);
-        }else{
-            targetUser = user;
-        }
+//        if(token != null && !"".equals(token)){
+//            targetUser = fienByTokenToUserInfo(token);
+//        }else{
+//            targetUser = user;
+//        }
 
 
         // 유저,클라이언트 관계 데이터 삭제
         UserClientScope userClientScope = new UserClientScope();
         userClientScope.setUserId(targetUser.getUserId());
-        userClientScope.setClientId(targetUser.getClientId());
+//        userClientScope.setClientId(targetUser.getClientId());
 
         userClientScopeService.deleteUserClientScope(userClientScope);
 
@@ -132,10 +152,10 @@ public class UserServiceImpl implements UserService {
         User targetUser = new User();
 
         // 토큰으로 왔을 시 토큰으로 아이디 조회
-        if(user.getTokenId() != null && !"".equals(user.getTokenId())){
-            targetUser = userDao.fienByTokenToUserInfo(user.getTokenId());
-            user.setUserId(targetUser.getUserId());
-        }
+//        if(user.getTokenId() != null && !"".equals(user.getTokenId())){
+//            targetUser = userDao.fienByTokenToUserInfo(user.getTokenId());
+//            user.setUserId(targetUser.getUserId());
+//        }
 
         userDao.updateUser(user);
         return userDao.findByUser(user.getUserId());
@@ -157,26 +177,63 @@ public class UserServiceImpl implements UserService {
     }
 
     /*
-     * 필수값 유효성 체크
+     * 회원 가입 대기 유저 정보 등록
      */
-    private boolean requiredValueCheck(User user) {
-        boolean isValid = false;
-        try {
-            String userId = user.getUserId();
-            if (userId == null || "".equals(userId)) {
-                throw new Exception("no id");
-            }
+    @Override
+    public PendingUserResponse insertPendingUser(PendingUserRequest pendingUserRequest) throws Exception {
+        PendingUserResponse pendingUserResponse = new PendingUserResponse();
 
-            String password = user.getPassword();
-            if (password == null || "".equals(password)) {
-                throw new Exception("no password");
-            }
+        String email = pendingUserRequest.getEmail();
+        String clientId = pendingUserRequest.getClientId();
 
-            isValid = true;
-        } catch (Exception e) {
-            logger.debug("requiredValue ::: {}", e.getMessage());
+        if(email == null || "".equals(email)){
+            throw new Exception("email field");
+        }else if(clientId == null || "".equals(clientId)){
+            throw new Exception("clientId field");
         }
-        return isValid;
+
+        String activateKey = RandomUtil.randomString(32);
+        String retryUrl = serverHost + "?activateKey=" + activateKey;
+
+        pendingUserResponse.setEmail(email);
+        pendingUserResponse.setClientId(clientId);
+        pendingUserResponse.setActivateKey(activateKey);
+        pendingUserResponse.setRetryUrl(retryUrl);
+
+        userDao.insertPendingUser(pendingUserResponse);
+
+        return findByPendingUserInfo(email, activateKey);
     }
+
+    /*
+     * 회원 가입 대기 유저 조회
+     */
+    @Override
+    public PendingUserResponse findByPendingUserInfo(String email, String activateKey) {
+        PendingUserResponse pendingUserResponse = new PendingUserResponse();
+        pendingUserResponse.setActivateKey(activateKey);
+        pendingUserResponse.setEmail(email);
+        return userDao.findByPendingUser(pendingUserResponse);
+    }
+
+    /*
+     * 강한 회원탈퇴
+     * */
+    @Override
+    public void deleteUser(String userId) {
+
+
+    }
+
+    /*
+     * 회원 가입 대기 유저 활성화
+     */
+    @Override
+    public void pendingUserActivate(String activateKey) {
+
+
+
+    }
+
 
 }

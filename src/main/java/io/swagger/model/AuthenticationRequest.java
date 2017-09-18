@@ -7,22 +7,22 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 /**
- * api request,response none
+ * request create token
  */
-@ApiModel(description = "api request,response none")
+@ApiModel(description = "request create token")
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
-public class UserClientScope   {
+public class AuthenticationRequest   {
   @JsonProperty("userId")
   private String userId = null;
 
-  @JsonProperty("scopeId")
-  private String scopeId = null;
+  @JsonProperty("password")
+  private String password = null;
 
   @JsonProperty("clientId")
   private String clientId = null;
 
-  public UserClientScope userId(String userId) {
+  public AuthenticationRequest userId(String userId) {
     this.userId = userId;
     return this;
   }
@@ -40,25 +40,25 @@ public class UserClientScope   {
     this.userId = userId;
   }
 
-  public UserClientScope scopeId(String scopeId) {
-    this.scopeId = scopeId;
+  public AuthenticationRequest password(String password) {
+    this.password = password;
     return this;
   }
 
    /**
-   * Get scopeId
-   * @return scopeId
+   * Get password
+   * @return password
   **/
   @ApiModelProperty(value = "")
-  public String getScopeId() {
-    return scopeId;
+  public String getPassword() {
+    return password;
   }
 
-  public void setScopeId(String scopeId) {
-    this.scopeId = scopeId;
+  public void setPassword(String password) {
+    this.password = password;
   }
 
-  public UserClientScope clientId(String clientId) {
+  public AuthenticationRequest clientId(String clientId) {
     this.clientId = clientId;
     return this;
   }
@@ -85,24 +85,24 @@ public class UserClientScope   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    UserClientScope userClientScope = (UserClientScope) o;
-    return Objects.equals(this.userId, userClientScope.userId) &&
-        Objects.equals(this.scopeId, userClientScope.scopeId) &&
-        Objects.equals(this.clientId, userClientScope.clientId);
+    AuthenticationRequest authenticationRequest = (AuthenticationRequest) o;
+    return Objects.equals(this.userId, authenticationRequest.userId) &&
+        Objects.equals(this.password, authenticationRequest.password) &&
+        Objects.equals(this.clientId, authenticationRequest.clientId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, scopeId, clientId);
+    return Objects.hash(userId, password, clientId);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class UserClientScope {\n");
+    sb.append("class AuthenticationRequest {\n");
     
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
-    sb.append("    scopeId: ").append(toIndentedString(scopeId)).append("\n");
+    sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("}");
     return sb.toString();

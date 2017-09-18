@@ -7,10 +7,10 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 
 /**
- *
+ * 
  */
 @ApiModel(description = "")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-12T01:03:22.360Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
 public class Scope   {
   @JsonProperty("scopeId")
@@ -30,10 +30,10 @@ public class Scope   {
     return this;
   }
 
-  /**
+   /**
    * Get scopeId
    * @return scopeId
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getScopeId() {
     return scopeId;
@@ -48,10 +48,10 @@ public class Scope   {
     return this;
   }
 
-  /**
+   /**
    * Get clientId
    * @return clientId
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getClientId() {
     return clientId;
@@ -66,10 +66,10 @@ public class Scope   {
     return this;
   }
 
-  /**
+   /**
    * Get description
    * @return description
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getDescription() {
     return description;
@@ -84,10 +84,10 @@ public class Scope   {
     return this;
   }
 
-  /**
+   /**
    * Get isDefault
    * @return isDefault
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getIsDefault() {
     return isDefault;
@@ -99,7 +99,7 @@ public class Scope   {
 
 
   @Override
-  public boolean equals(java.lang.Object o) {
+  public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
@@ -108,9 +108,9 @@ public class Scope   {
     }
     Scope scope = (Scope) o;
     return Objects.equals(this.scopeId, scope.scopeId) &&
-            Objects.equals(this.clientId, scope.clientId) &&
-            Objects.equals(this.description, scope.description) &&
-            Objects.equals(this.isDefault, scope.isDefault);
+        Objects.equals(this.clientId, scope.clientId) &&
+        Objects.equals(this.description, scope.description) &&
+        Objects.equals(this.isDefault, scope.isDefault);
   }
 
   @Override
@@ -122,7 +122,7 @@ public class Scope   {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Scope {\n");
-
+    
     sb.append("    scopeId: ").append(toIndentedString(scopeId)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("    description: ").append(toIndentedString(description)).append("\n");
@@ -135,7 +135,7 @@ public class Scope   {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private String toIndentedString(Object o) {
     if (o == null) {
       return "null";
     }

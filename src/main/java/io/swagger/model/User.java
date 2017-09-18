@@ -11,46 +11,45 @@ import java.util.Objects;
  * user info
  */
 @ApiModel(description = "user info")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-10T14:37:03.238Z")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
-public class User {
-
+public class User   {
   @JsonProperty("userId")
-  private String userId;
+  private String userId = null;
 
   @JsonProperty("password")
-  private String password;
+  private String password = null;
 
   @JsonProperty("email")
-  private String email;
+  private String email = null;
 
   @JsonProperty("name")
-  private String name;
+  private String name = null;
 
   @JsonProperty("register_date")
-  private String registerDate;
+  private String registerDate = null;
 
   @JsonProperty("phone")
-  private String phone;
+  private String phone = null;
 
   @JsonProperty("address")
-  private String address;
+  private String address = null;
 
   @JsonProperty("company")
-  private String company;
+  private String company = null;
 
   @JsonProperty("token")
-  private String token;
+  private String token = null;
 
   public User userId(String userId) {
     this.userId = userId;
     return this;
   }
 
-  /**
+   /**
    * Get userId
    * @return userId
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getUserId() {
     return userId;
@@ -65,10 +64,10 @@ public class User {
     return this;
   }
 
-  /**
+   /**
    * Get password
    * @return password
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getPassword() {
     return password;
@@ -81,16 +80,15 @@ public class User {
   public boolean isEqualsPassword(String password){
     return DigestUtils.sha512Hex(password).equals(this.password);
   }
-
   public User email(String email) {
     this.email = email;
     return this;
   }
 
-  /**
+   /**
    * Get email
    * @return email
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getEmail() {
     return email;
@@ -105,10 +103,10 @@ public class User {
     return this;
   }
 
-  /**
+   /**
    * Get name
    * @return name
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getName() {
     return name;
@@ -123,10 +121,10 @@ public class User {
     return this;
   }
 
-  /**
+   /**
    * Get registerDate
    * @return registerDate
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getRegisterDate() {
     return registerDate;
@@ -141,10 +139,10 @@ public class User {
     return this;
   }
 
-  /**
+   /**
    * Get phone
    * @return phone
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getPhone() {
     return phone;
@@ -159,10 +157,10 @@ public class User {
     return this;
   }
 
-  /**
+   /**
    * Get address
    * @return address
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getAddress() {
     return address;
@@ -177,10 +175,10 @@ public class User {
     return this;
   }
 
-  /**
+   /**
    * Get company
    * @return company
-   **/
+  **/
   @ApiModelProperty(value = "")
   public String getCompany() {
     return company;
@@ -190,9 +188,27 @@ public class User {
     this.company = company;
   }
 
+  public User token(String token) {
+    this.token = token;
+    return this;
+  }
+
+   /**
+   * Get token
+   * @return token
+  **/
+  @ApiModelProperty(value = "")
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
+
 
   @Override
-  public boolean equals(java.lang.Object o) {
+  public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
@@ -201,25 +217,26 @@ public class User {
     }
     User user = (User) o;
     return Objects.equals(this.userId, user.userId) &&
-            Objects.equals(this.password, user.password) &&
-            Objects.equals(this.email, user.email) &&
-            Objects.equals(this.name, user.name) &&
-            Objects.equals(this.registerDate, user.registerDate) &&
-            Objects.equals(this.phone, user.phone) &&
-            Objects.equals(this.address, user.address) &&
-            Objects.equals(this.company, user.company);
+        Objects.equals(this.password, user.password) &&
+        Objects.equals(this.email, user.email) &&
+        Objects.equals(this.name, user.name) &&
+        Objects.equals(this.registerDate, user.registerDate) &&
+        Objects.equals(this.phone, user.phone) &&
+        Objects.equals(this.address, user.address) &&
+        Objects.equals(this.company, user.company) &&
+        Objects.equals(this.token, user.token);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, password, email, name, registerDate, phone, address, company);
+    return Objects.hash(userId, password, email, name, registerDate, phone, address, company, token);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class User {\n");
-
+    
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
@@ -228,6 +245,7 @@ public class User {
     sb.append("    phone: ").append(toIndentedString(phone)).append("\n");
     sb.append("    address: ").append(toIndentedString(address)).append("\n");
     sb.append("    company: ").append(toIndentedString(company)).append("\n");
+    sb.append("    token: ").append(toIndentedString(token)).append("\n");
     sb.append("}");
     return sb.toString();
   }
@@ -236,7 +254,7 @@ public class User {
    * Convert the given object to string with each line indented by 4 spaces
    * (except the first line).
    */
-  private String toIndentedString(java.lang.Object o) {
+  private String toIndentedString(Object o) {
     if (o == null) {
       return "null";
     }
