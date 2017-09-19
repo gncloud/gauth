@@ -4,11 +4,7 @@ import io.swagger.model.Client;
 
 import io.swagger.annotations.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
@@ -59,4 +55,11 @@ public interface ClientsApi {
     ResponseEntity<?> clientsPost(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                        @ApiParam(value = "", required = true) @RequestBody Client client);
 
+    @ApiOperation(value = "create UserClientScope", notes = "createUserClientScope", response = Client.class, tags={  })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Client.class) })
+    @RequestMapping(value = "/userClientScope/{userId}",
+            method = RequestMethod.POST)
+    ResponseEntity<?> userClientScopePost(@ApiParam(value = "user id",required=true ) @PathVariable("userId") String userId,
+                                          @RequestParam(value = "clientId", required = true) String clientId);
 }

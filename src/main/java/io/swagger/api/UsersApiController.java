@@ -1,6 +1,7 @@
 package io.swagger.api;
 
 import io.swagger.annotations.ApiParam;
+import io.swagger.model.Client;
 import io.swagger.model.User;
 import io.swagger.service.TokenService;
 import io.swagger.service.UserService;
@@ -49,10 +50,11 @@ public class UsersApiController implements UsersApi {
     }
 
     public ResponseEntity<?> usersPost(@ApiParam(value = "client id", required = true) @RequestParam(value = "clientId", required = true) String clientId,
-                                       @ApiParam(value = "" ,required=true ) @RequestBody User user) {
+                                       @ApiParam(value = "" ,required=true ) @RequestBody User user,
+                                       @ApiParam(value = "activateKey") @RequestParam(value = "activateKey", required = true) String activateKey) {
         try {
 
-            User registerUser = userService.signup(user);
+            User registerUser = userService.signup(user, activateKey, clientId);
 
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (AccessControlException e){
@@ -64,12 +66,10 @@ public class UsersApiController implements UsersApi {
     }
 
     public ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target",required=true ) @PathVariable("userId") String userId,
-                                               @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+                                               @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
+                                               @ApiParam(value = "client id" ,required=true ) @RequestParam String client) {
         try {
-            tokenService.isAdminToken(authorization);
-
-            userService.deleteUser(userId);
-
+            userService.deleteUser(userId, client);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (AccessControlException e){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -98,7 +98,6 @@ public class UsersApiController implements UsersApi {
                                             @ApiParam(value = "user token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
                                             @RequestBody User user) {
         try {
-
             user.setUserId(userId);
             User registerUser = userService.updateUser(user);
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);

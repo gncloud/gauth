@@ -118,5 +118,6 @@ public class UserClientScope   {
     }
     return o.toString().replace("\n", "\n    ");
   }
+
 }
 

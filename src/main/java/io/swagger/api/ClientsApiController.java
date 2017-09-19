@@ -4,8 +4,11 @@ import io.swagger.model.Client;
 
 import io.swagger.annotations.*;
 
+import io.swagger.model.UserClientScope;
 import io.swagger.service.ClientService;
 import io.swagger.service.TokenService;
+import io.swagger.service.UserClientScopeService;
+import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.AccessControlException;
 import java.util.List;
@@ -32,6 +36,9 @@ public class ClientsApiController implements ClientsApi {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private UserClientScopeService userClientScopeService;
 
     public ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "target client id",required=true ) @PathVariable("clientId") String clientId,
                                                    @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
@@ -116,4 +123,23 @@ public class ClientsApiController implements ClientsApi {
         }
     }
 
+
+    public ResponseEntity<?> userClientScopePost(@ApiParam(value = "user id",required=true ) @PathVariable("userId") String userId,
+                                         @RequestParam(value = "clientId", required = true) String clientId) {
+        try {
+
+
+
+            UserClientScope userClientScope = new UserClientScope();
+            userClientScope.setUserId(userId);
+            userClientScope.setClientId(clientId);
+            userClientScopeService.deleteUserClientScope(userClientScope);
+            List<UserClientScope> registerUserClientScopeList = userClientScopeService.insertUserClientScope(userClientScope);
+
+            return new ResponseEntity<List<UserClientScope>>(registerUserClientScopeList, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("userClientScopePost", e);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -8,6 +8,7 @@ import io.swagger.model.UserClientScope;
 import io.swagger.service.ScopeService;
 import io.swagger.service.UserClientScopeService;
 import io.swagger.service.UserService;
+import io.swagger.util.DateUtil;
 import io.swagger.util.RandomUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +35,9 @@ public class UserServiceImpl implements UserService {
 
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
+    private final String PENDING_STATUS = "pending";
+    private final String ACTIVE_STATUS = "active";
+
     @Autowired
     private UserDao userDao;
 
@@ -44,8 +50,8 @@ public class UserServiceImpl implements UserService {
     @Value("${server.host}")
     private String serverHost;
 
-
-
+    @Value("${activateKey.timeout}")
+    private String activateKeyTimeout;
     /*
      * 유저 조회
      * 유저아이디로 조회
@@ -69,77 +75,65 @@ public class UserServiceImpl implements UserService {
      * */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public User signup(User user) throws Exception {
+    public User signup(User user, String activateKey, String clientId) throws Exception {
 
-        //필수 값 체크
+        // 펀딩 유저 활성화 안되어 있으면 Exception
+        PendingUserResponse registerPendingUser = userDao.findByLastPending(user.getEmail());
+
+        if(registerPendingUser.getActivateKey().equals(activateKey)){
+            registerPendingUser.setStatus(ACTIVE_STATUS);
+        }
+
+        if(registerPendingUser == null
+                || !ACTIVE_STATUS.equals(registerPendingUser.getStatus())
+                || !DateUtil.isExpireDate(registerPendingUser.getExpireDate())){
+            throw new Exception("pending invalid");
+        }
+
         Integer isUserCount = isUserId(user.getUserId());
-//        if (userId == null || "".equals(userId)) {
-//            throw new Exception("no id");
-//        }
-//
-//        String password = user.getPassword();
-//        if (password == null || "".equals(password)) {
-//            throw new Exception("no password");
-//        }
-
-//        if (!requiredValueCheck(user) || isUserCount != 0) {
-//            throw new Exception("user requred invalid");
-//        }
+        if (isUserCount != 0) {
+            throw new Exception("user invalid");
+        }
+        String password = user.getPassword();
+        if (password == null || "".equals(password)) {
+            throw new Exception("no password");
+        }
 
         // 회원 정보 등록
         userDao.insertUser(user);
 
-        // 클라이언트의 default scope 조회
-//        Scope registerScope = scopeService.findByDefailtScope(user.getClientId());
+        // 펀딩 정보 제거
+        userDao.deletePendingUser(user.getEmail());
 
-        // 처음 회원 가입한 클라이언트 기본 등록
+        // 처음 회원가입한 클라이언트 맵핑 테이블 등록
         UserClientScope userClientScope = new UserClientScope();
-//        userClientScope.setClientId(user.getClientId());
-//        userClientScope.setUserId(user.getUserId());
-//        if(registerScope != null){
-//            userClientScope.setScopeId(registerScope.getScopeId());
-//        }
-
-//        userClientScopeService.insertUserClientScope(userClientScope);
+        userClientScope.setClientId(clientId);
+         userClientScopeService.insertUserClientScope(userClientScope);
 
         // 등록된 DB 유저 가져오기
-//        User registerUser = findByUser(user.getUserId());
-//        return registerUser;
-        return null;
+        User registerUser = findByUser(user.getUserId());
+        return registerUser;
     }
 
     /*
-     * 회원탈퇴
+     * 유저 일괄 삭제
      * */
     @Override
-    public void deleteUser(User user) {
-
-        // 토큰 정보로 접근 하였을 경우 유저 조회
-//        String token = user.getTokenId();
-        User targetUser = new User();
-
-//        if(token != null && !"".equals(token)){
-//            targetUser = fienByTokenToUserInfo(token);
-//        }else{
-//            targetUser = user;
-//        }
-
+    public void deleteUser(String userId, String client) {
 
         // 유저,클라이언트 관계 데이터 삭제
         UserClientScope userClientScope = new UserClientScope();
-        userClientScope.setUserId(targetUser.getUserId());
-//        userClientScope.setClientId(targetUser.getClientId());
+        userClientScope.setUserId(userId);
+        userClientScope.setClientId(client);
 
         userClientScopeService.deleteUserClientScope(userClientScope);
 
         // 유저와 클라이언트 마지막 확인 후 마지막 이면 유저 정보 삭제 조회
-        Integer userClientCount = userClientScopeService.findUserCount(targetUser.getUserId());
-
+        Integer userClientCount = userClientScopeService.findUserCount(userId);
         // 유저와 클라이언트 관계가 마지막일 경우 회원 정보 삭제
         if(userClientCount == 0){
-            userDao.deleteUser(user);
+            userDao.deleteUser(userId);
         }
-
     }
 
     /*
@@ -180,6 +174,7 @@ public class UserServiceImpl implements UserService {
      * 회원 가입 대기 유저 정보 등록
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public PendingUserResponse insertPendingUser(PendingUserRequest pendingUserRequest) throws Exception {
         PendingUserResponse pendingUserResponse = new PendingUserResponse();
 
@@ -192,48 +187,50 @@ public class UserServiceImpl implements UserService {
             throw new Exception("clientId field");
         }
 
-        String activateKey = RandomUtil.randomString(32);
-        String retryUrl = serverHost + "?activateKey=" + activateKey;
+        boolean isEmail = userDao.isEmail(email);
+        if(isEmail){
+            throw new Exception("email field");
+        }
+
+        userDao.deletePendingUser(email);
+        String mTime = String.valueOf(System.currentTimeMillis());
+        String activateKey = RandomUtil.randomString(32 - mTime.length()) + mTime;
+        String retryUrl = serverHost + "/users?activateKey=" + activateKey;
 
         pendingUserResponse.setEmail(email);
-        pendingUserResponse.setClientId(clientId);
         pendingUserResponse.setActivateKey(activateKey);
         pendingUserResponse.setRetryUrl(retryUrl);
+        pendingUserResponse.setStatus(PENDING_STATUS);
+
+        // 요청시간과 만료시간 생성
+        Date requestDate = DateUtil.requestDate();
+        int min = activateKeyTimeout == null ? 60 : Integer.parseInt(activateKeyTimeout);
+        Date expireDate = DateUtil.appendDate(requestDate, min);
+        pendingUserResponse.setExpireDate(DateUtil.dateFormat(expireDate));
 
         userDao.insertPendingUser(pendingUserResponse);
-
-        return findByPendingUserInfo(email, activateKey);
+        return findByPendingUserInfo(activateKey);
     }
 
     /*
      * 회원 가입 대기 유저 조회
      */
     @Override
-    public PendingUserResponse findByPendingUserInfo(String email, String activateKey) {
+    public PendingUserResponse findByPendingUserInfo(String activateKey) {
         PendingUserResponse pendingUserResponse = new PendingUserResponse();
         pendingUserResponse.setActivateKey(activateKey);
-        pendingUserResponse.setEmail(email);
         return userDao.findByPendingUser(pendingUserResponse);
     }
 
     /*
-     * 강한 회원탈퇴
-     * */
-    @Override
-    public void deleteUser(String userId) {
-
-
-    }
-
-    /*
-     * 회원 가입 대기 유저 활성화
+     * 회원 가입 대기 상태 변경
      */
-    @Override
-    public void pendingUserActivate(String activateKey) {
-
-
-
+    public PendingUserResponse updatePendingStatus(String activateKey){
+        PendingUserResponse pendingUserResponse = new PendingUserResponse();
+        pendingUserResponse.setActivateKey(activateKey);
+        pendingUserResponse.setStatus(ACTIVE_STATUS);
+        userDao.updatePendingStatus(pendingUserResponse);
+        return findByPendingUserInfo(activateKey);
     }
-
 
 }

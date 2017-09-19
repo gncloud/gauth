@@ -12,17 +12,17 @@ import org.springframework.web.bind.annotation.*;
 public interface TokensApi {
 
     @ApiOperation(value = "remove Token", notes = "remove Token", response = Void.class, tags={  })
-    @ApiResponses(value = { 
+    @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
-    @RequestMapping(value = "/tokens/{tokenId}",
+    @RequestMapping(value = "/token",
         method = RequestMethod.DELETE)
-    ResponseEntity<?> tokensDelete(@ApiParam(value = "read token info", required = true) @PathVariable("tokenId") String tokenId);
+    ResponseEntity<?> tokenDelete(@ApiParam(value = "user token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 
 
     @ApiOperation(value = "Token All List (admin Only)", notes = "Token All List (admin Only)", response = Token.class, responseContainer = "List", tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = Token.class) })
-    @RequestMapping(value = "/tokens",
+    @RequestMapping(value = "/token",
         method = RequestMethod.GET)
     ResponseEntity<?> tokensGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 

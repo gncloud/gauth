@@ -34,12 +34,7 @@ public interface UserService {
     /*
      * 회원가입
      * */
-    User signup(User user) throws Exception;
-
-    /*
-     * 회원탈퇴
-     * */
-    void deleteUser(User user);
+    User signup(User user, String activateKey, String clientId) throws Exception;
 
     /*
      * 회원 정보 수정
@@ -64,15 +59,12 @@ public interface UserService {
     /*
      * 회원 가입 대기 유저 조회
      */
-    public PendingUserResponse findByPendingUserInfo(String email, String activateKey);
+    public PendingUserResponse findByPendingUserInfo(String activateKey);
 
     /*
-     * 회원 삭제
+     * 강제 회원삭제
      */
-    void deleteUser(String userId);
+    void deleteUser(String userId, String client);
 
-    /*
-     * 회원 가입 대기 유저 활성화
-     */
-    void pendingUserActivate(String activateKey);
+    PendingUserResponse updatePendingStatus(String activateKey);
 }

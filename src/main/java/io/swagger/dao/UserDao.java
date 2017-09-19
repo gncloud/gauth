@@ -48,7 +48,7 @@ public class UserDao {
     /*
      * 유저 삭제
      * */
-    public void deleteUser(User user){
+    public void deleteUser(String user){
         sqlSession.delete("user.deleteUser", user);
     }
 
@@ -81,10 +81,35 @@ public class UserDao {
     }
 
     /*
+     * 이메일 기준 전체 삭제
+     */
+    public void deletePendingUser(String email){
+        sqlSession.delete("user.deletePendingUser", email);
+    }
+
+    /*
      * 회원 가입 대기 유저 조회
      */
     public PendingUserResponse findByPendingUser(PendingUserResponse pendingUserResponse) {
         return sqlSession.selectOne("user.findByPendingUser", pendingUserResponse);
     }
 
+    /*
+     * 회원 가입 대기 유저 조회 email
+     */
+    public PendingUserResponse findByLastPending(String email) {
+        return sqlSession.selectOne("user.findByLastPending", email);
+    }
+
+    /*
+     * 이메일 상태 pending 일괄 변경
+     */
+    public void updatePendingStatus(PendingUserResponse pendingUserResponse){
+        sqlSession.update("user.updatePendingStatus", pendingUserResponse);
+    }
+
+    public boolean isEmail(String email) {
+        Integer result = sqlSession.selectOne("user.isEmail", email);
+        return result != null && result != 0;
+    }
 }

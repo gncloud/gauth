@@ -12,7 +12,9 @@ public class StringEncodingTest {
     @Test
     public void encoding(){
 
-        String target = "gncloud";
+        System.out.println(System.currentTimeMillis());
+
+        String target = "1111";
 
         System.out.println("target : " + target);
 

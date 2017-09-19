@@ -1,13 +1,19 @@
 package io.swagger.configuration;
 
+import io.swagger.service.TokenService;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.servlet.DelegatingFilterProxyRegistrationBean;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import org.springframework.web.filter.DelegatingFilterProxy;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -20,7 +26,10 @@ import javax.sql.DataSource;
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-08T07:13:42.158Z")
 
 @Configuration
-public class SwaggerDocumentationConfig {
+public class SwaggerDocumentationConfig extends WebMvcConfigurerAdapter{
+
+    @Autowired
+    private TokenService tokenService;
 
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
@@ -45,11 +54,12 @@ public class SwaggerDocumentationConfig {
                 .apiInfo(apiInfo());
     }
 
-    @Bean
-    public FilterRegistrationBean filterRegistrationBean(){
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(new TokenFilter());
-        return filterRegistrationBean;
-
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        TokenValidateInterceptor tokenValidateInterceptor = new TokenValidateInterceptor();
+        tokenValidateInterceptor.setTokenService(tokenService);
+        registry.addInterceptor(tokenValidateInterceptor);
+        super.addInterceptors(registry);
     }
 
 }

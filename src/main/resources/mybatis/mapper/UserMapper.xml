@@ -25,8 +25,8 @@
                     )
     </insert>
 
-    <delete id="deleteUser" parameterType="User">
-        DELETE FROM User WHERE user_id = #{userId}
+    <delete id="deleteUser" parameterType="String">
+        DELETE FROM User WHERE user_id = #{param1}
     </delete>
 
     <select id="isUserId" resultType="Integer" parameterType="String">
@@ -37,7 +37,6 @@
 
     <select id="findByUser" resultType="User" parameterType="String">
             SELECT user_id,
-                   password,
                    email,
                    name,
                    register_date,
@@ -61,13 +60,13 @@
 
     <select id="fienByTokenToUserInfo" parameterType="String" resultType="User">
         SELECT user_id,
-               password,
                email,
                name,
                register_date,
                phone,
                address,
-               company
+               company,
+               #{tokenId} as token
          FROM User
         where user_id = (select user_id
                            from Token
@@ -76,7 +75,6 @@
 
     <select id="findByUsers" resultType="User" parameterType="String">
         SELECT user_id,
-               password,
                email,
                name,
                register_date,
@@ -93,20 +91,51 @@
 
     </select>
 
-
-    <!--pendingUserResponse.setEmail(email);-->
-    <!--pendingUserResponse.setClientId(clientId);-->
-    <!--pendingUserResponse.setActivateKey(activateKey);-->
-    <!--pendingUserResponse.setRetryUrl(retryUrl);-->
     <insert id="insertPendingUser" parameterType="PendingUserResponse">
-
+        insert into Pending (email, activate_key, status, expire_date, retry_url)
+        values(
+        #{email}, #{activateKey}, #{status}, #{expireDate},#{retryUrl}
+        )
     </insert>
 
-    <!--one-->
-    <!--pendingUserResponse.setActivateKey(activateKey);-->
-    <!--pendingUserResponse.setEmail(email);-->
     <select id="findByPendingUser" parameterType="PendingUserResponse" resultType="PendingUserResponse">
-
+        select email
+              , status
+              , activate_key
+              , expire_date
+              , retry_url
+          from Pending
+          where activate_key = #{activateKey}
     </select>
+
+    <select id="findByLastPending" parameterType="String" resultType="PendingUserResponse">
+        select email
+        , status
+        , activate_key
+        , expire_date
+        , retry_url
+        from Pending
+        where email = #{param1}
+        order by expire_date desc
+        limit 1
+    </select>
+
+    <delete id="deletePendingUser" parameterType="String">
+        DELETE FROM Pending WHERE email = #{param1}
+    </delete>
+
+    <update id="updatePendingStatus" parameterType="PendingUserResponse">
+        update Pending
+            set status = #{status}
+          where activate_key = #{activateKey}
+    </update>
+
+    <select id="isEmail" parameterType="String" resultType="Integer">
+        select count(*) as count
+        from User
+        where email = #{param1}
+    </select>
+
+
 
 </mapper>

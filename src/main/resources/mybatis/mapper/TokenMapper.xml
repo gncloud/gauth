@@ -43,6 +43,11 @@
          WHERE token_id = #{tokenId}
     </delete>
 
+    <delete id="deleteClientToken" parameterType="AuthenticationRequest">
+      DELETE FROM Token
+         WHERE user_id = #{userId}
+    </delete>
+
     <select id="selectTokens" resultType="Token">
         select token_id,
 			   user_id,
@@ -50,6 +55,17 @@
 			   create_time,
 			   expire_date
           from Token
+    </select>
+
+    <select id="findByAdminToken" resultType="Token">
+        select token_id,
+			   user_id,
+			   client_id,
+			   create_time,
+			   expire_date
+          from Token
+          where token_id = #{tokenId}
+            and client_id = #{clientId}
     </select>
 
 </mapper>

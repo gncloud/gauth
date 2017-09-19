@@ -12,6 +12,8 @@ import java.util.List;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public interface TokenService {
 
+    public static final String ADMIN_CLIENT = "gauth";
+
     /*
      * 로그인 토큰 생성
      */
@@ -39,7 +41,7 @@ public interface TokenService {
     /*
      * 토큰 유효성 검사
      */
-    Token isTokenValidate(String token) throws AccessControlException, ParseException, Exception;
+    Token isTokenValidate(String token) throws Exception;
     /*
      * 유저로 토큰 정보 조회
      * 유저아이디, 클라이언트아이디 필수

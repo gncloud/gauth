@@ -34,14 +34,4 @@ public class ActivateApiController implements ActivateApi {
         }
     }
 
-    public ResponseEntity<?> activatesGet(@ApiParam(value = "") @RequestParam(value = "activate", required = false) String activate) {
-        try {
-            userService.pendingUserActivate(activate);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("activatePost error", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
-        }
-    }
-
 }

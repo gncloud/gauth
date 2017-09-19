@@ -25,14 +25,17 @@ public class UserClientScopeDao {
         sqlSession.insert("userClientScope.insertUserClientScope", userClientScope);
     }
 
-    public UserClientScope findByUserClientScope(UserClientScope userClientScope) {
-        return sqlSession.selectOne("userClientScope.findByUserClientScope", userClientScope);
+    public List<UserClientScope> findByUserClientScope(UserClientScope userClientScope) {
+        return sqlSession.selectList("userClientScope.findByUserClientScope", userClientScope);
     }
 
     public void deleteUserClientScope(UserClientScope userClientScope) {
         sqlSession.delete("userClientScope.deleteUserClientScope", userClientScope);
     }
 
+    public void deleteUser(String userId) {
+        sqlSession.delete("userClientScope.deleteUser", userId);
+    }
 
     public List<UserClientScope> fintUserMappingList(User user) {
         return sqlSession.selectList("userClientScope.fintUserMappingList", user);
@@ -43,7 +46,7 @@ public class UserClientScopeDao {
     }
 
     public Integer isUserClientScope(AuthenticationRequest user){
-        return sqlSession.selectOne("userClientScope.isUserClientScoe", user);
+        return sqlSession.selectOne("userClientScope.isUserClientScope", user);
     }
 
     public List<String> findByScopeIdList(UserClientScope userClientScope) {

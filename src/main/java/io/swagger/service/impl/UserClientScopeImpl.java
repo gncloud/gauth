@@ -29,7 +29,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      * 유저 클라이언트 등록
      */
     @Override
-    public UserClientScope insertUserClientScope(UserClientScope userClientScope){
+    public List<UserClientScope> insertUserClientScope(UserClientScope userClientScope){
         userClientScopeDao.insertUserClientScope(userClientScope);
         return userClientScopeDao.findByUserClientScope(userClientScope);
     }
@@ -40,6 +40,11 @@ public class UserClientScopeImpl implements UserClientScopeService {
     @Override
     public void deleteUserClientScope(UserClientScope userClientScope){
         userClientScopeDao.deleteUserClientScope(userClientScope);
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+        userClientScopeDao.deleteUser(userId);
     }
 
     /*

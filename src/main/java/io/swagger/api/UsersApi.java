@@ -32,7 +32,8 @@ public interface UsersApi {
     @RequestMapping(value = "/users",
         method = RequestMethod.POST)
     ResponseEntity<?> usersPost(@ApiParam(value = "client id", required = true) @RequestParam(value = "clientId", required = true) String clientId,
-                                   @ApiParam(value = "", required = true) @RequestBody User user);
+                                   @ApiParam(value = "", required = true) @RequestBody User user,
+                                @ApiParam(value = "activateKey") @RequestParam(value = "activateKey", required = true) String activateKey);
 
 
     @ApiOperation(value = "delete user", notes = "delete user", response = Void.class, tags={  })
@@ -41,7 +42,8 @@ public interface UsersApi {
     @RequestMapping(value = "/users/{userId}",
         method = RequestMethod.DELETE)
     ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target", required = true) @PathVariable("userId") String userId,
-                                           @ApiParam(value = "User Authorization BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
+                                           @ApiParam(value = "User Authorization BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                        @ApiParam(value = "client id" ,required=true ) @RequestParam String client);
 
 
     @ApiOperation(value = "user info (admin only)", notes = "user info (admin only)", response = User.class, tags={  })

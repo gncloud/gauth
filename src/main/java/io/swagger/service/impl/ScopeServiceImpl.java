@@ -67,7 +67,15 @@ public class ScopeServiceImpl implements ScopeService {
         }
 
         String isDefault = scope.getIsDefault();
-        if(isDefault == null || "".equals(isDefault)){
+        if(isDefault != null){
+            if("true".equalsIgnoreCase(isDefault)
+                    || "y".equalsIgnoreCase(isDefault)
+                    || "yes".equalsIgnoreCase(isDefault)){
+                scope.setIsDefault("1");
+            }else{
+                scope.setIsDefault("0");
+            }
+        } else {
             scope.setIsDefault("0");
         }
 

@@ -35,9 +35,9 @@ public class TokensApiController implements TokensApi {
     @Autowired
     private UserService userService;
 
-    public ResponseEntity<?> tokensDelete(@ApiParam(value = "read token info",required=true ) @PathVariable("tokenId") String tokenId) {
+    public ResponseEntity<?> tokenDelete(@RequestHeader(value="Authorization", required=true) String authorization) {
         try {
-            tokenService.deleteToekn(tokenId);
+            tokenService.deleteToekn(authorization);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e){
             logger.error("tokensDelete", e);
@@ -79,7 +79,7 @@ public class TokensApiController implements TokensApi {
                                                  @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
             tokenService.isAdminToken(authorization);
-            tokenService.deleteToekn(authorization);
+            tokenService.deleteToekn(tokenId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (AccessControlException e){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

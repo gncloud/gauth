@@ -4,8 +4,11 @@ import io.swagger.dao.TokenDao;
 import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Token;
 import io.swagger.model.User;
+import io.swagger.model.UserClientScope;
 import io.swagger.service.TokenService;
+import io.swagger.service.UserClientScopeService;
 import io.swagger.service.UserService;
+import io.swagger.util.DateUtil;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,10 @@ public class TokenServiceImpl implements TokenService{
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserClientScopeService userClientScopeService;
+
+
     @Value("${user.token.timeout}")
     private String tokenTimeout;
 
@@ -45,21 +52,24 @@ public class TokenServiceImpl implements TokenService{
             throw new Exception("user userClientScope empty");
         }
 
+        // 기존 토큰 삭제
+        tokenDao.deleteClientToken(user);
+
         // 요청시간과 만료시간 생성
-        Date requestDate = requestDate();
+        Date requestDate = DateUtil.requestDate();
         int min = tokenTimeout == null ? 60 : Integer.parseInt(tokenTimeout);
-        Date expireDate = appendDate(requestDate, min);
+        Date expireDate = DateUtil.appendDate(requestDate, min);
 
         // 토큰 생성
-        String userToken = generateToken(user.getUserId(), dateFormat(expireDate));
+        String userToken = generateToken(user.getUserId(), DateUtil.dateFormat(expireDate));
 
         // DB 저장
         Token token = new Token();
         token.setUserId(user.getUserId());
         token.setClientId(user.getClientId());
         token.setTokenId(userToken);
-        token.setCreateTime(dateFormat(requestDate));
-        token.setExpireDate(dateFormat(expireDate));
+        token.setCreateTime(DateUtil.dateFormat(requestDate));
+        token.setExpireDate(DateUtil.dateFormat(expireDate));
 
         tokenDao.insertToekn(token);
 
@@ -117,7 +127,7 @@ public class TokenServiceImpl implements TokenService{
      * 토큰 유효성 검사
      */
     @Override
-    public Token isTokenValidate(String token) throws Exception, AccessControlException, ParseException{
+    public Token isTokenValidate(String token) throws Exception {
 
         // 토큰으로 유저 정보 조회, 없으면 Exception
         isUser(token);
@@ -125,7 +135,7 @@ public class TokenServiceImpl implements TokenService{
         // DB 저장된 토큰 추가 정보 조회
         Token registerToken = tokenDao.findByToken(token);
 
-        boolean isExpireDate = isExpireDate(registerToken.getExpireDate());
+        boolean isExpireDate = DateUtil.isExpireDate(registerToken.getExpireDate());
         if(!isExpireDate){
             throw new AccessControlException("invalid");
         }
@@ -146,20 +156,6 @@ public class TokenServiceImpl implements TokenService{
     }
 
     /*
-     * 토큰 만료 여부
-     */
-    private boolean isExpireDate(String expireDate) throws ParseException {
-        // 토큰 만료 시간 확인
-        Date expiredDate = new SimpleDateFormat("yyyy-M-d H:m:s").parse(expireDate);
-
-        Date nowDate = Calendar.getInstance().getTime();
-        int compare = nowDate.compareTo(expiredDate);
-
-        // 현재보다 미래 시간에 만료 될 경우
-        return compare < 0;
-    }
-
-    /*
      * 유저로 토큰 정보 조회
      * 유저아이디, 클라이언트아이디 필수
      */
@@ -173,31 +169,14 @@ public class TokenServiceImpl implements TokenService{
      */
     @Override
     public void isAdminToken(String authorization) throws AccessControlException {
-        // TODO admin 토큰인지 여부 확인
-    }
+        Token token = new Token();
+        token.setTokenId(authorization);
+        token.setClientId(TokenService.ADMIN_CLIENT);
+        Token registerAdminToken = tokenDao.findByAdminToken(token);
 
-    /*
-     * 요청시 날짜와 시간을 리턴
-     */
-    private Date requestDate(){
-        return Calendar.getInstance().getTime();
-    }
-
-    /*
-     * 기준 시간에서 분 추가
-     */
-    private Date appendDate(Date date, int timeout){
-        Calendar appendCalendar = Calendar.getInstance();
-        appendCalendar.setTime(date);
-        appendCalendar.add(Calendar.MINUTE, timeout);
-        return appendCalendar.getTime();
-    }
-
-    /*
-     * 날짜 데이터 형식 변환
-     */
-    private String dateFormat(Date date){
-        return new SimpleDateFormat("yyyy-M-d H:m:s").format(date);
+        if(registerAdminToken == null || !DateUtil.isExpireDate(registerAdminToken.getExpireDate())){
+            throw new AccessControlException("token invalid");
+        }
     }
 
     /*

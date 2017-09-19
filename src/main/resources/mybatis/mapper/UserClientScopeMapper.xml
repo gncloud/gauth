@@ -37,6 +37,11 @@
            AND client_id = #{clientId}
     </delete>
 
+    <delete id="deleteUser" parameterType="String">
+        DELETE FROM UserClientScope
+         WHERE user_id = #{param1}
+    </delete>
+
     <select id="fintUserMappingList" parameterType="User" resultType="UserClientScope">
         SELECT user_id,
         scope_id,

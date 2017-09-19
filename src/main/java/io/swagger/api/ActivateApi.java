@@ -21,11 +21,4 @@ public interface ActivateApi {
         method = RequestMethod.POST)
     ResponseEntity<?> activatesPost(@ApiParam(value = "") @RequestBody PendingUserRequest pendingUserRequest);
 
-    @ApiOperation(value = "pending user active", notes = "pending user active", response = Void.class, tags={  })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Void.class) })
-    @RequestMapping(value = "/activates",
-            method = RequestMethod.GET)
-    ResponseEntity<?> activatesGet(@ApiParam(value = "") @RequestParam(value = "activate", required = false) String activate);
-
 }

@@ -24,12 +24,17 @@ public interface UserClientScopeService {
     /*
      * 유저 클라이언트 등록
      */
-    UserClientScope insertUserClientScope(UserClientScope userClientScope);
+    List<UserClientScope> insertUserClientScope(UserClientScope userClientScope);
 
     /*
      * 유저 클라이언트 삭제
      */
     void deleteUserClientScope(UserClientScope userClientScope);
+
+    /*
+     * 유저 삭제
+     */
+    void deleteUser(String userId);
 
     /*
      * 유저로 관계 조회

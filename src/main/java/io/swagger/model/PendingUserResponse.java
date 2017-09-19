@@ -1,10 +1,10 @@
 package io.swagger.model;
 
-import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
+import java.util.Objects;
 
 /**
  * pending response
@@ -27,6 +27,10 @@ public class PendingUserResponse   {
 
   @JsonProperty("clientId")
   private String clientId = null;
+
+  @JsonProperty("status")
+  private String status = null;
+
 
   public PendingUserResponse email(String email) {
     this.email = email;
@@ -68,6 +72,20 @@ public class PendingUserResponse   {
     this.expireDate = expireDate;
     return this;
   }
+
+  /**
+   * Get status
+   * @return status
+   **/
+  @ApiModelProperty(value = "")
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
 
   /**
    * Get expireDate
@@ -132,12 +150,13 @@ public class PendingUserResponse   {
             Objects.equals(this.activateKey, pendingUserResponse.activateKey) &&
             Objects.equals(this.expireDate, pendingUserResponse.expireDate) &&
             Objects.equals(this.retryUrl, pendingUserResponse.retryUrl) &&
+            Objects.equals(this.status, pendingUserResponse.status) &&
             Objects.equals(this.clientId, pendingUserResponse.clientId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(email, activateKey, expireDate, retryUrl, clientId);
+    return Objects.hash(email, activateKey, expireDate, retryUrl, clientId, status);
   }
 
   @Override
@@ -149,6 +168,7 @@ public class PendingUserResponse   {
     sb.append("    activateKey: ").append(toIndentedString(activateKey)).append("\n");
     sb.append("    expireDate: ").append(toIndentedString(expireDate)).append("\n");
     sb.append("    retryUrl: ").append(toIndentedString(retryUrl)).append("\n");
+    sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("}");
     return sb.toString();
