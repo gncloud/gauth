@@ -47,6 +47,11 @@ public interface UserClientScopeService {
     List<UserClientScope> selectClientMappingList(Client client);
 
     /*
+     * 클라이언트로 전체 삭제
+     */
+    void deleteClient(String clientId);
+
+    /*
      * 클라이언트 등록된 관계 수
      */
     Integer findUserCount(String userId);

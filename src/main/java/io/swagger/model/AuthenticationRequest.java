@@ -3,6 +3,7 @@ package io.swagger.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.Objects;
 
@@ -55,7 +56,11 @@ public class AuthenticationRequest   {
   }
 
   public void setPassword(String password) {
-    this.password = password;
+    this.password = DigestUtils.sha512Hex(password);
+  }
+
+  public boolean isEqualsPassword(String password){
+    return DigestUtils.sha512Hex(password).equals(this.password);
   }
 
   public AuthenticationRequest clientId(String clientId) {

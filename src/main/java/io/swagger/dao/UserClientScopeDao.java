@@ -52,4 +52,8 @@ public class UserClientScopeDao {
     public List<String> findByScopeIdList(UserClientScope userClientScope) {
         return sqlSession.selectList("userClientScope.findByScopeIdList", userClientScope);
     }
+
+    public void deleteClient(String clientId) {
+        sqlSession.delete("userClientScope.deleteClient", clientId);
+    }
 }

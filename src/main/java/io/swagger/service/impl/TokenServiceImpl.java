@@ -4,7 +4,6 @@ import io.swagger.dao.TokenDao;
 import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Token;
 import io.swagger.model.User;
-import io.swagger.model.UserClientScope;
 import io.swagger.service.TokenService;
 import io.swagger.service.UserClientScopeService;
 import io.swagger.service.UserService;
@@ -17,9 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.AccessControlException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -53,7 +49,8 @@ public class TokenServiceImpl implements TokenService{
         }
 
         // 기존 토큰 삭제
-        tokenDao.deleteClientToken(user);
+        deleteSearchUserId(user.getUserId());
+
 
         // 요청시간과 만료시간 생성
         Date requestDate = DateUtil.requestDate();
@@ -177,6 +174,21 @@ public class TokenServiceImpl implements TokenService{
         if(registerAdminToken == null || !DateUtil.isExpireDate(registerAdminToken.getExpireDate())){
             throw new AccessControlException("token invalid");
         }
+    }
+
+    @Override
+    public void deleteSearchUserId(String userId){
+        AuthenticationRequest user = new AuthenticationRequest();
+        user.setUserId(userId);
+        tokenDao.deleteClientToken(user);
+    }
+
+    /*
+     * delete client
+     */
+    @Override
+    public void deleteClient(String clientId){
+        tokenDao.deleteClient(clientId);
     }
 
     /*

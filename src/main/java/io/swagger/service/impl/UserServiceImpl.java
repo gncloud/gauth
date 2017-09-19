@@ -6,6 +6,7 @@ import io.swagger.model.PendingUserResponse;
 import io.swagger.model.User;
 import io.swagger.model.UserClientScope;
 import io.swagger.service.ScopeService;
+import io.swagger.service.TokenService;
 import io.swagger.service.UserClientScopeService;
 import io.swagger.service.UserService;
 import io.swagger.util.DateUtil;
@@ -18,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +46,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private ScopeService scopeService;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Value("${server.host}")
     private String serverHost;
@@ -108,7 +111,8 @@ public class UserServiceImpl implements UserService {
         // 처음 회원가입한 클라이언트 맵핑 테이블 등록
         UserClientScope userClientScope = new UserClientScope();
         userClientScope.setClientId(clientId);
-         userClientScopeService.insertUserClientScope(userClientScope);
+        userClientScope.setUserId(user.getUserId());
+        userClientScopeService.insertUserClientScope(userClientScope);
 
         // 등록된 DB 유저 가져오기
         User registerUser = findByUser(user.getUserId());
@@ -120,6 +124,9 @@ public class UserServiceImpl implements UserService {
      * */
     @Override
     public void deleteUser(String userId, String client) {
+
+        // 토큰 정보 삭제
+        tokenService.deleteSearchUserId(userId);
 
         // 유저,클라이언트 관계 데이터 삭제
         UserClientScope userClientScope = new UserClientScope();

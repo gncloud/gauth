@@ -31,6 +31,11 @@
            and client_id = #{clientId}
     </select>
 
+    <delete id="deleteClient" parameterType="String">
+        DELETE FROM UserClientScope
+        WHERE client_id = #{clientId}
+    </delete>
+
     <delete id="deleteUserClientScope" parameterType="UserClientScope">
         DELETE FROM UserClientScope
          WHERE user_id = #{userId}

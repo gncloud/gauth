@@ -1,14 +1,11 @@
 package io.swagger.api;
 
+import io.swagger.annotations.ApiParam;
 import io.swagger.model.Client;
-
-import io.swagger.annotations.*;
-
 import io.swagger.model.UserClientScope;
 import io.swagger.service.ClientService;
 import io.swagger.service.TokenService;
 import io.swagger.service.UserClientScopeService;
-import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,16 +121,13 @@ public class ClientsApiController implements ClientsApi {
     }
 
 
-    public ResponseEntity<?> userClientScopePost(@ApiParam(value = "user id",required=true ) @PathVariable("userId") String userId,
+    public ResponseEntity<?> userClientScopePost(@ApiParam(value = "target",required=true ) @PathVariable("userId") String userId,
                                          @RequestParam(value = "clientId", required = true) String clientId) {
         try {
-
-
 
             UserClientScope userClientScope = new UserClientScope();
             userClientScope.setUserId(userId);
             userClientScope.setClientId(clientId);
-            userClientScopeService.deleteUserClientScope(userClientScope);
             List<UserClientScope> registerUserClientScopeList = userClientScopeService.insertUserClientScope(userClientScope);
 
             return new ResponseEntity<List<UserClientScope>>(registerUserClientScopeList, HttpStatus.OK);

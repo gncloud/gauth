@@ -2,14 +2,17 @@ package io.swagger.service.impl;
 
 import io.swagger.dao.ClientDao;
 import io.swagger.model.Client;
+import io.swagger.model.Scope;
 import io.swagger.service.ClientService;
+import io.swagger.service.ScopeService;
+import io.swagger.service.TokenService;
+import io.swagger.service.UserClientScopeService;
 import io.swagger.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Base64;
 import java.util.List;
 
 /**
@@ -25,6 +28,15 @@ public class ClientServiceImpl implements ClientService {
 
     @Autowired
     private ClientDao clientDao;
+
+    @Autowired
+    private UserClientScopeService userClientScopeService;
+
+    @Autowired
+    private ScopeService scopeService;
+
+    @Autowired
+    private TokenService tokenService;
 
     /*
      * 클라이언트 등록
@@ -44,6 +56,23 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteClient(String clientId) {
+        List<Scope> scopes = scopeService.findByDefailtScopes(clientId);
+
+        userClientScopeService.deleteClient(clientId);
+
+        for (int i = 0; i < scopes.size(); i++) {
+            Scope target = new Scope();
+            target.setClientId(clientId);
+            target.setScopeId(scopes.get(i).getScopeId());
+            try {
+                scopeService.deleteScope(target);
+            } catch (Exception e) {
+
+            }
+        }
+
+        tokenService.deleteClient(clientId);
+
         clientDao.deleteClient(clientId);
     }
 

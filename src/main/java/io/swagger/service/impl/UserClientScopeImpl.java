@@ -1,14 +1,13 @@
 package io.swagger.service.impl;
 
 import io.swagger.dao.UserClientScopeDao;
-import io.swagger.model.AuthenticationRequest;
-import io.swagger.model.Client;
-import io.swagger.model.User;
-import io.swagger.model.UserClientScope;
+import io.swagger.model.*;
+import io.swagger.service.ScopeService;
 import io.swagger.service.UserClientScopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,12 +24,35 @@ public class UserClientScopeImpl implements UserClientScopeService {
     @Autowired
     private UserClientScopeDao userClientScopeDao;
 
+    @Autowired
+    private ScopeService scopeService;
     /*
      * 유저 클라이언트 등록
      */
     @Override
     public List<UserClientScope> insertUserClientScope(UserClientScope userClientScope){
-        userClientScopeDao.insertUserClientScope(userClientScope);
+
+        // 기존 정보 삭제
+        deleteUserClientScope(userClientScope);
+
+        List<UserClientScope> insertList = new ArrayList<>();
+        List<Scope> scopesList = scopeService.findByDefailtScopes(userClientScope.getClientId());
+
+        int scopeSize = scopesList.size();
+        for(int i=0; i < scopeSize; i++){
+            UserClientScope target = new UserClientScope();
+            target.setClientId(userClientScope.getClientId());
+            target.setUserId(userClientScope.getUserId());
+            target.setScopeId(scopesList.get(i).getScopeId());
+
+            // 스코프 만큼 추가
+            userClientScopeDao.insertUserClientScope(target);
+        }
+
+        if(scopeSize == 0){
+            userClientScopeDao.insertUserClientScope(userClientScope);
+        }
+
         return userClientScopeDao.findByUserClientScope(userClientScope);
     }
 
@@ -41,6 +63,15 @@ public class UserClientScopeImpl implements UserClientScopeService {
     public void deleteUserClientScope(UserClientScope userClientScope){
         userClientScopeDao.deleteUserClientScope(userClientScope);
     }
+
+    /*
+     * 클라이언트 삭제
+     */
+    @Override
+    public void deleteClient(String clientId){
+        userClientScopeDao.deleteClient(clientId);
+    }
+
 
     @Override
     public void deleteUser(String userId) {

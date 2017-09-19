@@ -4,6 +4,7 @@ import io.swagger.dao.ScopeDao;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
 import io.swagger.service.ScopeService;
+import io.swagger.service.UserClientScopeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,9 @@ public class ScopeServiceImpl implements ScopeService {
 
     @Autowired
     private ScopeDao scopeDao;
+
+    @Autowired
+    private UserClientScopeService userClientScopeService;
 
     /*
      * scope 조회
@@ -90,6 +94,8 @@ public class ScopeServiceImpl implements ScopeService {
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteScope(Scope scope) throws Exception {
+
+        userClientScopeService.deleteClient(scope.getClientId());
 
         String clientId = scope.getClientId();
         String scopeId = scope.getScopeId();

@@ -1,10 +1,7 @@
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import io.swagger.Swagger2SpringBoot;
-import io.swagger.model.Client;
-import io.swagger.model.PendingUserRequest;
-import io.swagger.model.Scope;
-import io.swagger.model.User;
+import io.swagger.model.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,12 +18,13 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.sql.DataSource;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 
@@ -36,6 +34,10 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 public class RestClientApiTest {
 
     org.slf4j.Logger logger = LoggerFactory.getLogger(RestClientApiTest.class);
+
+
+    @Autowired
+    private DataSource dataSource;
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -55,10 +57,20 @@ public class RestClientApiTest {
     // authorization
     private String adminToken  = "9b21eb13af5378de0467e3a3f95d4f930ce7ed5c1acda6ac5c8757b9f49b8d49";
 
-    HttpHeaders httpHeaders = new HttpHeaders();;
+    HttpHeaders httpHeaders = new HttpHeaders();
+
+    HttpHeaders userHeader = new HttpHeaders();
 
     @Test
     public void createClientTest() {
+
+        //test
+        tokenDelete("test");
+        pendingDelete("test@test.com");
+        clientDelete("test");
+        userDelete("test");
+
+
         // 클라이언트
 
         Client client = new Client();
@@ -99,17 +111,22 @@ public class RestClientApiTest {
         request("/scopes", "post", scope4, httpHeaders);
         request("/scopes", "get", client, httpHeaders);
 
+
+
+
         PendingUserRequest pendingUser1 = new PendingUserRequest();
         pendingUser1.setClientId(client.getClientId());
         pendingUser1.setEmail("test@test.com");
         String content = null;
+        String activateKey = null;
+
         try {
-            content = request("/activates", "post", pendingUser1, httpHeaders).getResponse().getContentAsString();
+            content = request("/activates", "post", pendingUser1, null).getResponse().getContentAsString();
+            activateKey = new Gson().fromJson(content,Map.class).get("activateKey").toString();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        String activateKey = new Gson().fromJson(content,Map.class).get("activateKey").toString();
         User user = new User();
         user.setPassword("1111");
         user.setUserId("test");
@@ -118,14 +135,29 @@ public class RestClientApiTest {
         user.setEmail("test@test.com");
         user.setName("kk");
         user.setPhone("123123");
-        request("/users?clientId="+ client.getClientId() +"&activateKey=" + activateKey, "post", user, httpHeaders);
+        request("/users?clientId="+ client.getClientId() +"&activateKey=" + activateKey, "post", user, null);
 
-        request("/userClientScope/" + user.getUserId() + "?clientId="+ client.getClientId(), "post", user, httpHeaders);
-
-        //request("/users/"+ user.getUserId(), "delete", user, httpHeaders);
+        request("/userClientScope/" + user.getUserId() + "?clientId="+ client.getClientId(), "post", user, null);
 
 
+        AuthenticationRequest actionUser = new AuthenticationRequest();
+        actionUser.setUserId("test");
+        actionUser.setPassword("1111");
+        actionUser.setClientId(client.getClientId());
 
+        try {
+            content = request("/tokens", "post", actionUser, null).getResponse().getContentAsString();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String userToken = new Gson().fromJson(content,Map.class).get("tokenId").toString();
+        userHeader.set("Authorization", userToken);
+
+        request("/tokens/" + userToken, "get", null, null);
+
+        request("/token", "delete", null, userHeader);
+
+        request("/users/" + user.getUserId() + "?client=" + client.getClientId(), "delete", null, userHeader);
 
 
         request("/scopes/" + scope.getScopeId() + "?clientId=" + client.getClientId(), "delete", null, httpHeaders);
@@ -173,11 +205,17 @@ public class RestClientApiTest {
             String userJson = objectMapper.writeValueAsString(body);
             //Gson gson = new Gson();
 
+            if(headers != null){
+                resultActions = this.mockMvc.perform(mockMvcBuilder
+                        .contentType(contentType)
+                        .headers(headers)
+                        .content(userJson));
+            }else{
+                resultActions = this.mockMvc.perform(mockMvcBuilder
+                        .contentType(contentType)
+                        .content(userJson));
+            }
 
-            resultActions = this.mockMvc.perform(mockMvcBuilder
-                    .contentType(contentType)
-                    .headers(headers)
-                    .content(userJson));
 
             //resultActions.andDo(print());
             System.out.println("------------------------------------------------------------------------------------------------");
@@ -195,7 +233,49 @@ public class RestClientApiTest {
 
 
 
+    @Test
+    public void deleteTest(){
 
+
+
+        pendingDelete("test@test.com");
+        clientDelete("test");
+        userDelete("test");
+
+
+    }
+
+    private void pendingDelete(String email){
+        try {
+            dataSource.getConnection().createStatement().execute("delete from Pending where email = '" + email + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void clientDelete(String id){
+        try {
+            dataSource.getConnection().createStatement().execute("delete from UserClientScope where user_id = '" + id + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void userDelete(String id){
+        try {
+            dataSource.getConnection().createStatement().execute("delete from User where user_id = '" + id + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void tokenDelete(String id){
+        try {
+            dataSource.getConnection().createStatement().execute("delete from Token where user_id = '" + id + "'");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 }

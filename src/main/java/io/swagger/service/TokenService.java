@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.AccessControlException;
-import java.text.ParseException;
 import java.util.List;
 
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
@@ -30,6 +29,10 @@ public interface TokenService {
     void deleteToekn(String tokenId);
 
     /*
+     * 유저 아이디로 토큰 정보 삭제
+     */
+    void deleteSearchUserId(String userId);
+    /*
      * 토큰 전체 조회
      */
     List<Token> selectToken();
@@ -51,4 +54,9 @@ public interface TokenService {
      * admin 토큰 유효성 검사
      */
     void isAdminToken(String authorization) throws AccessControlException;
+
+    /*
+     * delete client
+     */
+    void deleteClient(String clientId);
 }

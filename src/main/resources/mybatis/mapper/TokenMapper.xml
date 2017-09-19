@@ -48,6 +48,11 @@
          WHERE user_id = #{userId}
     </delete>
 
+    <delete id="deleteClient" parameterType="String">
+        DELETE FROM Token
+        WHERE client_id = #{param1}
+    </delete>
+
     <select id="selectTokens" resultType="Token">
         select token_id,
 			   user_id,

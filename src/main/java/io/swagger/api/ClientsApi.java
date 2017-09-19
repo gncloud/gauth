@@ -60,6 +60,6 @@ public interface ClientsApi {
             @ApiResponse(code = 200, message = "OK", response = Client.class) })
     @RequestMapping(value = "/userClientScope/{userId}",
             method = RequestMethod.POST)
-    ResponseEntity<?> userClientScopePost(@ApiParam(value = "user id",required=true ) @PathVariable("userId") String userId,
+    ResponseEntity<?> userClientScopePost(@ApiParam(value = "target", required = true) @PathVariable("userId") String userId,
                                           @RequestParam(value = "clientId", required = true) String clientId);
 }

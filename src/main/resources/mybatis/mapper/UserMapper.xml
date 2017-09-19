@@ -37,6 +37,7 @@
 
     <select id="findByUser" resultType="User" parameterType="String">
             SELECT user_id,
+                   password,
                    email,
                    name,
                    register_date,
