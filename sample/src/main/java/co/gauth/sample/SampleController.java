@@ -1,5 +1,6 @@
 package co.gauth.sample;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -10,9 +11,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class SampleController {
 
+    private static org.slf4j.Logger logger = LoggerFactory.getLogger(SampleController.class);
 
     @RequestMapping("/pending")
     public String pending(){
+
+        logger.debug("pending controller call");
+
         return "pending";
     }
 
@@ -36,6 +41,5 @@ public class SampleController {
     public String contents(){
         return "contents";
     }
-
 
 }

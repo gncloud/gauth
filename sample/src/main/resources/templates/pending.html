@@ -1,24 +1,87 @@
 <html>
 <head>
     <title>가입 대기</title>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="/jquery-3.2.1.js"></script>
+    <link href="/bootstrap-4.0.0-beta-dist/css/bootstrap.min.css"/>
+    <script src="/bootstrap-4.0.0-beta-dist/js/bootstrap.js"></script>
+    <script src="/gauth/gauth.js"></script>
 </head>
 <body>
-가입 대기
+<div class="container-fluid">
+    <div class="row">
+        <h1>회원 가입 순서</h1>
 
+        <div>
+            <h3>1. 메일 인증</h3>
+            <h5>2. 회원 가입</h5>
+            <h5>3. 로그인</h5>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <p>
+            메일 인증 요청 하기
+            <br/>
+            * 사전 준비 : 클라이언트 등록
+        </p>
 
+        메일 : <input id="email" type="email" />
+        <button type="button" id="submit">인증</button>
+    </div>
+
+    <hr/>
+    <h4>
+        API log
+    </h4>
+    <div id="res" class="row" style="border:1px solid silver; overflow:scroll; height:300px;">
+
+    </div>
+
+</div>
 
 
 <script>
+
     $(function(){
-
-        alert(1);
-
-
+        $('#submit').click(function(){
+            log('pending submit');
+            var email = $('#email').val();
+            if(email !== undefined){
+                var data = JSON.stringify({
+                    "url": "/activates",
+                    "type": "post",
+                    "body": {
+                        "clientId": "gncloud",
+                        "email": email
+                    }
+                });
+                $.gauth.api(data, callback);
+            }else {
+                alert('email length 0');
+            }
+        });
     });
+
+var callback = function(result, xhr){
+
+    var codeHtml = '';
+    codeHtml += '<div class="com-sm-4">';
+    codeHtml += '       code :';
+    codeHtml +=         result.code;
+    codeHtml += '</div>'
+
+    var resultHtml = '';
+    resultHtml += '<div class="com-sm-8">';
+    resultHtml += '       result : &nbsp;&nbsp; ';
+    resultHtml +=         JSON.stringify(result.result);
+    resultHtml += '</div>'
+
+    log(codeHtml + resultHtml);
+};
+var log = function(str){
+    $('#res').html($('#res').html() + str + '<hr/>');
+}
 </script>
-
-
 
 </body>
 </html>
