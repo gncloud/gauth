@@ -93,9 +93,9 @@
     </select>
 
     <insert id="insertPendingUser" parameterType="PendingUserResponse">
-        insert into Pending (email, activate_key, status, expire_date, retry_url,client_id)
+        insert into Pending (email, activate_key, status, expire_date, client_id)
         values(
-        #{email}, #{activateKey}, #{status}, #{expireDate},#{retryUrl},#{clientId}
+        #{email}, #{activateKey}, #{status}, #{expireDate},#{clientId}
         )
     </insert>
 
@@ -104,7 +104,6 @@
               , status
               , activate_key
               , expire_date
-              , retry_url
               , client_id
           from Pending
           where activate_key = #{activateKey}
@@ -115,7 +114,6 @@
         , status
         , activate_key
         , expire_date
-        , retry_url
         , client_id
         from Pending
         where email = #{param1}

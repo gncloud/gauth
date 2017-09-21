@@ -18,7 +18,7 @@
     var gauth = {
         server_info: {
             type: 'POST',
-            host: 'http://localhost:8080/gauth',
+            path: '/gauth',
             contentType: 'application/json',
             cacheControl: 'no-cache'
         },
@@ -28,7 +28,7 @@
                     this.server_info.type = opt.type;
                 }
                 if(opt.host !== undefined){
-                    this.server_info.host = opt.host;
+                    this.server_info.path = opt.host;
                 }
                 if(opt.contentType !== undefined){
                     this.server_info.contentType = opt.contentType;
@@ -57,8 +57,11 @@
             if (this.readyState === 4) {
                 var response = JSON.parse(this.response);
                 var gauth_result = {};
-                if(response.gauth_result !== undefined){
-                    gauth_result = JSON.parse(response.gauth_result);
+
+                try {
+                  gauth_result = JSON.parse(response.gauth_result);
+                }catch (e) {
+                  gauth_result = response.gauth_result;
                 }
 
                 var result = {
@@ -67,32 +70,71 @@
                 };
 
                 console.log("요청 결과", this);
-                if(result.code !== undefined && result.code.startsWith('2')){
+                if(successCallback !== undefined
+                        && successCallback !== null
+                        && result.code !== undefined
+                        && result.code.startsWith('2')){
                     successCallback(result, this);
-                }else{
+                }else if(errorCallback !== undefined
+                            && errorCallback !== null){
                     errorCallback(result, this);
                 }
             }
             });
-
-            xhr.open(gauth.server_info.type, gauth.server_info.host);
+            xhr.open(gauth.server_info.type, gauth.server_info.path);
             xhr.setRequestHeader("content-type", gauth.server_info.contentType);
             xhr.setRequestHeader("cache-control", gauth.server_info.cacheControl);
             xhr.send(data);
         },
-        setReq: function(url, type, body, header){
+        getReq: function(url, type, body, header){
             body   = body === undefined ? {} : body;
             header = header === undefined ? {} : header;
-
             return JSON.stringify({
                         "url": url,
                         "type": type,
                         "body": body,
                         "header": header
                     });
+        },
+        setCookie: function(data){
+            var gauth = 'gauth=';
+            var tokenId = data.result.tokenId;
+            cookies = gauth + escape(tokenId) + ';expires=;';
+            document.cookie = cookies;
+        },
+        getCookie: function(){
+            var gauth = 'gauth=';
+            var cookieData = document.cookie;
+            var start = cookieData.indexOf(gauth);
+            var cValue = '';
+            if(start != -1){
+                start += gauth.length;
+                var end = cookieData.indexOf(';', start);
+                if(end == -1){
+                    end = cookieData.length;
+                }
+                cValue = cookieData.substring(start, end);
+            }
+            return unescape(cValue);
+        },
+        removeCookie: function(){
+            var gauth = 'gauth=';
+            cookies = gauth + ';expires=-1;';
+            document.cookie = cookies;
+        },
+        isLogin: function(loginUrl){
+            var tokenId = this.getCookie();
+            var data = this.getReq('/tokens/' + tokenId, 'get', {});
+            this.api(data, function(response,obj){
+                var nowDate = new Date();
+                var expireDate = new Date(response.result.expireDate);
+                if(nowDate >= expireDate){
+                    location.href = loginUrl;
+                }
+            }, function(){
+                location.href = loginUrl;
+            });
         }
     }
-
     $.gauth = gauth;
-
 })(jQuery);

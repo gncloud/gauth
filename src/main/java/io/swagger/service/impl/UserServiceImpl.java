@@ -217,11 +217,11 @@ public class UserServiceImpl implements UserService {
         String activateKey = RandomUtil.randomString(32 - mTime.length()) + mTime;
 
         String ctx = serverContext == null ? "" : serverContext;
-        String retryUrl = serverHost + ":" + serverPort + ctx + activatePath +"?activateKey=" + activateKey;
+        //String retryUrl = serverHost + ":" + serverPort + ctx + activatePath +"?activateKey=" + activateKey;
 
         pendingUserResponse.setEmail(email);
         pendingUserResponse.setActivateKey(activateKey);
-        pendingUserResponse.setRetryUrl(retryUrl);
+        //pendingUserResponse.setRetryUrl(retryUrl);
         pendingUserResponse.setStatus(PENDING_STATUS);
         pendingUserResponse.setClientId(clientId);
 

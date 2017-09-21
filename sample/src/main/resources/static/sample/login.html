@@ -1,7 +1,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" >
-    <title>가입 대기</title>
+    <title>로그</title>
     <script src="/jquery-3.2.1.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
     <!-- Optional theme -->
@@ -21,72 +21,95 @@
     <div class="row">
         <div class="col-sm-6">
             <h4>
-                1단계 : 메일 인증 요청 하기
+                로그인
             </h4>
             <p>
-                * 사전 준비 : 어드만에서 클라이언트 등록 (ex: gncloud)
+                * 사전 준비 : - 어드만에서 클라이언트 등록 (ex: gncloud)<br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                - 회원 가입 : signup.html 참고
             </p>
 
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-sm-12">
                     <h4>요청</h4>
                     <div>
-
+                        <div class="input-group">
+                            <span class="input-group-addon">클라이언트아이디</span>
+                            <input type="text" class="form-control"  id="clientId" value="gncloud"/>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">아이디</span>
+                            <input type="text" class="form-control" placeholder="jwkim" id="userId"/>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">비밀번호</span>
+                            <input type="password" class="form-control"  id="password"/>
+                        </div>
+                        <div align="center">
+                            <button class="btn btn-success" id="submit">요청</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="col-sm-6">
             <h4>응답</h4>
-            <span id="pendingRes">요청하면 결과 나옵니다.</span>
+            <span id="tokenRes">요청하면 결과 나옵니다.</span>
         </div>
     </div>
     <hr/>
+    <div class="row" align="center">
+        <a href="signup.html">회원가입페이지이동</a>
+    </div>
 </div>
 
 
 <script>
 $(function(){
 
-    // mail 인증
-    $('#pendingSubmit').click(function(){
+    $('#submit').click(function(){
         console.log('인증 요청');
-        var email = $('#email').val();
+        var userId = $('#userId').val();
+        var password = $('#password').val();
         var clientId = $('#clientId').val();
 
-        if(email !== undefined
+        if(userId !== undefined
                 && clientId !== undefined
-                && email != ''
-                && clientId != ''){
+                && password !== undefined
+                && userId != ''
+                && clientId != ''
+                && password != ''){
 
             var gauthData = { "clientId": clientId
-                            , "email": email };
+                            , "userId": userId
+                            , "password": password };
 
-            var request = $.gauth.setReq('/activates', 'post', gauthData);
-            $.gauth.api(request, success_pending, error);
+            var request = $.gauth.getReq('/tokens', 'post', gauthData);
+            $.gauth.api(request, success, error);
 
         }else {
             console.log('인증 요청 실패');
-            alert('이메일 또는 클라이언트 아이디를 입력하세요.');
+            alert('아이디, 비밀번호, 클라이언트 아이디를 입력하세요.');
         }
     });
 
 
 });
 
-var success_pending = function(data, xhr){
-    $('#pendingRes').text(data.result.retryUrl);
-    $('#s_activate_key').val(data.result.activateKey);
-};
+var success = function(data, xhr){
+    var token = data.result.tokenId;
+    $('#tokenRes').html("code : " + data.code + "<br/>result :" + JSON.stringify(data.result) + '<br/>3초 후 페이지 이동');
+    $.gauth.setCookie(data);
+    setTimeout(function(){
+        location.href = 'isLogin.html';
+    },3000);
 
-var success_signup = function(data, xhr){
-    $('#signupRes').text(data.result);
 };
-
 
 var error = function(data, xhr){
-    $('#pendingRes').text(data.result.message);
-    console.log(data, xhr);
+    $('#tokenRes').html("code : " + data.code + "<br/>result :" + data.result.message);
 }
 
 </script>

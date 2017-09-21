@@ -115,6 +115,9 @@
             <span id="signupRes">요청하면 결과 나옵니다.</span>
         </div>
     </div>
+    <div class="row" align="center">
+        <a href="login.html">로그인페이지이동</a>
+    </div>
 </div>
 
 
@@ -135,8 +138,8 @@ $(function(){
             var gauthData = { "clientId": clientId
                             , "email": email };
 
-            var request = $.gauth.setReq('/activates', 'post', gauthData);
-            $.gauth.api(request, success_pending, error);
+            var request = $.gauth.getReq('/activates', 'post', gauthData);
+            $.gauth.api(request, success_pending, error_pending);
         }else {
             console.log('인증 요청 실패');
             alert('이메일 또는 클라이언트 아이디를 입력하세요.');
@@ -156,6 +159,14 @@ $(function(){
         var name = $('#s_name').val();
         var phone = $('#s_phone').val();
 
+        if(userId === undefined || userId == ''
+            || password === undefined || password == ''
+            || email === undefined || email == ''
+            || clientId === undefined || clientId == ''){
+            alert('아이디, 비번, 이메일, 클라이언트 아이디를 확인해주세요.');
+            return false;
+        }
+
         var guathData = {
             userId: userId,
             password: password,
@@ -166,27 +177,30 @@ $(function(){
             phone: phone
         };
 
-        var request = $.gauth.setReq('/users?clientId='+clientId + '&activateKey=' + activateKey, 'post', guathData);
-        $.gauth.api(request, success_signup, error);
+        var request = $.gauth.getReq('/users?clientId='+clientId + '&activateKey=' + activateKey, 'post', guathData);
+        $.gauth.api(request, success_signup, error_signup);
 
     });
 
 
-
-
 });
 var success_pending = function(data, xhr){
-    $('#pendingRes').text(data.result.retryUrl);
+    $('#pendingRes').text(data.result.activateKey);
     $('#s_activate_key').val(data.result.activateKey);
+    $('#s_email').val($('#email').val());
 };
 
 var success_signup = function(data, xhr){
-    $('#signupRes').text(data.result);
+    $('#signupRes').text("code : " + data.code + "<br/>result :" + JSON.stringify(data.result));
 };
 
 
-var error = function(data, xhr){
-    $('#pendingRes').text(data.result.message);
+var error_pending = function(data, xhr){
+    $('#pendingRes').text("code : " + data.code + "<br/>result :" + data.result.message);
+    console.log(data, xhr);
+}
+var error_signup = function(data, xhr){
+    $('#signupRes').text("code : " + data.code + "<br/>result :" + data.result.message);
     console.log(data, xhr);
 }
 
