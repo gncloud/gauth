@@ -15,16 +15,11 @@
     <div class="row">
         <div class="col-sm-12">
             <h1>회원 가입</h1>
-            <div>
-                <h3>1. 메일 인증</h3>
-                <h5>2. 회원 가입</h5>
-                <h5>3. 로그인</h5>
-            </div>
         </div>
     </div>
     <hr/>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-6">
             <h4>
                 1단계 : 메일 인증 요청 하기
             </h4>
@@ -46,91 +41,154 @@
                             <button type="button" id="pendingSubmit" class="btn btn-success">요청</button>
                         </span>
                     </div>
-
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <h4>응답</h4>
-                    <span id="pendingRes">요청하면 결과 나옵니다.</span>
-                </div>
-            </div>
+        </div>
+        <div class="col-sm-6">
+            <h4>응답</h4>
+            <span id="pendingRes">요청하면 결과 나옵니다.</span>
         </div>
     </div>
     <hr/>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-sm-6">
             <h4>
                 2 단계 : 회원 가입
             </h4>
             <p>
                 회원 정보 입력 후 activateKey와 함께 회원정보를 요청
+
+            <h3>Gauth 입력 필드 항목</h3>
+            <span>
+                아이디, 비밀번호, 이메일<br>
+                주소, 회사명, 이름, 전화번호
+            </span>
             </p>
-            <div class="col-sm-6">
+            <div class="col-sm-12" id="signup">
+                <div>
+                    <div class="input-group">
+                        <span class="input-group-addon">clientId</span>
+                        <input type="text" class="form-control" placeholder="jwkim" id="s_client_id" value="gncloud"/>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">activateKey</span>
+                        <input type="text" class="form-control" placeholder="jwkim" id="s_activate_key"/>
+                    </div>
+                </div>
+                <hr/>
+                회원 정보
                 <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon1">아이디</span>
-                    <input type="text" class="form-control" placeholder="UserId" aria-label="UserId" aria-describedby="basic-addon1"/>
+                    <span class="input-group-addon">아이디</span>
+                    <input type="text" class="form-control" placeholder="jwkim" id="s_user_id"/>
                 </div>
                 <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon2">비밀번호</span>
-                    <input type="password" class="form-control" placeholder="UserId" aria-label="UserId" aria-describedby="basic-addon2"/>
+                    <span class="input-group-addon">비밀번호</span>
+                    <input type="password" class="form-control" id="s_password"/>
                 </div>
                 <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon3"></span>
-                    <input type="text" class="form-control" placeholder="UserId" aria-label="UserId" aria-describedby="basic-addon3"/>
+                    <span class="input-group-addon">이메일</span>
+                    <input type="text" class="form-control" placeholder="gncloud@gncloud.kr" id="s_email"/>
                 </div>
                 <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon4">ID</span>
-                    <input type="text" class="form-control" placeholder="UserId" aria-label="UserId" aria-describedby="basic-addon4"/>
+                    <span class="input-group-addon">주소</span>
+                    <input type="text" class="form-control" placeholder="서울시 서초구 신반포로45길 18 주일빌딩 5층" id="s_address"/>
                 </div>
                 <div class="input-group">
-                    <span class="input-group-addon" id="basic-addon5">ID</span>
-                    <input type="text" class="form-control" placeholder="UserId" aria-label="UserId" aria-describedby="basic-addon5"/>
+                    <span class="input-group-addon">회사명</span>
+                    <input type="text" class="form-control" placeholder="gncloud" id="s_company"/>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">이름</span>
+                    <input type="text" class="form-control" placeholder="name" id="s_name"/>
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon">전화번호</span>
+                    <input type="text" class="form-control" placeholder="010-1234-1234" id="s_phone"/>
+                </div>
+                <div align="center">
+                    <button type="button" id="signupSubmit" class="btn btn-success">요청</button>
                 </div>
             </div>
         </div>
+        <div class="col-sm-6">
+            <h4>응답</h4>
+            <span id="signupRes">요청하면 결과 나옵니다.</span>
+        </div>
     </div>
-
-
-
-
-
-
 </div>
 
 
 <script>
-    $(function(){
-        $('#pendingSubmit').click(function(){
-            console.log('인증 요청');
-            var email = $('#email').val();
-            var clientId = $('#clientId').val();
-            
-            if(email !== undefined
-                    && clientId !== undefined
-                    && email != ''
-                    && clientId != ''){
+$(function(){
 
-                var gauthData = { "clientId": clientId
-                                , "email": email };
+    // mail 인증
+    $('#pendingSubmit').click(function(){
+        console.log('인증 요청');
+        var email = $('#email').val();
+        var clientId = $('#clientId').val();
 
-                var data = $.gauth.dataFormat('/activates', 'post', gauthData);
+        if(email !== undefined
+                && clientId !== undefined
+                && email != ''
+                && clientId != ''){
 
-                $.gauth.api(data, callback);
-                console.log('인증 요청 성공');
-            }else {
-                console.log('인증 요청 실패');
-                alert('이메일 또는 클라이언트 아이디를 입력하세요.');
-            }
-        });
+            var gauthData = { "clientId": clientId
+                            , "email": email };
+
+            var request = $.gauth.setReq('/activates', 'post', gauthData);
+            $.gauth.api(request, success_pending, error);
+        }else {
+            console.log('인증 요청 실패');
+            alert('이메일 또는 클라이언트 아이디를 입력하세요.');
+        }
     });
 
-var callback = function(result, xhr){
+    // 회원가입 인증
+    $('#signupSubmit').click(function(){
+        var clientId = $('#s_client_id').val();
+        var activateKey = $('#s_activate_key').val();
 
-    $('#pendingRes').text(result.result.retryUrl);
+        var userId = $('#s_user_id').val();
+        var password = $('#s_password').val();
+        var email = $('#s_email').val();
+        var address = $('#s_address').val();
+        var company = $('#s_company').val();
+        var name = $('#s_name').val();
+        var phone = $('#s_phone').val();
+
+        var guathData = {
+            userId: userId,
+            password: password,
+            email: email,
+            address: address,
+            company: company,
+            name: name,
+            phone: phone
+        };
+
+        var request = $.gauth.setReq('/users?clientId='+clientId + '&activateKey=' + activateKey, 'post', guathData);
+        $.gauth.api(request, success_signup, error);
+
+    });
 
 
+
+
+});
+var success_pending = function(data, xhr){
+    $('#pendingRes').text(data.result.retryUrl);
+    $('#s_activate_key').val(data.result.activateKey);
 };
+
+var success_signup = function(data, xhr){
+    $('#signupRes').text(data.result);
+};
+
+
+var error = function(data, xhr){
+    $('#pendingRes').text(data.result.message);
+    console.log(data, xhr);
+}
 
 </script>
 

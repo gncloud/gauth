@@ -39,8 +39,8 @@
             }
             console.log(this.server_info);
         },
-        api: function (data, callback){
-            console.log("gauth api call",data, callback);
+        api: function (data, successCallback, errorCallback){
+            console.log("요청", data);
 
             var xhr;
             //var xhr = new XMLHttpRequest();
@@ -54,7 +54,7 @@
 
             xhr.addEventListener("readystatechange", function () {
 
-              if (this.readyState === 4) {
+            if (this.readyState === 4) {
                 var response = JSON.parse(this.response);
                 var gauth_result = {};
                 if(response.gauth_result !== undefined){
@@ -62,14 +62,17 @@
                 }
 
                 var result = {
-                    code : response.code,
-                    result : gauth_result
+                    code: response.code,
+                    result: gauth_result,
                 };
 
                 console.log("요청 결과", this);
-
-                callback(result, this);
-              }
+                if(result.code !== undefined && result.code.startsWith('2')){
+                    successCallback(result, this);
+                }else{
+                    errorCallback(result, this);
+                }
+            }
             });
 
             xhr.open(gauth.server_info.type, gauth.server_info.host);
@@ -77,7 +80,7 @@
             xhr.setRequestHeader("cache-control", gauth.server_info.cacheControl);
             xhr.send(data);
         },
-        dataFormat: function(url, type, body, header){
+        setReq: function(url, type, body, header){
             body   = body === undefined ? {} : body;
             header = header === undefined ? {} : header;
 

@@ -1,7 +1,6 @@
 package io.swagger.api;
 
 import io.swagger.annotations.ApiParam;
-import io.swagger.model.Client;
 import io.swagger.model.User;
 import io.swagger.service.TokenService;
 import io.swagger.service.UserService;
@@ -51,7 +50,7 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<?> usersPost(@ApiParam(value = "client id", required = true) @RequestParam(value = "clientId", required = true) String clientId,
                                        @ApiParam(value = "" ,required=true ) @RequestBody User user,
-                                       @ApiParam(value = "activateKey") @RequestParam(value = "activateKey", required = true) String activateKey) {
+                                       @ApiParam(value = "activateKey") @RequestParam(value = "activateKey", required = false) String activateKey) {
         try {
 
             User registerUser = userService.signup(user, activateKey, clientId);

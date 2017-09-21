@@ -1,0 +1,95 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8" >
+    <title>가입 대기</title>
+    <script src="/jquery-3.2.1.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous"/>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="/gauth/gauth.js"></script>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>로그인</h1>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>
+                1단계 : 메일 인증 요청 하기
+            </h4>
+            <p>
+                * 사전 준비 : 어드만에서 클라이언트 등록 (ex: gncloud)
+            </p>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>요청</h4>
+                    <div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <h4>응답</h4>
+            <span id="pendingRes">요청하면 결과 나옵니다.</span>
+        </div>
+    </div>
+    <hr/>
+</div>
+
+
+<script>
+$(function(){
+
+    // mail 인증
+    $('#pendingSubmit').click(function(){
+        console.log('인증 요청');
+        var email = $('#email').val();
+        var clientId = $('#clientId').val();
+
+        if(email !== undefined
+                && clientId !== undefined
+                && email != ''
+                && clientId != ''){
+
+            var gauthData = { "clientId": clientId
+                            , "email": email };
+
+            var request = $.gauth.setReq('/activates', 'post', gauthData);
+            $.gauth.api(request, success_pending, error);
+
+        }else {
+            console.log('인증 요청 실패');
+            alert('이메일 또는 클라이언트 아이디를 입력하세요.');
+        }
+    });
+
+
+});
+
+var success_pending = function(data, xhr){
+    $('#pendingRes').text(data.result.retryUrl);
+    $('#s_activate_key').val(data.result.activateKey);
+};
+
+var success_signup = function(data, xhr){
+    $('#signupRes').text(data.result);
+};
+
+
+var error = function(data, xhr){
+    $('#pendingRes').text(data.result.message);
+    console.log(data, xhr);
+}
+
+</script>
+
+</body>
+</html>

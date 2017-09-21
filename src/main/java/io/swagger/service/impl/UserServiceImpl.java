@@ -53,8 +53,19 @@ public class UserServiceImpl implements UserService {
     @Value("${server.host}")
     private String serverHost;
 
+    @Value("${server.port}")
+    private String serverPort;
+
+    @Value("${server.contextPath}")
+    private String serverContext;
+
+    @Value("${server.activates.path}")
+    private String activatePath;
+
     @Value("${activateKey.timeout}")
     private String activateKeyTimeout;
+
+
     /*
      * 유저 조회
      * 유저아이디로 조회
@@ -83,7 +94,9 @@ public class UserServiceImpl implements UserService {
         // 펀딩 유저 활성화 안되어 있으면 Exception
         PendingUserResponse registerPendingUser = userDao.findByLastPending(user.getEmail());
 
-        if(registerPendingUser.getActivateKey().equals(activateKey)){
+
+        if(PENDING_STATUS.equals(registerPendingUser.getStatus())
+                && registerPendingUser.getActivateKey().equals(activateKey)){
             registerPendingUser.setStatus(ACTIVE_STATUS);
         }
 
@@ -202,12 +215,15 @@ public class UserServiceImpl implements UserService {
         userDao.deletePendingUser(email);
         String mTime = String.valueOf(System.currentTimeMillis());
         String activateKey = RandomUtil.randomString(32 - mTime.length()) + mTime;
-        String retryUrl = serverHost + "/users?activateKey=" + activateKey;
+
+        String ctx = serverContext == null ? "" : serverContext;
+        String retryUrl = serverHost + ":" + serverPort + ctx + activatePath +"?activateKey=" + activateKey;
 
         pendingUserResponse.setEmail(email);
         pendingUserResponse.setActivateKey(activateKey);
         pendingUserResponse.setRetryUrl(retryUrl);
         pendingUserResponse.setStatus(PENDING_STATUS);
+        pendingUserResponse.setClientId(clientId);
 
         // 요청시간과 만료시간 생성
         Date requestDate = DateUtil.requestDate();

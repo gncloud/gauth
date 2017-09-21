@@ -33,7 +33,7 @@ public interface UsersApi {
         method = RequestMethod.POST)
     ResponseEntity<?> usersPost(@ApiParam(value = "client id", required = true) @RequestParam(value = "clientId", required = true) String clientId,
                                    @ApiParam(value = "", required = true) @RequestBody User user,
-                                @ApiParam(value = "activateKey") @RequestParam(value = "activateKey", required = true) String activateKey);
+                                @ApiParam(value = "activateKey") @RequestParam(value = "activateKey", required = false) String activateKey);
 
 
     @ApiOperation(value = "delete user", notes = "delete user", response = Void.class, tags={  })

@@ -8,7 +8,6 @@ public class GauthResponse {
 
     private String code;
     private String gauth_result;
-    private String error;
 
     public String getCode() {
         return code;
@@ -26,11 +25,4 @@ public class GauthResponse {
         this.gauth_result = gauth_result;
     }
 
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
 }

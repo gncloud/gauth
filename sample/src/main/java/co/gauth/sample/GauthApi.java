@@ -93,7 +93,7 @@ public class GauthApi {
         } catch (IOException e) {
             logger.error("", e);
             gauthResponse.setCode("500");
-            gauthResponse.setError(e.getMessage());
+            gauthResponse.setGauth_result("{\"msg\":\"" + e.getMessage() + "\"}");
         }
         return gauthResponse;
     }

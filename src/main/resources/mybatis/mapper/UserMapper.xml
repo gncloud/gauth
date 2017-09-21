@@ -134,9 +134,13 @@
     </update>
 
     <select id="isEmail" parameterType="String" resultType="Integer">
-        select count(*) as count
-        from User
-        where email = #{param1}
+        select (select count(*)
+                  from User
+                 where email = #{param1})
+             + (select count(*)
+                  from Pending
+                 where email = #{param1}
+                   and expire_date >= now()) as count
     </select>
 
 

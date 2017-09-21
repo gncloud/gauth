@@ -34,4 +34,22 @@ public class ActivateApiController implements ActivateApi {
         }
     }
 
+    @Override
+    public ResponseEntity<?> activatesPut(@ApiParam(value = "") @RequestParam(value = "activateKey" ,required=true ) String activateKey) {
+        try {
+
+            PendingUserResponse pendingUserResponse = userService.findByPendingUserInfo(activateKey);
+            if(pendingUserResponse == null){
+                throw new Exception("invalid ActivateKey");
+            }
+
+            PendingUserResponse registerPendingUser = userService.updatePendingStatus(pendingUserResponse.getActivateKey());
+
+            return new ResponseEntity<PendingUserResponse>(registerPendingUser, HttpStatus.OK);
+        } catch (Exception e) {
+            logger.error("activatePost error", e);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
