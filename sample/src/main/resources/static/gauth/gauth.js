@@ -66,6 +66,8 @@
                     result : gauth_result
                 };
 
+                console.log("요청 결과", this);
+
                 callback(result, this);
               }
             });
@@ -74,7 +76,17 @@
             xhr.setRequestHeader("content-type", gauth.server_info.contentType);
             xhr.setRequestHeader("cache-control", gauth.server_info.cacheControl);
             xhr.send(data);
+        },
+        dataFormat: function(url, type, body, header){
+            body   = body === undefined ? {} : body;
+            header = header === undefined ? {} : header;
 
+            return JSON.stringify({
+                        "url": url,
+                        "type": type,
+                        "body": body,
+                        "header": header
+                    });
         }
     }
 

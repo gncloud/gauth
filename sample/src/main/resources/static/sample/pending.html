@@ -1,5 +1,6 @@
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8" >
     <title>가입 대기</title>
     <script src="/jquery-3.2.1.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"/>
@@ -41,10 +42,12 @@
                     <div class="input-group">
                         <span class="input-group-addon">이메일</span>
                         <input id="email" type="text" class="form-control" aria-label="UserId" aria-describedby="basic-addon1" placeholder="jwkim@gncloud.kr"/>
+                        <span class="input-group-btn">
+                            <button type="button" id="pendingSubmit" class="btn btn-success">요청</button>
+                        </span>
                     </div>
 
                 </div>
-                <button type="button" id="submit" class="btn btn-success">요청</button>
             </div>
             <div class="row">
                 <div class="col-sm-12">
@@ -96,53 +99,38 @@
 </div>
 
 
-<script type="javascript">
+<script>
     $(function(){
-
-        $('#submit').click(function(){
+        $('#pendingSubmit').click(function(){
+            console.log('인증 요청');
             var email = $('#email').val();
             var clientId = $('#clientId').val();
-            if(email !== undefined){
-                if(clientId !== undefined){
-                    var data = JSON.stringify({
-                        "url": "/activates",
-                        "type": "post",
-                        "body": {
-                            "clientId": clientId,
-                            "email": email
-                        }
-                    });
-                    $.gauth.api(data, callback);
-                }else{
-                    alert('client id length 0');
-                }
+            
+            if(email !== undefined
+                    && clientId !== undefined
+                    && email != ''
+                    && clientId != ''){
+
+                var gauthData = { "clientId": clientId
+                                , "email": email };
+
+                var data = $.gauth.dataFormat('/activates', 'post', gauthData);
+
+                $.gauth.api(data, callback);
+                console.log('인증 요청 성공');
             }else {
-                alert('email length 0');
+                console.log('인증 요청 실패');
+                alert('이메일 또는 클라이언트 아이디를 입력하세요.');
             }
         });
     });
 
 var callback = function(result, xhr){
-    plog(result);
+
     $('#pendingRes').text(result.result.retryUrl);
 
 
-
 };
-var plog = function(result){
-    var codeHtml = '';
-    codeHtml += '<div class="com-sm-4">';
-    codeHtml += '       code :';
-    codeHtml +=         result.code;
-    codeHtml += '</div>'
-
-    var resultHtml = '';
-    resultHtml += '<div class="com-sm-8">';
-    resultHtml += '       result : &nbsp;&nbsp; ';
-    resultHtml +=         JSON.stringify(result.result);
-    resultHtml += '</div>'
-    console.log(codeHtml + resultHtml);
-}
 
 </script>
 
