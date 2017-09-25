@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>gauth admin contents</title>
+    <script src='/v1/js/jquery-3.2.1.js'></script>
+    <link rel="stylesheet" href="/v1/bootstrap/css/bootstrap.min.css">
+    <script src="/v1/bootstrap/js/bootstrap.min.js"></script>
+    <script src="contents.js"></script>
+    <style>
+        .create_label {
+            min-width:150px;
+        }
+        .create_input {
+            min-width:300px;
+        }
+        .div-center {
+            display: block;
+            text-align: center;
+        }
+        .table-responsive th {
+            text-align:center;
+        }
+    </style>
+</head>
+<body>
+<br/>
+<br/>
+<div class="container">
+
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active">
+            <a href="#client" aria-controls="client" role="tab" data-toggle="tab">클라이언트</a>
+        </li>
+        <li role="presentation">
+            <a href="#user" aria-controls="user" role="tab" data-toggle="tab">회원(인증)</a>
+        </li>
+        <li role="presentation">
+            <a href="#waitUser" aria-controls="waitUser" role="tab" data-toggle="tab">회원(미인증)</a>
+        </li>
+        <li role="presentation" style="float:right;">
+            <a href="#logout" aria-controls="token" role="tab" data-toggle="tab" id="logout">Logout</a>
+        </li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="client">
+            <div class="row">
+                <h2>클라이언트 등록</h2>
+                <div class="col-sm-6">
+                    <div class="form-inline">
+                        <label class="create_label">클라이언트 아이디 *</label>
+                        <input class="form-control create_input" id="c_clientId">
+                    </div>
+                    <div class="form-inline">
+                        <label class="create_label">클라이언트 도메인 *</label>
+                        <input class="form-control create_input" id="c_domain">
+                    </div>
+                    <div class="form-inline">
+                        <label class="create_label">설명</label>
+                        <input class="form-control create_input" id="c_desc">
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="col-sm-4">
+                        <button class="btn btn-success btn-lg" id="createClient">생성</button>
+                    </div>
+                    <div class="col-sm-8">
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row">
+                <h2>클라이언트 목록</h2>
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="clientList">
+                        <colgroup>
+                            <col width="20%">
+                            <col width="25%">
+                            <col width="15%">
+                            <col width="30%">
+                            <col width="5%">
+                            <col width="5%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>아이디</th>
+                                <th>도메인</th>
+                                <th>시크릿키</th>
+                                <th>설명</th>
+                                <th>수정</th>
+                                <th>삭제</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="updateClientModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                        </div>
+                        <div class="modal-body">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary">Save changes</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="user">
+
+        </div>
+        <div role="tabpanel" class="tab-pane" id="waitUser">
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -2,6 +2,7 @@ package io.swagger.api;
 
 
 import io.swagger.annotations.ApiParam;
+import io.swagger.model.Token;
 import io.swagger.service.TokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +24,13 @@ public class ValidateTokenApiController implements ValidateTokenApi {
     private TokenService tokenService;
 
     public ResponseEntity<?> validateTokenHead(@ApiParam(value = "User Authorization BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
+        try {
+            Token registerToken = tokenService.isTokenValidate(authorization);
+            return new ResponseEntity<Token>(registerToken, HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("validateTokenHead", e);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
