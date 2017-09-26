@@ -8,6 +8,7 @@ Gauth는 통합인증 서버이다.
 
 
 2. 실행 방법
+
     기본 경로
     http://localhost:7979/v1
 
