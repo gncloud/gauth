@@ -47,6 +47,22 @@ public class ClientServiceImpl implements ClientService {
         client.setClientSecret(RandomUtil.randomString(32));
         clientDao.insertClient(client);
 
+        // User Scope
+        Scope userScope = new Scope();
+        userScope.setClientId(client.getClientId());
+        userScope.setIsDefault("Y");
+        userScope.setDescription("사용자");
+        userScope.setScopeId("User");
+        scopeService.insertScope(userScope);
+
+        //Admin Scope
+        Scope adminScope = new Scope();
+        adminScope.setScopeId("Admin");
+        adminScope.setDescription("관리자");
+        adminScope.setIsDefault("N");
+        adminScope.setClientId(client.getClientId());
+        scopeService.insertScope(adminScope);
+
         return findByClient(client.getClientId());
     }
 

@@ -66,4 +66,8 @@ public interface UserClientScopeService {
      */
     List<String> findByScopeIdList(UserClientScope userClientScope);
 
+    /*
+     * 클라이언트의 스코프 제거
+     */
+    void deleteClientScope(UserClientScope userClientScope);
 }

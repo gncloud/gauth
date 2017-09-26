@@ -44,6 +44,7 @@
     <update id="updateScope" parameterType="Scope">
         UPDATE Scope
         SET description = #{description}
+          , is_default = #{isDefault}
         where scope_id = #{scopeId}
         AND client_id = #{clientId}
     </update>

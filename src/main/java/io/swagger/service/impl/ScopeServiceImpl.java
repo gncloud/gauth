@@ -3,6 +3,7 @@ package io.swagger.service.impl;
 import io.swagger.dao.ScopeDao;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
+import io.swagger.model.UserClientScope;
 import io.swagger.service.ScopeService;
 import io.swagger.service.UserClientScopeService;
 import org.slf4j.Logger;
@@ -74,7 +75,8 @@ public class ScopeServiceImpl implements ScopeService {
         if(isDefault != null){
             if("true".equalsIgnoreCase(isDefault)
                     || "y".equalsIgnoreCase(isDefault)
-                    || "yes".equalsIgnoreCase(isDefault)){
+                    || "yes".equalsIgnoreCase(isDefault)
+                    || "1".equalsIgnoreCase(isDefault)){
                 scope.setIsDefault("1");
             }else{
                 scope.setIsDefault("0");
@@ -103,6 +105,11 @@ public class ScopeServiceImpl implements ScopeService {
             throw new Exception("invalid");
         }
 
+        UserClientScope userClientScope = new UserClientScope();
+        userClientScope.setClientId(clientId);
+        userClientScope.setScopeId(scopeId);
+        userClientScopeService.deleteClientScope(userClientScope);
+
         scopeDao.deleteScope(scope);
     }
 
@@ -118,6 +125,19 @@ public class ScopeServiceImpl implements ScopeService {
         String scopeId = scope.getScopeId();
         if(isNull(clientId) || isNull(scopeId)){
             throw new Exception("invalid");
+        }
+
+        String isDefault = scope.getIsDefault();
+        if(isDefault != null){
+            if("true".equalsIgnoreCase(isDefault)
+                    || "y".equalsIgnoreCase(isDefault)
+                    || "yes".equalsIgnoreCase(isDefault)){
+                scope.setIsDefault("1");
+            }else{
+                scope.setIsDefault("0");
+            }
+        } else {
+            scope.setIsDefault("0");
         }
 
         scopeDao.updateScope(scope);

@@ -15,19 +15,18 @@ $(function(){
         }
     });
 
-
-    // 처음엔 클라이언트 목록 조회
-    fnClientList();
-
     $('#logout').on('click',logout);
     $('#createClient').on('click',createClient);
     $('#updateClientSubmit').on('click', updateClient);
+    $('#createScopeSubmit').on('click',createScope);
+
     $('#searchUserBtn').on('click',function(){
         var search = $('#searchUserInput').val() === undefined ? '' : $('#searchUserInput').val();
         userList(search);
     });
 
-
+    // 처음엔 클라이언트 목록 조회
+    fnClientList();
 
 });
 // 회원 (인증) 조회
@@ -58,8 +57,8 @@ var userList = function(search){
                 t += '  <td class="td-center">';
                 t +=        o.company;
                 t += '  </td>';
-                t += '  <td class="td-center">';
-                t +=        o.register_date.substring(0, o.register_date.indexOf(' '));
+                t += '  <td class="td-center" style="padding:0px;">';
+                t +=        o.register_date.replace(' ','<br/>');
                 t += '  </td>';
                 t += '  <td class="td-center">';
                 t += '      <a href="javascript:void(0);" onclick="updateUserClientModal(\'' + o.userId + '\');">조회</a>';
@@ -89,28 +88,29 @@ var updateUserClientModal = function(userId){
             var userInfo = data.userInfo;
             var userClientList = data.userClientScopes;
 
+            var clientList = new Array();
             $(userClientList).each(function(i, o){
+                if($.inArray(o.clientId, clientList) != -1){
+                    return;
+                }
+                clientList.push(o.clientId);
                 var t = '<tr>';
-                t += '<td>';
-                t += o.clientId;
-                t += '</td>';
-                t += '<td>';
+                t += '  <td align="center" style="vertical-align:middle;">';
+                t += '  <input type="radio" name="userClient">';
+                t += '  </td>';
+                t += '  <td align="center" style="vertical-align:middle;">';
+                t += '      <b>';
+                t +=            o.clientId;
+                t += '      </b>';
+                t += '  </td>';
+                t += '  <td>';
+                t += '  <ul>';
                 $(userClientList).each(function(si, so){
                     if(so.clientId == o.clientId){
-                        t +=    o.scopeId === null ? '' : o.scopeId;
+                        t += '<li>' + so.scopeId === null ? '' : so.scopeId + '</li>';
                     }
                 });
-
-
-                t += '</td>';
-                t += '<td>';
-
-                t += '<td>';
-
-                t += '</td>';
-                t += '<td>';
-
-                t += '</td>';
+                t += '  </ul>';
                 t += '</tr>';
                 $('#userClientList tbody').append(t);
             });
@@ -119,7 +119,7 @@ var updateUserClientModal = function(userId){
     });
     $('#updateUserClientModal').modal('show');
 };
-
+// 클라이언트 추가
 var createClient = function(){
     var clientId = $('#c_clientId').val();
     var domain = $('#c_domain').val();
@@ -145,7 +145,6 @@ var createClient = function(){
         alert('도메인은 필수입니다.');
         return false;
     }
-
     fnAjax({
             url:'/v1/clients',
             type:'post',
@@ -155,9 +154,9 @@ var createClient = function(){
                   description:desc
             },
             success:function(data){
-                $('#client input').val('');
+                $('#createClientModal input').val('');
                 fnClientList();
-
+                $('#createClientModal').modal('hide');
             },
             error:function(r,s,e){
                 if(r.status == '400'){
@@ -166,6 +165,7 @@ var createClient = function(){
             }
         });
 };
+// 클라이언트 목록 조회
 var fnClientList = function(){
     $('#clientList tbody').empty();
     fnAjax({
@@ -175,8 +175,10 @@ var fnClientList = function(){
         success:function(data){
             $(data).each(function(i,o){
                 var t = '<tr>';
-                t += '   <td>';
+                t += '   <td rowspan="2" style="vertical-align:middle; text-align:center;">';
+                t += '   <b>';
                 t +=        o.clientId
+                t += '   </b>';
                 t += '   </td>';
                 t += '   <td>';
                 t +=        o.clientSecret
@@ -188,7 +190,7 @@ var fnClientList = function(){
                 t +=        o.description
                 t += '   </td>';
                 t += '   <td align="center">';
-                t +=        '<a href="javascript:void(0);" onclick="findScopeList(\'' + o.clientId + '\');">조회</a>';
+                t +=        '<a href="javascript:void(0);" onclick="findScopeList(\'' + o.clientId + '\', this);">열기</a>';
                 t += '   </td>'
                 t += '   <td align="center">';
                 t +=        '<a href="javascript:void(0);" onclick="updateClientModal(\'' + o.clientId + '\');">수정</a>';
@@ -197,16 +199,101 @@ var fnClientList = function(){
                 t +=        '<a href="javascript:void(0);" onclick="removeClient(\'' + o.clientId + '\');">삭제</a>';
                 t += '   </td>'
                 t += '</tr>';
-                $('#clientList tbody').append(t);
+                t += '<tr>';
+                t += '<td class="scopeDiv" colspan="6" data-client-id="' + o.clientId + '">';
+                t += '<div class="col-sm-12">';
+                t += '<h4>';
+                t += '    <span id="scopeTItle"></span> 스코프';
+                t += '    <button class="btn btn-success" style="float:right;" data-toggle="modal" data-target="#createScopeModal">생성</button>';
+                t += '</h4>';
+                t += '    <div class="row">';
+                t += '    <div class="table-responsive col-sm-12">';
+                t += '        <table class="table table-bordered" id="scopeList">';
+                t += '            <colgroup>';
+                t += '                <col width="20%">';
+                t += '                <col width="40%">';
+                t += '                <col width="10%">';
+                t += '                <col width="15%">';
+                t += '                <col width="15%">';
+                t += '            </colgroup>';
+                t += '            <thead>';
+                t += '            <tr>';
+                t += '                <th>아이디</th>';
+                t += '                <th>설명</th>';
+                t += '                <th>기본값 여부</th>';
+                t += '                <th>수정</th>';
+                t += '                <th>삭제</th>';
+                t += '            </tr>';
+                t += '            </thead>';
+                t += '            <tbody></tbody>';
+                t += '        </table>';
+                t += '    </div>';
+                t += '    </div>';
+                t += '</div>';
+                t += '</td>';
+                t += '</tr>';
+                $('#clientList tbody:eq(0)').append(t);
             });
+            if(data === undefined || data.length == 0){
+                $('#clientList tbody').html('<tr><td colspan="7" align="center">조회 된 데이터가 없습니다.</td></tr>')
+            }
         },
         error:fnError
     });
 };
+// 스코프 추가
+var createScope = function(){
+    var clientId = $('#c_scope_clientId').val();
+    var scopeId = $('#c_scope_scopeId').val();
+    var isDefault = $('#c_scope_isDefault').val();
+    var desc = $('#c_scope_desc').val();
 
+    if(scopeId === undefined || scopeId == ''){
+        alert('스코프아이디는 필수입니다.');
+        return false;
+    }
+    if(!confirm('스코프를 추가 하시겠습니까?')){
+        return false;
+    }
+    $('#c_scope_clientId').val('');
+    $('#c_scope_scopeId').val('');
+    $('#c_scope_desc').val('');
+    $('#c_scope_isDefault option:first').attr('selected','selected');
 
-var findScopeList = function(clientId){
-    $('#scopeList tbody').empty();
+    fnAjax({
+            url:'/v1/scopes',
+            type:'post',
+            head:{'Authorization':getCookie('gauth')},
+            data:{
+                clientId:clientId,
+                scopeId:scopeId,
+                isDefault:isDefault,
+                description:desc
+            },
+            success:function(data){
+                $('#createScopeModal').modal('hide');
+                findScopeList(clientId);
+            },
+            error:fnError
+        });
+}
+
+// 클라이언트의 스코프 목록 조회
+var findScopeList = function(clientId, obj){
+
+    if($('#clientList .scopeDiv[data-client-id=' + clientId + ']').css('display') != 'none'){
+        // 기존 열려 있던 폼
+        $('#clientList .scopeDiv[data-client-id=' + clientId + ']').hide();
+        $(obj).text('열기');
+        return false;
+    }else{
+        $('#clientList .scopeDiv[data-client-id=' + clientId + ']').show();
+        $('#clientList .scopeDiv[data-client-id=' + clientId + '] #c_scope_clientId').val(clientId);
+        $('#clientList .scopeDiv[data-client-id=' + clientId + '] #scopeList tbody').empty();
+        $('#clientList .scopeDiv[data-client-id=' + clientId + '] #scopeTItle').text(clientId);
+        $(obj).text('닫기');
+    }
+
     fnAjax({
         url:'/v1/scopes?client=' + clientId,
         type:'get',
@@ -214,22 +301,100 @@ var findScopeList = function(clientId){
         success:function(data){
             $(data).each(function(i,o){
                 var t = '<tr>';
-                t += '<th>';
+                t += '<td align="center">';
                 t +=    o.scopeId;
-                t += '</th>';
-                t += '<th>';
+                t += '</td>';
+                t += '<td>';
                 t +=    o.description;
-                t += '</th>';
+                t += '</td>';
+                t += '<td align="center">';
+                t +=    o.isDefault == 1 ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : '';
+                t += '</td>';
+                t += '<td align="center">';
+                t += '  <a href="javascript:void(0);" onclick="updateScopeModal(\'' + o.scopeId + '\',\'' + clientId + '\');">수정</a>';
+                t += '</td>';
+                t += '<td align="center">';
+                t += '  <a href="javascript:void(0);" onclick="removeScope(\'' + o.scopeId + '\',\'' + clientId + '\');">삭제</a>';
+                t += '</td>';
                 t += '</tr>';
-                $('#scopeList tbody').append(t);
+                $('#clientList .scopeDiv[data-client-id=' + clientId + '] #scopeList tbody').append(t);
             });
             if(data === undefined || data.length == 0){
-                $('#scopeList tbody').html('<tr><td colspan="5" align="center">등록된 권한이 없습니다.</td></tr>');
+                $('#clientList .scopeDiv[data-client-id=' + clientId + '] #scopeList tbody').html('<tr><td colspan="5" align="center">등록된 스코프가 없습니다.</td></tr>');
             }
         }
     });
 };
+// 스코프 수정
+var updateScopeSubmit = function(){
+    var clientId = $('#u_scope_ClientId').val();
+    var scopeId = $('#u_scope_scopeId').val();
+    var isDefault = $('#u_scope_isDefailt').val();
+    var description = $('#u_scope_desc').val();
 
+    fnAjax({
+        url:'/v1/scopes/' + scopeId,
+        type:'put',
+        head:{'Authorization':getCookie('gauth')},
+        data:{clientId:clientId,
+            isDefault:isDefault,
+            description:description
+        },
+        success:function(data){
+            $('#updateScopeModal').modal('hide');
+            findScopeList(clientId);
+        },
+        error:fnError
+    });
+};
+
+// 스코프 수정 모달
+var updateScopeModal = function(scopeId, clientId){
+    $('#updateScopeModal').modal('show');
+
+    fnAjax({
+        url:'/v1/scopes/' + scopeId + '?clientId=' + clientId,
+        type:'get',
+        head:{'Authorization':getCookie('gauth')},
+        success:function(data){
+            $('#u_scope_ClientId').val(clientId);
+            $('#u_scope_scopeId').val(data.scopeId);
+            $('#u_scope_desc').val(data.description);
+            if(data.isDefault == 1){
+                $('#u_scope_isDefailt').attr('checked',true);
+            }else{
+                $('#u_scope_isDefailt').attr('checked',false);
+            }
+        },
+        error:fnError
+    });
+
+}
+
+
+// 스코프 삭제
+var removeScope = function(scopeId, clientId){
+    if(!confirm('스코프를 삭제하시겠습니까?')){
+        return false;
+    }
+    fnAjax({
+        url:'/v1/scopes/' + scopeId + '?clientId=' + clientId,
+        type:'delete',
+        head:{'Authorization':getCookie('gauth')},
+        complete:function(data){
+            if(data.status == 200){
+                findScopeList(clientId);
+            }else{
+                alert('삭제 실패');
+                console.log(data);
+            }
+        }
+    });
+
+}
+
+
+// 클라이언트 수정 모달 띄우기
 var updateClientModal = function(clientId){
     fnAjax({
         url:'/v1/clients/' + clientId,
@@ -273,9 +438,13 @@ var updateClient = function(){
     });
 };
 
+//클라이언트 삭제
 var removeClient = function(clientId){
     if(!confirm(clientId + '를 삭제하시겠습니까?')){
         return false;
+    }
+    if(clientId == $('#c_scope_clientId').val()){
+        $('.scopeDiv').hide();
     }
     fnAjax({
             url:'/v1/clients/' + clientId,
@@ -284,11 +453,10 @@ var removeClient = function(clientId){
             success:function(data){
                 fnClientList();
             },
-            error:function(){
-                fnClientList();
-            }
+            error:fnError
         });
 }
+//로그아웃
 var logout = function(){
     var tokenId = getCookie('gauth');
     deleteCookie('gauth');
@@ -321,7 +489,6 @@ var isLogin = function(){
     }
 };
 
-
 var fnAjax = function(req){
     var url = req.url;
     var type = req.type;
@@ -329,13 +496,12 @@ var fnAjax = function(req){
     var head = req.head;
     var success = req.success;
     var error = req.error;
-
+    var complete = req.complete;
     $.ajax({
         url: url,
         type: type,
         contentType:'application/json',
         data:JSON.stringify(data),
-        dataType:'json',
         beforeSend : function(xhr){
             for (var key in head) {
                 console.log(key + ": " + head[key]);
@@ -343,7 +509,8 @@ var fnAjax = function(req){
             }
         },
         success:success,
-        error: error
+        error: error,
+        complete: complete
     });
 };
 

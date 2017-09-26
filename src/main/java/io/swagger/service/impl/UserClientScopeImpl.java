@@ -120,4 +120,13 @@ public class UserClientScopeImpl implements UserClientScopeService {
         return userClientScopeDao.findByScopeIdList(userClientScope);
     }
 
+    /*
+     * 클라이언트의 스코프 삭제
+     */
+    @Override
+    public void deleteClientScope(UserClientScope userClientScope) {
+        userClientScopeDao.deleteClientScope(userClientScope);
+    }
+
+
 }

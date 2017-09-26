@@ -43,7 +43,7 @@ public class ClientsApiController implements ClientsApi {
             tokenService.isAdminToken(authorization);
 
             clientService.deleteClient(clientId);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (AccessControlException e){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){

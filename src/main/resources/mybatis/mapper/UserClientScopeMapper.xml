@@ -69,4 +69,9 @@
         AND client_id = #{clientId}
     </select>
 
+    <delete id="deleteClientScope" parameterType="UserClientScope">
+        DELETE FROM UserClientScope
+        WHERE client_id = #{clientId}
+          and scope_id = #{scopeId}
+    </delete>
 </mapper>

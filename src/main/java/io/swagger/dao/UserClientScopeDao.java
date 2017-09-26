@@ -56,4 +56,8 @@ public class UserClientScopeDao {
     public void deleteClient(String clientId) {
         sqlSession.delete("userClientScope.deleteClient", clientId);
     }
+
+    public void deleteClientScope(UserClientScope userClientScope){
+        sqlSession.delete("deleteClientScope", userClientScope);
+    }
 }
