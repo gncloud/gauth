@@ -12,7 +12,9 @@ Gauth는 통합인증 서버이다.
     기본 경로
     http://localhost:7979/v1
 
-    URL 경로
+    API URL
+    
+    
     POST
     /tokens
     create token / login action
