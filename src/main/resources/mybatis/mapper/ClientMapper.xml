@@ -40,6 +40,7 @@
               , description
               , domain
           from Client
+         where client_id != 'gauth'
     </select>
 
     <select id="isDomain" resultType="Integer" parameterType="String">

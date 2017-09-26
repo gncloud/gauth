@@ -34,6 +34,7 @@ var loginRequest = function(userId, password){
             location.href="admin/contents.html";
         },
         error: function(x,h,r){
+            console.log(x,h,r);
             alert('회원 정보가 없습니다.');
         }
     });
@@ -51,6 +52,9 @@ var isLogin = function(){
             },
             success:function(data){
                 location.href="admin/contents.html";
+            },
+            error: function(){
+                deleteCookie('gauth');
             }
         });
     }
@@ -79,4 +83,8 @@ function getCookie(name) {
         }
     }
     return '';
+}
+// 쿠키 삭제
+var deleteCookie = function(name) {
+    setCookie(name, "", -1);
 }

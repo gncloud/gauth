@@ -34,11 +34,12 @@ public class ScopesApiController implements ScopesApi {
     private TokenService tokenService;
 
     public ResponseEntity<?> scopesGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
-                                       @ApiParam(value = ""  ) @RequestBody Client client) {
+                                       @ApiParam(value = ""  ) @RequestParam String client) {
         try {
             tokenService.isAdminToken(authorization);
-
-            List<Scope> clientScopeList = scopeService.selectClientScope(client);
+            Client searchClient = new Client();
+            searchClient.setClientId(client);
+            List<Scope> clientScopeList = scopeService.selectClientScope(searchClient);
 
             return new ResponseEntity<List<Scope>>(clientScopeList, HttpStatus.OK);
         } catch (AccessControlException e){

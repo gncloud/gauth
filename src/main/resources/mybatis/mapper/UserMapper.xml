@@ -83,8 +83,10 @@
                address,
                company
          FROM User
+         where 1=1
+           and user_id != 'admin'
          <if test="_parameter != null and _parameter != ''">
-         WHERE user_id = #{_parameter}
+            and user_id = #{_parameter}
              or email = #{_parameter}
              or company = #{_parameter}
              or name = #{_parameter}

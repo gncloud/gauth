@@ -2,7 +2,9 @@ package io.swagger.api;
 
 import io.swagger.annotations.ApiParam;
 import io.swagger.model.User;
+import io.swagger.model.UserClientScope;
 import io.swagger.service.TokenService;
+import io.swagger.service.UserClientScopeService;
 import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.AccessControlException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
@@ -31,6 +35,9 @@ public class UsersApiController implements UsersApi {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private UserClientScopeService userClientScopeService;
 
     public ResponseEntity<?> usersGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
                                       @ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search) {
@@ -84,7 +91,15 @@ public class UsersApiController implements UsersApi {
             tokenService.isAdminToken(authorization);
             User registerUser = userService.findByUser(userId);
 
-            return new ResponseEntity<User>(registerUser, HttpStatus.OK);
+            Map<String, Object> result = new HashMap<>();
+            result.put("userInfo", registerUser);
+
+            List<UserClientScope> userClientScopes = userClientScopeService.selectUserMappingList(registerUser);
+
+            result.put("userInfo", registerUser);
+            result.put("userClientScopes", userClientScopes);
+
+            return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
         } catch (AccessControlException e){
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){

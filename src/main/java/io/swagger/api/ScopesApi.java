@@ -1,7 +1,6 @@
 package io.swagger.api;
 
 import io.swagger.annotations.*;
-import io.swagger.model.Client;
 import io.swagger.model.Scope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,7 @@ public interface ScopesApi {
     @RequestMapping(value = "/scopes",
         method = RequestMethod.GET)
     ResponseEntity<?> scopesGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
-                                   @ApiParam(value = "") @RequestBody Client client);
+                                   @ApiParam(value = "") @RequestParam String client);
 
 
     @ApiOperation(value = "create scope (admin Only)", notes = "create scope (admin Only)", response = Scope.class, tags={  })

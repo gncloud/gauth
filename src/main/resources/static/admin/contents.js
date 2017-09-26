@@ -1,11 +1,125 @@
 $(function(){
+
     // login check
     isLogin();
 
+    // tab event init function call
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var focusTabId = e.target.href.substring(e.target.href.lastIndexOf('#') + 1, e.target.href.length);
+        if(focusTabId == 'client'){
+            fnClientList();
+        }else if(focusTabId == 'user'){
+            userList();
+        }else if(focusTabId == 'waitUser'){
+            waitUserList();
+        }
+    });
+
+
+    // 처음엔 클라이언트 목록 조회
+    fnClientList();
+
     $('#logout').on('click',logout);
     $('#createClient').on('click',createClient);
-    fnClientList();
+    $('#updateClientSubmit').on('click', updateClient);
+    $('#searchUserBtn').on('click',function(){
+        var search = $('#searchUserInput').val() === undefined ? '' : $('#searchUserInput').val();
+        userList(search);
+    });
+
+
+
 });
+// 회원 (인증) 조회
+var userList = function(search){
+    $('#userList tbody').empty();
+    fnAjax({
+        url: '/v1/users?search=' + (search === undefined ? '' : search),
+        type:'get',
+        head:{'Authorization':getCookie('gauth')},
+        success: function(data){
+            $(data).each(function(i,o){
+                var t = '<tr>';
+                t += '  <td class="td-center">';
+                t +=        o.userId;
+                t += '  </td>';
+                t += '  <td class="td-center">';
+                t +=        o.email;
+                t += '  </td>';
+                t += '  <td class="td-center">';
+                t +=        o.name;
+                t += '  </td>';
+                t += '  <td class="td-center">';
+                t +=        o.phone;
+                t += '  </td>';
+                t += '  <td>';
+                t +=        o.address;
+                t += '  </td>';
+                t += '  <td class="td-center">';
+                t +=        o.company;
+                t += '  </td>';
+                t += '  <td class="td-center">';
+                t +=        o.register_date.substring(0, o.register_date.indexOf(' '));
+                t += '  </td>';
+                t += '  <td class="td-center">';
+                t += '      <a href="javascript:void(0);" onclick="updateUserClientModal(\'' + o.userId + '\');">조회</a>';
+                t += '  </td>';
+                t += '</tr>';
+                $('#userList tbody').append(t);
+            });
+        },
+        error:fnError
+    });
+};
+
+var waitUserList = function(){
+
+
+};
+//유저의 클라이언트 권한 조회 모달
+var updateUserClientModal = function(userId){
+    $('#userClientList tbody').empty();
+    $('#userClientList select').empty();
+
+    fnAjax({
+        url: '/v1/users/' + userId,
+        type:'get',
+        head:{'Authorization':getCookie('gauth')},
+        success: function(data){
+            var userInfo = data.userInfo;
+            var userClientList = data.userClientScopes;
+
+            $(userClientList).each(function(i, o){
+                var t = '<tr>';
+                t += '<td>';
+                t += o.clientId;
+                t += '</td>';
+                t += '<td>';
+                $(userClientList).each(function(si, so){
+                    if(so.clientId == o.clientId){
+                        t +=    o.scopeId === null ? '' : o.scopeId;
+                    }
+                });
+
+
+                t += '</td>';
+                t += '<td>';
+
+                t += '<td>';
+
+                t += '</td>';
+                t += '<td>';
+
+                t += '</td>';
+                t += '</tr>';
+                $('#userClientList tbody').append(t);
+            });
+        },
+        error:fnError
+    });
+    $('#updateUserClientModal').modal('show');
+};
+
 var createClient = function(){
     var clientId = $('#c_clientId').val();
     var domain = $('#c_domain').val();
@@ -59,43 +173,104 @@ var fnClientList = function(){
         type:'get',
         head:{'Authorization':getCookie('gauth')},
         success:function(data){
-
             $(data).each(function(i,o){
-                if(o.clientId != 'gauth'){
-                    var t = '<tr>';
-                    t += '   <td>';
-                    t +=        o.clientId
-                    t += '   </td>';
-                    t += '   <td>';
-                    t +=        o.domain
-                    t += '   </td>';
-                    t += '   <td>';
-                    t +=        o.clientSecret
-                    t += '   </td>';
-                    t += '   <td>';
-                    t +=        o.description
-                    t += '   </td>';
-                    t += '   <td>';
-                    t +=        '<a href="javascript:void(0);" onclick="updateClient(\'' + o.clientId + '\');">수정</a>';
-                    t += '   </td>'
-                    t += '   <td>';
-                    t +=        '<a href="javascript:void(0);" onclick="removeClient(\'' + o.clientId + '\');">삭제</a>';
-                    t += '   </td>'
-                    t += '</tr>';
-                    $('#clientList tbody').append(t);
-                }
+                var t = '<tr>';
+                t += '   <td>';
+                t +=        o.clientId
+                t += '   </td>';
+                t += '   <td>';
+                t +=        o.clientSecret
+                t += '   </td>';
+                t += '   <td>';
+                t +=        o.domain
+                t += '   </td>';
+                t += '   <td>';
+                t +=        o.description
+                t += '   </td>';
+                t += '   <td align="center">';
+                t +=        '<a href="javascript:void(0);" onclick="findScopeList(\'' + o.clientId + '\');">조회</a>';
+                t += '   </td>'
+                t += '   <td align="center">';
+                t +=        '<a href="javascript:void(0);" onclick="updateClientModal(\'' + o.clientId + '\');">수정</a>';
+                t += '   </td>'
+                t += '   <td align="center">';
+                t +=        '<a href="javascript:void(0);" onclick="removeClient(\'' + o.clientId + '\');">삭제</a>';
+                t += '   </td>'
+                t += '</tr>';
+                $('#clientList tbody').append(t);
             });
-
         },
         error:fnError
     });
 };
-var updateClient = function(clientId){
 
 
+var findScopeList = function(clientId){
+    $('#scopeList tbody').empty();
+    fnAjax({
+        url:'/v1/scopes?client=' + clientId,
+        type:'get',
+        head:{'Authorization':getCookie('gauth')},
+        success:function(data){
+            $(data).each(function(i,o){
+                var t = '<tr>';
+                t += '<th>';
+                t +=    o.scopeId;
+                t += '</th>';
+                t += '<th>';
+                t +=    o.description;
+                t += '</th>';
+                t += '</tr>';
+                $('#scopeList tbody').append(t);
+            });
+            if(data === undefined || data.length == 0){
+                $('#scopeList tbody').html('<tr><td colspan="5" align="center">등록된 권한이 없습니다.</td></tr>');
+            }
+        }
+    });
+};
 
-    $('#myModal').modal('show');
+var updateClientModal = function(clientId){
+    fnAjax({
+        url:'/v1/clients/' + clientId,
+        type:'get',
+        head:{'Authorization':getCookie('gauth')},
+        success:function(data){
+            $('#u_clientId').val(data.clientId);
+            $('#u_secretKey').val(data.clientSecret);
+            $('#u_domain').val(data.domain);
+            $('#u_desc').val(data.description);
+        }
+    });
+    $('#updateClientModal').modal('show');
+};
 
+var updateClient = function(){
+    if(!confirm('수정 하시겠습니까?')){
+        return false;
+    }
+
+    var clientId = $('#u_clientId').val();
+    var secretKey = $('#u_secretKey').val();
+    var domain = $('#u_domain').val();
+    var desc = $('#u_desc').val();
+
+    fnAjax({
+        url:'/v1/clients/' + clientId,
+        type:'put',
+        head:{'Authorization':getCookie('gauth')},
+        data: {
+            clientId: clientId,
+            clientSecret:secretKey,
+            domain:domain,
+            description:desc
+        },
+        success:function(data){
+            fnClientList();
+            $('#updateClientModal').modal('hide');
+        },
+        error: fnError
+    });
 };
 
 var removeClient = function(clientId){
