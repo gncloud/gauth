@@ -39,10 +39,10 @@ public class UsersApiController implements UsersApi {
     @Autowired
     private UserClientScopeService userClientScopeService;
 
-    public ResponseEntity<?> usersGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
+    public ResponseEntity<?> usersGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication,
                                       @ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search) {
         try {
-            tokenService.isAdminToken(authorization);
+            tokenService.isAdminToken(authentication);
 
             List<User> registerUserList = userService.findByUsers(search);
 
@@ -72,7 +72,7 @@ public class UsersApiController implements UsersApi {
     }
 
     public ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target",required=true ) @PathVariable("userId") String userId,
-                                               @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
+                                               @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication,
                                                @ApiParam(value = "client id" ,required=true ) @RequestParam String client) {
         try {
             userService.deleteUser(userId, client);
@@ -86,9 +86,9 @@ public class UsersApiController implements UsersApi {
     }
 
     public ResponseEntity<?> usersUserIdGet(@ApiParam(value = "search userId",required=true ) @PathVariable("userId") String userId,
-                                            @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+                                            @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication) {
         try {
-            tokenService.isAdminToken(authorization);
+            tokenService.isAdminToken(authentication);
             User registerUser = userService.findByUser(userId);
 
             Map<String, Object> result = new HashMap<>();
@@ -109,7 +109,7 @@ public class UsersApiController implements UsersApi {
     }
 
     public ResponseEntity<?> usersUseridPut(@ApiParam(value = "search userId",required=true ) @PathVariable("userId") String userId,
-                                            @ApiParam(value = "user token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
+                                            @ApiParam(value = "user token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication,
                                             @RequestBody User user) {
         try {
             user.setUserId(userId);

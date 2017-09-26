@@ -35,9 +35,9 @@ public class TokensApiController implements TokensApi {
     @Autowired
     private UserService userService;
 
-    public ResponseEntity<?> tokenDelete(@RequestHeader(value="Authorization", required=true) String authorization) {
+    public ResponseEntity<?> tokenDelete(@RequestHeader(value="Authentication", required=true) String authentication) {
         try {
-            tokenService.deleteToekn(authorization);
+            tokenService.deleteToekn(authentication);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e){
             logger.error("tokensDelete", e);
@@ -45,9 +45,9 @@ public class TokensApiController implements TokensApi {
         }
     }
 
-    public ResponseEntity<?> tokensGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+    public ResponseEntity<?> tokensGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication) {
         try {
-            tokenService.isAdminToken(authorization);
+            tokenService.isAdminToken(authentication);
             List<Token> registerTokenList = tokenService.selectToken();
             return new ResponseEntity<List<Token>>(registerTokenList, HttpStatus.OK);
         } catch (AccessControlException e){
@@ -62,8 +62,10 @@ public class TokensApiController implements TokensApi {
         try {
 
             User targetUser = userService.findByUser(user.getUserId());
-            if(targetUser == null|| !targetUser.isEqualsPassword(user.getPassword())){
-                throw new Exception("invalid");
+            if(targetUser == null){
+                throw new Exception("user invalid");
+            }else if(!targetUser.isEqualsPassword(user.getPassword())){
+                throw new Exception("password invalid");
             }
 
             Token registerToken = tokenService.createToken(user);
@@ -76,9 +78,9 @@ public class TokensApiController implements TokensApi {
     }
 
     public ResponseEntity<?> tokensTokenIdDelete(@ApiParam(value = "target token",required=true ) @PathVariable("tokenId") String tokenId,
-                                                 @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+                                                 @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication) {
         try {
-            tokenService.isAdminToken(authorization);
+            tokenService.isAdminToken(authentication);
             tokenService.deleteToekn(tokenId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (AccessControlException e){

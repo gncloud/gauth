@@ -13,6 +13,7 @@ public interface TokenService {
 
     public static final String ADMIN_CLIENT = "gauth";
 
+
     /*
      * 로그인 토큰 생성
      */
@@ -53,7 +54,7 @@ public interface TokenService {
     /*
      * admin 토큰 유효성 검사
      */
-    void isAdminToken(String authorization) throws AccessControlException;
+    void isAdminToken(String authentication) throws AccessControlException;
 
     /*
      * delete client

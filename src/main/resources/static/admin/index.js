@@ -17,7 +17,15 @@ $(function(){
 
 });
 var loginRequest = function(userId, password){
-    $('input').val('');
+
+    if(userId === undefined || userId == ''){
+        alert('아이디를 입력하세요.');
+        return false;
+    }
+    if(password === undefined || password == ''){
+        alert('비밀번호를 입력하세요.');
+        return false;
+    }
     $.ajax({
         url:'tokens',
         type:'post',
@@ -34,8 +42,20 @@ var loginRequest = function(userId, password){
             location.href="admin/contents.html";
         },
         error: function(x,h,r){
-            console.log(x,h,r);
-            alert('회원 정보가 없습니다.');
+            console.log(x);
+            var errorData = JSON.parse(x.responseText).message;
+            if(errorData == 'user invalid'){
+                alert('회원 정보가 없습니다.');
+                $('input').val('').eq(0).focus();
+                return false;
+            }else if(errorData == 'password invalid'){
+                alert('비밀번호가 잘못되었습니다.');
+                $('input:eq(1)').val('').focus();
+                return false;
+            }else{
+                alert(x.responseText.message);
+                return false;
+            }
         }
     });
 
@@ -48,7 +68,7 @@ var isLogin = function(){
             type: 'HEAD',
             contentType:'application/json',
             beforeSend : function(xhr){
-                xhr.setRequestHeader("authorization", tokenId);
+                xhr.setRequestHeader("Authentication", tokenId);
             },
             success:function(data){
                 location.href="admin/contents.html";

@@ -17,7 +17,7 @@ public interface ClientsApi {
     @RequestMapping(value = "/clients/{clientId}",
         method = RequestMethod.DELETE)
     ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "target client id", required = true) @PathVariable("clientId") String clientId,
-                                               @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
+                                               @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
 
 
     @ApiOperation(value = "client info", notes = "client info", response = Client.class, tags={  })
@@ -26,7 +26,7 @@ public interface ClientsApi {
     @RequestMapping(value = "/clients/{clientId}",
         method = RequestMethod.GET)
     ResponseEntity<?> clientsClientIdGet(@ApiParam(value = "", required = true) @PathVariable("clientId") String clientId,
-                                              @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
+                                              @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
 
 
     @ApiOperation(value = "update client", notes = "update client", response = Client.class, tags={  })
@@ -35,7 +35,7 @@ public interface ClientsApi {
     @RequestMapping(value = "/clients/{clientId}",
         method = RequestMethod.PUT)
     ResponseEntity<?> clientsClientIdPut(@ApiParam(value = "", required = true) @PathVariable("clientId") String clientId,
-                                              @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                              @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
                                               @ApiParam(value = "") @RequestBody Client client);
 
 
@@ -44,7 +44,7 @@ public interface ClientsApi {
         @ApiResponse(code = 200, message = "OK", response = Client.class) })
     @RequestMapping(value = "/clients",
         method = RequestMethod.GET)
-    ResponseEntity<?> clientsGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
+    ResponseEntity<?> clientsGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
 
 
     @ApiOperation(value = "create client (admin Only)", notes = "create client (admin Only)", response = Client.class, tags={  })
@@ -52,7 +52,7 @@ public interface ClientsApi {
         @ApiResponse(code = 200, message = "OK", response = Client.class) })
     @RequestMapping(value = "/clients",
         method = RequestMethod.POST)
-    ResponseEntity<?> clientsPost(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+    ResponseEntity<?> clientsPost(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
                                        @ApiParam(value = "", required = true) @RequestBody Client client);
 
     @ApiOperation(value = "create UserClientScope", notes = "createUserClientScope", response = Client.class, tags={  })

@@ -82,13 +82,7 @@ $(function(){
                 && clientId != ''
                 && password != ''){
 
-            var gauthData = { "clientId": clientId
-                            , "userId": userId
-                            , "password": password };
-
-            var request = $.gauth.getReq('/tokens', 'post', gauthData);
-            $.gauth.api(request, success, error);
-
+            $.gauth.login(clientId, userId, password, success, error);
         }else {
             console.log('인증 요청 실패');
             alert('아이디, 비밀번호, 클라이언트 아이디를 입력하세요.');

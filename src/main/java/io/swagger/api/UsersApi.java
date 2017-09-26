@@ -22,7 +22,7 @@ public interface UsersApi {
         @ApiResponse(code = 200, message = "OK", response = User.class) })
     @RequestMapping(value = "/users",
         method = RequestMethod.GET)
-    ResponseEntity<?> usersGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+    ResponseEntity<?> usersGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
                                         @ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search);
 
 
@@ -42,7 +42,7 @@ public interface UsersApi {
     @RequestMapping(value = "/users/{userId}",
         method = RequestMethod.DELETE)
     ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target", required = true) @PathVariable("userId") String userId,
-                                           @ApiParam(value = "User Authorization BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                           @ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
                                         @ApiParam(value = "client id" ,required=true ) @RequestParam String client);
 
 
@@ -52,7 +52,7 @@ public interface UsersApi {
     @RequestMapping(value = "/users/{userId}",
         method = RequestMethod.GET)
     ResponseEntity<?> usersUserIdGet(@ApiParam(value = "search userId", required = true) @PathVariable("userId") String userId,
-                                        @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
+                                        @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
 
 
     @ApiOperation(value = "update user", notes = "update user", response = User.class, tags={  })
@@ -61,6 +61,6 @@ public interface UsersApi {
     @RequestMapping(value = "/users/{userId}",
             method = RequestMethod.PUT)
     ResponseEntity<?> usersUseridPut(@ApiParam(value = "update user", required = true) @PathVariable("userId") String userId,
-                                       @ApiParam(value = "user token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                       @ApiParam(value = "user token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
                                        @ApiParam(value = "") @RequestBody User user);
 }

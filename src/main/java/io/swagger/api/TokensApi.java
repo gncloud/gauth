@@ -16,7 +16,7 @@ public interface TokensApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/token",
         method = RequestMethod.DELETE)
-    ResponseEntity<?> tokenDelete(@ApiParam(value = "user token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
+    ResponseEntity<?> tokenDelete(@ApiParam(value = "user token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
 
 
     @ApiOperation(value = "Token All List (admin Only)", notes = "Token All List (admin Only)", response = Token.class, responseContainer = "List", tags={  })
@@ -24,7 +24,7 @@ public interface TokensApi {
         @ApiResponse(code = 200, message = "OK", response = Token.class) })
     @RequestMapping(value = "/token",
         method = RequestMethod.GET)
-    ResponseEntity<?> tokensGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
+    ResponseEntity<?> tokensGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
 
 
     @ApiOperation(value = "create token / login action", notes = "create token / login action", response = Token.class, tags={  })
@@ -41,7 +41,7 @@ public interface TokensApi {
     @RequestMapping(value = "/tokens/{tokenId}",
         method = RequestMethod.DELETE)
     ResponseEntity<?> tokensTokenIdDelete(@ApiParam(value = "target token", required = true) @PathVariable("tokenId") String tokenId,
-                                             @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
+                                             @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
 
 
     @ApiOperation(value = "read token info", notes = "read token info", response = Token.class, tags={  })

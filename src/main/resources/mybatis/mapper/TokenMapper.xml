@@ -78,13 +78,20 @@
 
     <select id="findByAdminToken" resultType="Token">
         select token_id,
-			   user_id,
-			   client_id,
-			   create_time,
-			   expire_date
-          from Token
-          where token_id = #{tokenId}
-            and client_id = #{clientId}
+                user_id,
+                client_id,
+                create_time,
+                expire_date
+         from Token
+        where token_id = #{tokenId}
+          and client_id = #{clientId}
+          and exists  (select 1
+                         from UserClientScope
+                        where (user_id, client_id,scope_id) = (select user_id
+                                                                    , client_id
+                                                                    , 'Admin'
+                                                                 from Token
+                                                                where token_id = #{tokenId}))
     </select>
 
 </mapper>

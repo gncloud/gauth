@@ -38,9 +38,9 @@ public class ClientsApiController implements ClientsApi {
     private UserClientScopeService userClientScopeService;
 
     public ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "target client id",required=true ) @PathVariable("clientId") String clientId,
-                                                   @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+                                                   @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication) {
         try {
-            tokenService.isAdminToken(authorization);
+            tokenService.isAdminToken(authentication);
 
             clientService.deleteClient(clientId);
             return new ResponseEntity<Void>(HttpStatus.OK);
@@ -53,9 +53,9 @@ public class ClientsApiController implements ClientsApi {
     }
 
     public ResponseEntity<?> clientsClientIdGet(@ApiParam(value = "",required=true ) @PathVariable("clientId") String clientId,
-                                                @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+                                                @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication) {
         try {
-            tokenService.isAdminToken(authorization);
+            tokenService.isAdminToken(authentication);
 
             Client registerClient = clientService.findByClient(clientId);
 
@@ -69,10 +69,10 @@ public class ClientsApiController implements ClientsApi {
     }
 
     public ResponseEntity<?> clientsClientIdPut(@ApiParam(value = "",required=true ) @PathVariable("clientId") String clientId,
-                                                @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
+                                                @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication,
                                                 @ApiParam(value = ""  ) @RequestBody Client client) {
         try {
-            tokenService.isAdminToken(authorization);
+            tokenService.isAdminToken(authentication);
 
             client.setClientId(clientId);
             Client registerClient = clientService.updateClient(client);
@@ -86,9 +86,9 @@ public class ClientsApiController implements ClientsApi {
         }
     }
 
-    public ResponseEntity<?> clientsGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+    public ResponseEntity<?> clientsGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication) {
         try {
-            tokenService.isAdminToken(authorization);
+            tokenService.isAdminToken(authentication);
 
             List<Client> registerClients = clientService.selectClients();
 
@@ -101,10 +101,10 @@ public class ClientsApiController implements ClientsApi {
         }
     }
 
-    public ResponseEntity<?> clientsPost(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
+    public ResponseEntity<?> clientsPost(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication,
                                          @ApiParam(value = "" ,required=true ) @RequestBody Client client) {
         try {
-            tokenService.isAdminToken(authorization);
+            tokenService.isAdminToken(authentication);
 
             Client registerClient = clientService.insertClient(client);
 

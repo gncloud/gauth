@@ -122,13 +122,48 @@
             cookies = gauth + ';expires=-1;';
             document.cookie = cookies;
         },
+        login: function(clientId,userId, password, fnSuccess, fnError){
+
+            var successProcess = {};
+            if(typeof fnSuccess == 'string'){
+                successProcess = function(data){
+                    gauth.setCookie(data);
+                    location.href=fnSuccess;
+                }
+            }else{
+                successProcess = function(data){
+                    gauth.setCookie(data);
+                    fnSuccess(data);
+                }
+            }
+
+            var gauthData = { "clientId": clientId
+                            , "userId": userId
+                            , "password": password };
+            var request = $.gauth.getReq('/tokens', 'post', gauthData);
+            $.gauth.api(request, successProcess, fnError);
+
+
+
+        },
+        logout: function(loginUrl){
+            var tokenId = this.getCookie();
+            var request = $.gauth.getReq('/tokens', 'delete', {}, {Authentication: tokenId});
+            $.gauth.api(request, function(response, obj){
+                gauth.removeCookie();
+                location.href = loginUrl === undefined ? '/' : loginUrl;
+            },
+            function(){
+                //error
+                gauth.removeCookie();
+                location.href = loginUrl === undefined ? '/' : loginUrl;
+            });
+        },
         isLogin: function(loginUrl){
             var tokenId = this.getCookie();
-            var data = this.getReq('/tokens/' + tokenId, 'get', {});
-            this.api(data, function(response,obj){
-                var nowDate = new Date();
-                var expireDate = new Date(response.result.expireDate);
-                if(nowDate >= expireDate){
+            var data = this.getReq('/validateToken', 'head', {}, {Authentication: tokenId});
+            this.api(data, function(response, obj){
+                if(response.code != '200'){
                     location.href = loginUrl;
                 }
             }, function(){

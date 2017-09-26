@@ -165,9 +165,9 @@ public class TokenServiceImpl implements TokenService{
      * admin check
      */
     @Override
-    public void isAdminToken(String authorization) throws AccessControlException {
+    public void isAdminToken(String authentication) throws AccessControlException {
         Token token = new Token();
-        token.setTokenId(authorization);
+        token.setTokenId(authentication);
         token.setClientId(TokenService.ADMIN_CLIENT);
         Token registerAdminToken = tokenDao.findByAdminToken(token);
 
