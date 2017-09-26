@@ -10,6 +10,7 @@
   - http://localhost:7979/v1/admin  어드민의 로그인 페이지
   - 샘플 로그인 프로젝트는 gauth안의 별도의 sample 프로젝트가 있다.
   - Sample 디렉터리 에서 Maven으로 package한다 (명령어 : man package)
+  - Gauth-sample spring boot 프로젝트를 실행한다. (java -jar gauth-sample.jar)
   - http://localhost:8080/sample/login.html 기본 경로
 
 ### API 요청 방법
