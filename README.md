@@ -1,5 +1,5 @@
 -- Gauth
-Gauth는 통합된 인증 및 권한 부여 기능 서버이다.
+Gauth는 통합인증 서버이다.
 
 
 1. 배포 방법
@@ -106,9 +106,11 @@ Gauth는 통합된 인증 및 권한 부여 기능 서버이다.
     update scope
 
 
-    어드민 페이지
+  * 어드민 페이지
     URL 경로
     http://localhost:7979/v1/admin
+    
+    어드민 기본 계정은 admin / 1111
 
 3. 샘플 로그인 확인
     gauth 프로젝트 하위의 sample 프로젝트를 별도로 실행한다.
