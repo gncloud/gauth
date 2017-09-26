@@ -4,10 +4,13 @@ Gauth는 통합인증 서버이다.
 
 1. 배포 방법
     A. 소스를 다운받는다.
-    B. sample 프로젝트는
+    B. sample 프로젝트는 별도의 스프링 프로젝트이다.
 
 
 2. 실행 방법
+    기본 경로
+    http://localhost:7979/v1
+
     URL 경로
     POST
     /tokens
@@ -106,11 +109,9 @@ Gauth는 통합인증 서버이다.
     update scope
 
 
-  * 어드민 페이지
+    어드민 페이지
     URL 경로
     http://localhost:7979/v1/admin
-    
-    어드민 기본 계정은 admin / 1111
 
 3. 샘플 로그인 확인
     gauth 프로젝트 하위의 sample 프로젝트를 별도로 실행한다.
