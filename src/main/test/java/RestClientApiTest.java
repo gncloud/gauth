@@ -55,7 +55,7 @@ public class RestClientApiTest {
     }
 
     // authorization
-    private String adminToken  = "9b21eb13af5378de0467e3a3f95d4f930ce7ed5c1acda6ac5c8757b9f49b8d49";
+    private String adminToken  = "52eed95c98e6317803b33cd9c9232a111ec7b97795567b8f849c76cdba50aece";
 
     HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -109,7 +109,7 @@ public class RestClientApiTest {
         scope4.setIsDefault("n");
         scope4.setDescription("test4");
         request("/scopes", "post", scope4, httpHeaders);
-        request("/scopes", "get", client, httpHeaders);
+        request("/scopes?client=" + client.getClientId(), "get", null, httpHeaders);
 
 
 
@@ -164,7 +164,7 @@ public class RestClientApiTest {
         request("/scopes/" + scope2.getScopeId() + "?clientId=" + client.getClientId(), "delete", null, httpHeaders);
         request("/scopes/" + scope3.getScopeId() + "?clientId=" + client.getClientId(), "delete", null, httpHeaders);
         request("/scopes/" + scope4.getScopeId() + "?clientId=" + client.getClientId(), "delete", null, httpHeaders);
-        request("/scopes", "get", client, httpHeaders);
+        request("/scopes?client=" + client.getClientId(), "get", null, httpHeaders);
 
 
         client.setDescription("update1");
