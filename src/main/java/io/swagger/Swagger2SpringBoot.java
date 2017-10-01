@@ -28,11 +28,9 @@ public class Swagger2SpringBoot implements CommandLineRunner {
 
 	class ExitException extends RuntimeException implements ExitCodeGenerator {
 		private static final long serialVersionUID = 1L;
-
 		@Override
 		public int getExitCode() {
 			return 10;
 		}
-
 	}
 }
