@@ -14,7 +14,7 @@ public class StringEncodingTest {
 
         System.out.println(System.currentTimeMillis());
 
-        String target = "1111";
+        String target = "admin";
 
         System.out.println("target : " + target);
 

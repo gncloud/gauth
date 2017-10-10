@@ -15,7 +15,7 @@ public interface ScopesApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/scopes",
         method = RequestMethod.GET)
-    ResponseEntity<?> scopesGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
+    ResponseEntity<?> scopesGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                    @ApiParam(value = "") @RequestParam String client);
 
 
@@ -24,7 +24,7 @@ public interface ScopesApi {
         @ApiResponse(code = 200, message = "OK", response = Scope.class) })
     @RequestMapping(value = "/scopes",
         method = RequestMethod.POST)
-    ResponseEntity<?> scopesPost(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
+    ResponseEntity<?> scopesPost(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                      @ApiParam(value = "") @RequestBody Scope scope);
 
 
@@ -34,7 +34,7 @@ public interface ScopesApi {
     @RequestMapping(value = "/scopes/{scopeId}",
         method = RequestMethod.DELETE)
     ResponseEntity<?> scopesScopeIdDelete(@ApiParam(value = "", required = true) @PathVariable("scopeId") String scopeId,
-                                          @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
+                                          @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                           @ApiParam(value = "clientId", required = true) @RequestParam(value = "clientId", required = true) String clientId);
 
     @ApiOperation(value = "scope info", notes = "scope info", response = Scope.class, tags={  })
@@ -51,7 +51,7 @@ public interface ScopesApi {
     @RequestMapping(value = "/scopes/{scopeId}",
         method = RequestMethod.PUT)
     ResponseEntity<?> scopesScopeIdPut(@ApiParam(value = "", required = true) @PathVariable("scopeId") String scopeId,
-                                           @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
+                                           @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                            @ApiParam(value = "") @RequestBody Scope scope);
 
 }

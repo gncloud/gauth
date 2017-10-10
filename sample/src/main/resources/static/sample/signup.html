@@ -32,11 +32,11 @@
                     <h4>요청</h4>
                     <div class="input-group">
                         <span class="input-group-addon">클라이언트ID</span>
-                        <input id="clientId" type="text" class="form-control" aria-label="UserId" aria-describedby="basic-addon1" placeholder="gncloud" value="gncloud"/>
+                        <input id="clientId" type="text" class="form-control" aria-label="UserId" aria-describedby="basic-addon1" placeholder="gncloud" value="sample"/>
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">이메일</span>
-                        <input id="email" type="text" class="form-control" aria-label="UserId" aria-describedby="basic-addon1" placeholder="jwkim@gncloud.kr"/>
+                        <input id="email" type="text" class="form-control" aria-label="UserId" aria-describedby="basic-addon1" placeholder="jwkim@sample.kr"/>
                         <span class="input-group-btn">
                             <button type="button" id="pendingSubmit" class="btn btn-success">요청</button>
                         </span>
@@ -68,7 +68,7 @@
                 <div>
                     <div class="input-group">
                         <span class="input-group-addon">clientId</span>
-                        <input type="text" class="form-control" placeholder="jwkim" id="s_client_id" value="gncloud"/>
+                        <input type="text" class="form-control" placeholder="jwkim" id="s_client_id" value="sample"/>
                     </div>
                     <div class="input-group">
                         <span class="input-group-addon">activateKey</span>
@@ -115,12 +115,46 @@
             <span id="signupRes">요청하면 결과 나옵니다.</span>
         </div>
     </div>
+    <hr>
+    <div class="row">
+        <div class="col-sm-6">
+            <h4>
+                3단계 : 클라이언트 추가 등록
+            </h4>
+            <p>
+                * 사전 준비 : 어드만에서 클라이언트 등록 (ex: gncloud)
+                <br/>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                회원가입 된 유저
+            </p>
+            <div class="row">
+                <div class="col-sm-6">
+                    <h4>요청</h4>
+                    <div class="input-group">
+                        <span class="input-group-addon">클라이언트ID</span>
+                        <input id="addClientId" type="text" class="form-control" aria-label="UserId" aria-describedby="basic-addon1" value="gncloud"/>
+                    </div>
+                    <div class="input-group">
+                        <span class="input-group-addon">아이디</span>
+                        <input id="addUserId" type="text" class="form-control" aria-label="UserId" aria-describedby="basic-addon1" placeholder="id"/>
+                        <span class="input-group-btn">
+                            <button type="button" id="addSubmit" class="btn btn-success">요청</button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <h4>응답</h4>
+            <span id="addSignupRes">요청하면 결과 나옵니다.</span>
+        </div>
+    </div>
     <div class="row" align="center">
         <a href="login.html">로그인페이지이동</a>
     </div>
 </div>
-
-
+<br/><br/><br/><br/><br/>
 <script>
 $(function(){
 
@@ -182,28 +216,50 @@ $(function(){
 
     });
 
+    $('#addSubmit').click(function(){
+        var clientId = $('#addClientId').val();
+        var userId = $('#addUserId').val();
+        if(clientId === undefined || clientId == ''){
+            alert('클라이언트를 입력하세요.');
+            return false;
+        }
+        if(userId === undefined || userId == ''){
+            alert('아이디를 입력하세요.');
+            return false;
+        }
+
+        var request = $.gauth.getReq('/userClientScope/' + userId + '?clientId='+clientId, 'post');
+        $.gauth.api(request, success_addClientRes, error_addClientRes);
+
+    });
 
 });
 var success_pending = function(data, xhr){
-    $('#pendingRes').text(data.result.activateKey);
+    $('#pendingRes').html(data.result.activateKey);
     $('#s_activate_key').val(data.result.activateKey);
     $('#s_email').val($('#email').val());
+    $('#s_client_id').val(data.result.clientId);
 };
 
 var success_signup = function(data, xhr){
-    $('#signupRes').text("code : " + data.code + "<br/>result :" + JSON.stringify(data.result));
+    $('#signupRes').html("code : " + data.code + "<br/>result :" + JSON.stringify(data.result));
 };
-
-
 var error_pending = function(data, xhr){
-    $('#pendingRes').text("code : " + data.code + "<br/>result :" + data.result.message);
+    $('#pendingRes').html("code : " + data.code + "<br/>result :" + data.result.message);
     console.log(data, xhr);
-}
+};
 var error_signup = function(data, xhr){
-    $('#signupRes').text("code : " + data.code + "<br/>result :" + data.result.message);
+    $('#signupRes').html("code : " + data.code + "<br/>result :" + data.result.message);
     console.log(data, xhr);
-}
-
+};
+var success_addClientRes = function(data, xhr){
+    $('#addSignupRes').html("code : " + data.code + "<br/>result :" + JSON.stringify(data.result));
+    console.log(data, xhr);
+};
+var error_addClientRes = function(data, xhr){
+    $('#addSignupRes').html("code : " + data.code + "<br/>result :" + data.result.message);
+    console.log(data, xhr);
+};
 </script>
 
 </body>

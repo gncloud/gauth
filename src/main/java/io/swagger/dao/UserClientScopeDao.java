@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -59,5 +60,13 @@ public class UserClientScopeDao {
 
     public void deleteClientScope(UserClientScope userClientScope){
         sqlSession.delete("deleteClientScope", userClientScope);
+    }
+
+    public List<UserClientScope> findByUserSearchList(ArrayList<String> searchUser) {
+        return sqlSession.selectList("userClientScope.findByUserSearchList", searchUser);
+    }
+
+    public void deleteUserScope(UserClientScope userClientScope){
+        sqlSession.delete("deleteUserScope", userClientScope);
     }
 }

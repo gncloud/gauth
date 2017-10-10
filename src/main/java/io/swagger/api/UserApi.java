@@ -15,7 +15,7 @@ public interface UserApi {
         @ApiResponse(code = 200, message = "OK", response = User.class) })
     @RequestMapping(value = "/user",
         method = RequestMethod.GET)
-    ResponseEntity<?> userGet(@ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
+    ResponseEntity<?> userGet(@ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 
 
 

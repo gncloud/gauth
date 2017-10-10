@@ -17,6 +17,6 @@ public interface ValidateTokenApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/validateToken",
         method = RequestMethod.HEAD)
-    ResponseEntity<?> validateTokenHead(@ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
+    ResponseEntity<?> validateTokenHead(@ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 
 }

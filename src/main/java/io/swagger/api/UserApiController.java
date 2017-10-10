@@ -22,9 +22,9 @@ public class UserApiController implements UserApi {
     @Autowired
     private UserService userService;
 
-    public ResponseEntity<?> userGet(@ApiParam(value = "User Authentication BEARER Token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication) {
+    public ResponseEntity<?> userGet(@ApiParam(value = "User Authentication BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
-            User registerUser = userService.fienByTokenToUserInfo(authentication);
+            User registerUser = userService.fienByTokenToUserInfo(authorization);
 
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (Exception e){

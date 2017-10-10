@@ -1,53 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>gauth admin contents</title>
-    <script src='/v1/js/jquery-3.2.1.js'></script>
-    <link rel="stylesheet" href="/v1/bootstrap/css/bootstrap.min.css">
-    <script src="/v1/bootstrap/js/bootstrap.min.js"></script>
-    <script src="contents.js"></script>
-    <style>
-        .create_label {
-            min-width:150px;
-        }
-        .create_input {
-            min-width:300px;
-        }
-        .div-center {
-            display: block;
-            text-align: center;
-        }
-        .table-responsive th {
-            text-align:center;
-        }
-        .td-center {
-            text-align:center;
-        }
-        .scopeDiv {
-            display: none;
-        }
 
-    </style>
-</head>
-<body>
-
-
-<nav class="navbar navbar-default">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/v1/admin">Gauth</a>
-        </div>
-        <ul class="nav navbar-nav">
-            <li class="active"><a href="javascript:void(0);">클라이언트</a></li>
-            <li><a href="user.html">회원(인증)</a></li>
-            <li><a href="wait-user.html">회원(미인증)</a></li>
-        </ul>
-    </div>
-</nav>
-
+<jsp:include page="include/menu.jsp" flush="false"></jsp:include>
 
 <div role="tabpanel" class="container" id="client">
     <div class="row">
@@ -63,8 +17,8 @@
                         <col width="20%">
                         <col width="25%">
                         <col width="15%">
-                        <col width="25%">
-                        <col width="5%">
+                        <col width="20%">
+                        <col width="10%">
                         <col width="5%">
                         <col width="5%">
                     </colgroup>
@@ -115,7 +69,6 @@
         </div>
     </div>
 
-
     <!-- 클라이언트 수정 모달 -->
     <div class="modal fade" id="updateClientModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
@@ -150,7 +103,6 @@
             </div>
         </div>
     </div>
-
 
     <!-- 스코프 등록 모달 -->
     <div class="modal fade" id="createScopeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -219,7 +171,11 @@
         </div>
     </div>
 </div>
+<script>
+    $(function(){
+        // 처음엔 클라이언트 목록 조회
+        fnClientList();
+    });
+</script>
 
-
-</body>
-</html>
+<jsp:include page="include/footer.jsp" flush="false"></jsp:include>

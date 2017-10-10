@@ -1,6 +1,4 @@
 $(function(){
-    // login check
-    isLogin();
 
     $('.form input').on('keyup', function(e){
         if(e.keyCode == 13){
@@ -39,16 +37,16 @@ var loginRequest = function(userId, password){
         success:function(data){
             var tokenId = data.tokenId;
             setCookie('gauth',tokenId);
-            location.href="admin/contents.html";
+            location.href = "/v1/admin/client";
         },
         error: function(x,h,r){
             console.log(x);
             var errorData = JSON.parse(x.responseText).message;
-            if(errorData == 'user invalid'){
+            if(errorData == 'invalid userId'){
                 alert('회원 정보가 없습니다.');
                 $('input').val('').eq(0).focus();
                 return false;
-            }else if(errorData == 'password invalid'){
+            }else if(errorData == 'invalid password'){
                 alert('비밀번호가 잘못되었습니다.');
                 $('input:eq(1)').val('').focus();
                 return false;
@@ -59,25 +57,6 @@ var loginRequest = function(userId, password){
         }
     });
 
-};
-var isLogin = function(){
-    var tokenId = getCookie('gauth');
-    if(tokenId !== undefined && tokenId != ''){
-        $.ajax({
-            url: 'validateToken',
-            type: 'HEAD',
-            contentType:'application/json',
-            beforeSend : function(xhr){
-                xhr.setRequestHeader("Authentication", tokenId);
-            },
-            success:function(data){
-                location.href="admin/contents.html";
-            },
-            error: function(){
-                deleteCookie('gauth');
-            }
-        });
-    }
 };
 
 // 쿠키 생성

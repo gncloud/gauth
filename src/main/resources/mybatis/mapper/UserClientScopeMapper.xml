@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?> <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="userClientScope">
-
+    
+    <select id="findByUserSearchList" resultType="UserClientScope" parameterType="java.util.List">
+        SELECT user_id,
+        scope_id,
+        client_id
+        FROM UserClientScope
+        <foreach collection="list" close=")" item="user" open="where user_id in (" separator=",">
+            #{user}
+        </foreach>
+        order by client_id
+    </select>
+    
     <select id="findUserCount" parameterType="User" resultType="Integer">
         SELECT count(*)
           FROM UserClientScope
@@ -74,4 +85,12 @@
         WHERE client_id = #{clientId}
           and scope_id = #{scopeId}
     </delete>
+
+    <delete id="deleteUserScope" parameterType="UserClientScope">
+        DELETE FROM UserClientScope
+        WHERE client_id = #{clientId}
+          and scope_id = #{scopeId}
+          and user_id = #{userId}
+    </delete>
+
 </mapper>

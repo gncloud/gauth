@@ -78,7 +78,7 @@ public class RestClientApiTest {
         client.setDescription("test client");
         client.setDomain("gncloud.io");
 
-        httpHeaders.add("Authentication", adminToken);
+        httpHeaders.add("Authorization", adminToken);
         request("/clients", "post", client, httpHeaders);
         request("/clients", "get", null, httpHeaders);
 
@@ -151,7 +151,7 @@ public class RestClientApiTest {
             e.printStackTrace();
         }
         String userToken = new Gson().fromJson(content,Map.class).get("tokenId").toString();
-        userHeader.set("Authentication", userToken);
+        userHeader.set("Authorization", userToken);
 
         request("/tokens/" + userToken, "get", null, null);
 

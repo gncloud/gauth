@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 유저 관리를 위한 service 인터페이스
@@ -49,7 +50,7 @@ public interface UserService {
     /*
      * 유저 전체 조회
      */
-    List<User> findByUsers(String search);
+    List<User> findByUsers(Map<String, String> search);
 
     /*
      * 회원 가입 대기 유저 정보 등록
@@ -66,5 +67,29 @@ public interface UserService {
      */
     void deleteUser(String userId, String client);
 
+    /*
+     * 대기회원상태
+     */
     PendingUserResponse updatePendingStatus(String activateKey);
+
+    /*
+     * 유저 수
+     */
+    int selectUserCount(Map<String, String> search);
+
+    /*
+     * 대기 유저 전체 조회
+     */
+    List<PendingUserResponse> findByPendingUserInfoList();
+
+    /*
+     * 대기 유저 전체 삭제
+     */
+    void deleteAllPendUser();
+
+    /*
+     * 대기 유저 삭제
+     */
+    void deletePendingUser(String email);
+
 }

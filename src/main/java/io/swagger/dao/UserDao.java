@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 데이터베이스에 유저 정보를 관리하는 클래스
@@ -69,7 +70,7 @@ public class UserDao {
     /*
      * 유저 전체 조회
      */
-    public List<User> findByUsers(String search) {
+    public List<User> findByUsers(Map<String, String> search) {
         return sqlSession.selectList("user.findByUsers", search);
     }
 
@@ -108,8 +109,33 @@ public class UserDao {
         sqlSession.update("user.updatePendingStatus", pendingUserResponse);
     }
 
+    /*
+     * 이메일 존재 여부
+     */
     public boolean isEmail(String email) {
         Integer result = sqlSession.selectOne("user.isEmail", email);
         return result != null && result != 0;
     }
+
+    /*
+     * 유저 수
+     */
+    public int selectUserCount(Map<String, String> search) {
+        return sqlSession.selectOne("user.selectUserCount", search);
+    }
+
+    /*
+     * 대기 유저 조회
+     */
+    public List<PendingUserResponse> findByPendingUserInfoList(){
+        return sqlSession.selectList("user.findByPendingUserInfoList");
+    }
+
+    /*
+     * 대기 유저 전체 삭제
+     */
+    public void deleteAllPendUser(){
+        sqlSession.delete("user.deleteAllPendUser");
+    }
+
 }

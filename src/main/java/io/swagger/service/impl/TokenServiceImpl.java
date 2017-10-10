@@ -45,7 +45,7 @@ public class TokenServiceImpl implements TokenService{
         // 유저가 클라이언트에 등록 여부를 확인한다.
         if(!userClientScopeService.isUserClientScope(user)){
             logger.debug("user userClientScope empty");
-            throw new Exception("user userClientScope empty");
+            throw new AccessControlException("user userClientScope empty");
         }
 
         // 기존 토큰 삭제

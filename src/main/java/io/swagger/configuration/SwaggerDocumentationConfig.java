@@ -3,14 +3,9 @@ package io.swagger.configuration;
 import io.swagger.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
-import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.view.InternalResourceViewResolver;
-import org.springframework.web.servlet.view.JstlView;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
@@ -55,21 +50,5 @@ public class SwaggerDocumentationConfig extends WebMvcConfigurerAdapter{
         tokenValidateInterceptor.setTokenService(tokenService);
         registry.addInterceptor(tokenValidateInterceptor);
         super.addInterceptors(registry);
-    }
-
-}
-
-@Configuration
-@EnableWebMvc
-@ComponentScan
-class MvcConfiguration extends WebMvcConfigurerAdapter
-{
-    @Override
-    public void configureViewResolvers(ViewResolverRegistry registry) {
-        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-        resolver.setPrefix("/WEB-INF/views/");
-        resolver.setSuffix(".jsp");
-        resolver.setViewClass(JstlView.class);
-        registry.viewResolver(resolver);
     }
 }

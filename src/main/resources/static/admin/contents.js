@@ -3,116 +3,250 @@ $(function(){
     // login check
     isLogin();
 
-    // tab event init function call
-    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-        var focusTabId = e.target.href.substring(e.target.href.lastIndexOf('#') + 1, e.target.href.length);
-        if(focusTabId == 'client'){
-            fnClientList();
-        }else if(focusTabId == 'user'){
-            userList();
-        }else if(focusTabId == 'waitUser'){
-            waitUserList();
-        }
-    });
-
     $('#logout').on('click',logout);
     $('#createClient').on('click',createClient);
     $('#updateClientSubmit').on('click', updateClient);
     $('#createScopeSubmit').on('click',createScope);
-
-    $('#searchUserBtn').on('click',function(){
-        var search = $('#searchUserInput').val() === undefined ? '' : $('#searchUserInput').val();
-        userList(search);
+    $('#searchUserBtn').on('click', userList);
+    $('#searchUserInput').keyup(function(e){
+        if(e.keyCode == 13){userList();}
     });
+    $('#deleteAllPenduserBtn').on('click', deleteAllPendUser);
 
-    // 처음엔 클라이언트 목록 조회
-    fnClientList();
-
+    
 });
+
 // 회원 (인증) 조회
-var userList = function(search){
+var userClientScopeList = {};
+var p = 1;
+// 회원(인증) 조회 페이지 함수
+var paginationUserList = function(page){
+    p = page;
+    userList();
+};
+var userList = function(){
+    var search = $('#searchUserInput').val() === undefined ? '' : $('#searchUserInput').val();
     $('#userList tbody').empty();
+    $('#userListPagination ul').empty();
     fnAjax({
-        url: '/v1/users?search=' + (search === undefined ? '' : search),
+        url: '/v1/users?search=' + (search === undefined ? '' : search) + '&p=' + p,
         type:'get',
-        head:{'Authentication':getCookie('gauth')},
+        head:{'Authorization':getCookie('gauth')},
         success: function(data){
-            $(data).each(function(i,o){
-                var t = '<tr>';
-                t += '  <td class="td-center">';
-                t +=        o.userId;
-                t += '  </td>';
-                t += '  <td class="td-center">';
-                t +=        o.email;
-                t += '  </td>';
-                t += '  <td class="td-center">';
-                t +=        o.name;
-                t += '  </td>';
-                t += '  <td class="td-center">';
-                t +=        o.phone;
-                t += '  </td>';
-                t += '  <td>';
-                t +=        o.address;
-                t += '  </td>';
-                t += '  <td class="td-center">';
-                t +=        o.company;
-                t += '  </td>';
-                t += '  <td class="td-center" style="padding:0px;">';
-                t +=        o.register_date.replace(' ','<br/>');
-                t += '  </td>';
-                t += '  <td class="td-center">';
-                t += '      <a href="javascript:void(0);" onclick="updateUserClientModal(\'' + o.userId + '\');">조회</a>';
-                t += '  </td>';
-                t += '</tr>';
-                $('#userList tbody').append(t);
-            });
+            var pageInfo = data.pageInfo;
+            var userList = data.userList;
+            $('#userList').show();
+            if(userList === undefined || userList.length == 0){
+                $('#userList tbody').html('<td colspan="8" align="center">조회 결과가 없습니다.</td>');
+            }else{
+                $(userList).each(function(i,o){
+                    var t = '<tr>';
+                    t += '  <td class="td-center">';
+                    t +=        o.userId;
+                    t += '  </td>';
+                    t += '  <td class="td-center">';
+                    t +=        o.email;
+                    t += '  </td>';
+                    t += '  <td class="td-center">';
+                    t +=        o.name;
+                    t += '  </td>';
+                    t += '  <td class="td-center">';
+                    t +=        o.phone;
+                    t += '  </td>';
+                    t += '  <td>';
+                    t +=        o.address;
+                    t += '  </td>';
+                    t += '  <td class="td-center">';
+                    t +=        o.company;
+                    t += '  </td>';
+                    t += '  <td class="td-center" style="padding:0px;">';
+                    t +=        o.registerDate.replace(' ','<br/>');
+                    t += '  </td>';
+                    t += '  <td class="td-center" style="padding:0px; vertical-align: middle;">';
+                    var socpeList = o.scopeList;
+                    var scopeListSize = socpeList.length;
+                    var scopeAppendList = {};
+                    for(var i=0; i<scopeListSize; i++){
+                        if(scopeAppendList[socpeList[i].clientId] === undefined){
+                            if(Object.keys(scopeAppendList).length >= 1){
+                                t += '<hr style="padding:0px;margin:0px;">';
+                            }
+                            t += '<a href="javascript:void(0);" onclick="updateUserScopeModal(\''
+                                + o.userId + '\',\''
+                                + socpeList[i].clientId
+                                + '\');">'
+                                + socpeList[i].clientId
+                                + '</a>'
+                                + ' : ';
+                            t += socpeList[i].scopeId;
+                            scopeAppendList[socpeList[i].clientId]  = [];
+                            scopeAppendList[socpeList[i].clientId].push(socpeList[i].scopeId);
+                        }else{
+                            scopeAppendList[socpeList[i].clientId].push(socpeList[i].scopeId);
+                            t += ', ' + socpeList[i].scopeId;
+                        }
+                    }
+                    t += '  </td>';
+                    t += '</tr>';
+                    userClientScopeList[o.userId] = scopeAppendList;
+                    $('#userList tbody').append(t);
+                });
+
+                var totalPage = Math.ceil(pageInfo.userCount) % 20 == 0 ? Math.ceil(pageInfo.userCount) / 20 : (Math.ceil(pageInfo.userCount) / 20) + 1;
+                var startPage = pageInfo.p - Math.ceil(pageInfo.p % 5) + 1;
+                var endPage   = (startPage + 4) > totalPage ? totalPage : (startPage + 4);
+                var nt = '';
+                if(startPage >= 6){
+                    nt += '<li><a href="javascript:void(0);" aria-label="Previous" onclick="paginationUserList(' + (startPage - 1) + ');"><span aria-hidden="true">&laquo;</span></a></li>';
+                }
+                for(var ni=startPage; ni < endPage; ni++){
+                    if(ni == p){
+                        nt += '<li class="active"><a href="javascript:void(0);">' + ni + '</a></li>';
+                    }else{
+                        nt += '<li><a href="javascript:void(0);" onclick="paginationUserList(' + ni + ');">' + ni + '</a></li>';
+                    }
+                }
+                if(endPage + 1 < totalPage){
+                    nt += '<li><a href="#" aria-label="Next" onclick="paginationUserList(' + (endPage + 1) + ');"><span aria-hidden="true">&raquo;</span></a></li>';
+                }
+                $('#userListPagination ul').html(nt);
+            }
         },
         error:fnError
     });
 };
 
-var waitUserList = function(){
+var pendUserList = function(){
+    $('#pendUserList tbody').empty();
+    fnAjax({
+        url: '/v1/pendusers',
+        type: 'get',
+        head:{'Authorization':getCookie('gauth')},
+        success: function(data){
+            var pendUserList = data;
+            if(pendUserList === undefined || pendUserList.length == 0){
+                $('#pendUserList tbody').html('<tr><td align="center" colspan="6">조회 된 결과가 없습니다.</td></tr>');
+            }else{
+                $(pendUserList).each(function(i,o){
+                    var t = '';
+                    t += '<tr>';
+                    t += '  <td  align="center">';
+                    t +=    o.clientId;
+                    t += '  </td>';
+                    t += '  <td>';
+                    t +=    o.email;
+                    t += '  </td>';
+                    t += '  <td>';
+                    t +=    o.activateKey;
+                    t += '  </td>';
+                    t += '  <td  align="center">';
+                    t +=    o.status;
+                    t += '  </td>';
+                    t += '  <td  align="center">';
+                    t +=    o.expireDate;
+                    t += '  </td>';
+                    t += '  <td align="center">';
+                    t += '      <div class="btn btn-warning" onclick="deletePendUser(\'' + o.activateKey + '\');">삭제</div>';
+                    t += '  </td>';
+                    t += '</tr>';
+                    $('#pendUserList tbody').append(t);
+                });
+            }
+        },
+        error:fnError
+    });
+};
+var deletePendUser = function(activateKey){
+    fnAjax({
+        url: '/v1/pendusers/' + activateKey,
+        type: 'delete',
+        head:{'Authorization':getCookie('gauth')},
+        success: function(data){
+            console.log(data);
+            pendUserList();
+        },
+        error:fnError
+    });
+}
+var deleteAllPendUser = function(){
+    fnAjax({
+        url: '/v1/pendusers',
+        type: 'delete',
+        head:{'Authorization':getCookie('gauth')},
+        success: function(data){
+            console.log(data);
+            pendUserList();
+        },
+        error:fnError
+    });
+};
 
-
+var updateUserScope = function(obj){
+    var userId = $(obj).data('user');
+    var clientId = $(obj).data('client');
+    var scopeId = $(obj).data('scope');
+    var isChecked = $(obj).is(':checked');
+    if(isChecked){
+        fnAjax({
+            url: '/v1/userClientScope/' + userId + '?clientId=' + clientId,
+            type: 'post',
+            head:{'Authorization':getCookie('gauth')},
+            data: {scopeId: scopeId},
+            success: function(data){
+                console.log(data);
+            },
+            error:fnError
+        });
+    }else{
+        fnAjax({
+            url: '/v1/userClientScope/' + userId + '?clientId=' + clientId + '&scopeId=' + scopeId,
+            type: 'delete',
+            head:{'Authorization':getCookie('gauth')},
+            success: function(data){
+                console.log(data);
+            },
+            error:fnError
+        });
+    }
+    return false;
 };
 //유저의 클라이언트 권한 조회 모달
-var updateUserClientModal = function(userId){
-    $('#userClientList tbody').empty();
-    $('#userClientList select').empty();
-
+var updateUserScopeModal = function(userId, clientId){
+    $('#updateUserScopeTitle').html(userId + '의 ' + clientId);
+    $('#userScopeList tbody').empty();
     fnAjax({
-        url: '/v1/users/' + userId,
+        url:'/v1/scopes?client=' + clientId,
         type:'get',
-        head:{'Authentication':getCookie('gauth')},
-        success: function(data){
-            var userInfo = data.userInfo;
-            var userClientList = data.userClientScopes;
-
-            var clientList = new Array();
-            $(userClientList).each(function(i, o){
-                if($.inArray(o.clientId, clientList) != -1){
-                    return;
-                }
-                clientList.push(o.clientId);
-                var t = '<tr>';
-                t += '  <td align="center" style="vertical-align:middle;">';
-                t += '  <input type="radio" name="userClient">';
-                t += '  </td>';
-                t += '  <td align="center" style="vertical-align:middle;">';
-                t += '      <b>';
-                t +=            o.clientId;
-                t += '      </b>';
-                t += '  </td>';
-                t += '  <td>';
-                t += '  <ul>';
-                $(userClientList).each(function(si, so){
-                    if(so.clientId == o.clientId){
-                        t += '<li>' + so.scopeId === null ? '' : so.scopeId + '</li>';
+        head:{'Authorization':getCookie('gauth')},
+        success:function(data){
+            $(data).each(function(i,o){
+                var scopes = userClientScopeList[userId][clientId];
+                var inputTag = '  <input type="checkbox" name="choiceScope" data-user="' + userId + '" data-client="' + o.clientId + '" data-scope="' + o.scopeId + '" onchange="updateUserScope(this);">';
+                if(scopes !== undefined){
+                    var scopeSize = scopes.length;
+                    for(var i=0; i < scopeSize; i++){
+                        if(scopes[i] == o.scopeId){
+                            inputTag = '  <input type="checkbox" name="choiceScope" checked="checked" onchange="updateUserScope(this);" data-user="' + userId + '" data-client="' + o.clientId + '" data-scope="' + o.scopeId + '">';
+                            break;
+                        }
                     }
-                });
-                t += '  </ul>';
+                }
+                var t = '';
+                t += '<tr>';
+                t += '<td align="center">';
+                t += inputTag;
+                t += '</td>';
+                t += '<td align="center">';
+                t += o.scopeId;
+                t += '</td>';
+                t += '<td>';
+                t += o.description;
+                t += '</td>';
+                t += '<td align="center">';
+                t +=    o.isDefault == 1 ? '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>' : '';
+                t += '</td>';
                 t += '</tr>';
-                $('#userClientList tbody').append(t);
+                $('#userScopeList tbody').append(t);
             });
         },
         error:fnError
@@ -148,7 +282,7 @@ var createClient = function(){
     fnAjax({
             url:'/v1/clients',
             type:'post',
-            head:{'Authentication':getCookie('gauth')},
+            head:{'Authorization':getCookie('gauth')},
             data:{clientId:clientId,
                   domain:domain,
                   description:desc
@@ -171,7 +305,7 @@ var fnClientList = function(){
     fnAjax({
         url:'/v1/clients',
         type:'get',
-        head:{'Authentication':getCookie('gauth')},
+        head:{'Authorization':getCookie('gauth')},
         success:function(data){
             $(data).each(function(i,o){
                 var t = '<tr>';
@@ -220,7 +354,7 @@ var fnClientList = function(){
                 t += '            <tr>';
                 t += '                <th>아이디</th>';
                 t += '                <th>설명</th>';
-                t += '                <th>기본값 여부</th>';
+                t += '                <th>기본값<br/>여부</th>';
                 t += '                <th>수정</th>';
                 t += '                <th>삭제</th>';
                 t += '            </tr>';
@@ -261,7 +395,7 @@ var createScope = function(){
     fnAjax({
             url:'/v1/scopes',
             type:'post',
-            head:{'Authentication':getCookie('gauth')},
+            head:{'Authorization':getCookie('gauth')},
             data:{
                 clientId:clientId,
                 scopeId:scopeId,
@@ -289,11 +423,11 @@ var findScopeList = function(clientId, obj){
         if($('#clientList .scopeDiv[data-client-id=' + clientId + ']').css('display') != 'none'){
             // 기존 열려 있던 폼
             $('#clientList .scopeDiv[data-client-id=' + clientId + ']').hide();
-            $(obj).text('열기');
+            $(obj).html('열기');
             return false;
         }else{
             $('#clientList .scopeDiv[data-client-id=' + clientId + ']').show();
-            $(obj).text('닫기');
+            $(obj).html('닫기 <span class="glyphicon glyphicon-triangle-bottom" aria-hidden="true"></span>');
         }
     }
 
@@ -303,7 +437,7 @@ var findScopeList = function(clientId, obj){
     fnAjax({
         url:'/v1/scopes?client=' + clientId,
         type:'get',
-        head:{'Authentication':getCookie('gauth')},
+        head:{'Authorization':getCookie('gauth')},
         success:function(data){
             $(data).each(function(i,o){
                 var t = '<tr>';
@@ -346,7 +480,7 @@ var updateScopeSubmit = function(){
     fnAjax({
         url:'/v1/scopes/' + scopeId,
         type:'put',
-        head:{'Authentication':getCookie('gauth')},
+        head:{'Authorization':getCookie('gauth')},
         data:{clientId:clientId,
             isDefault:isDefault,
             description:description
@@ -366,7 +500,7 @@ var updateScopeModal = function(scopeId, clientId){
     fnAjax({
         url:'/v1/scopes/' + scopeId + '?clientId=' + clientId,
         type:'get',
-        head:{'Authentication':getCookie('gauth')},
+        head:{'Authorization':getCookie('gauth')},
         success:function(data){
             $('#u_scope_ClientId').val(clientId);
             $('#u_scope_scopeId').val(data.scopeId);
@@ -391,7 +525,7 @@ var removeScope = function(scopeId, clientId){
     fnAjax({
         url:'/v1/scopes/' + scopeId + '?clientId=' + clientId,
         type:'delete',
-        head:{'Authentication':getCookie('gauth')},
+        head:{'Authorization':getCookie('gauth')},
         complete:function(data){
             if(data.status == 200){
                 findScopeList(clientId);
@@ -410,7 +544,7 @@ var updateClientModal = function(clientId){
     fnAjax({
         url:'/v1/clients/' + clientId,
         type:'get',
-        head:{'Authentication':getCookie('gauth')},
+        head:{'Authorization':getCookie('gauth')},
         success:function(data){
             $('#u_clientId').val(data.clientId);
             $('#u_secretKey').val(data.clientSecret);
@@ -431,7 +565,7 @@ var updateClient = function(){
     fnAjax({
         url:'/v1/clients/' + clientId,
         type:'put',
-        head:{'Authentication':getCookie('gauth')},
+        head:{'Authorization':getCookie('gauth')},
         data: {
             clientId: clientId,
             clientSecret:secretKey,
@@ -457,7 +591,7 @@ var removeClient = function(clientId){
     fnAjax({
             url:'/v1/clients/' + clientId,
             type:'delete',
-            head:{'Authentication':getCookie('gauth')},
+            head:{'Authorization':getCookie('gauth')},
             success:function(data){
                 fnClientList();
             },
@@ -471,7 +605,7 @@ var logout = function(){
     fnAjax({
         url:'/v1/token',
         type:'delete',
-        head:{'Authentication':tokenId},
+        head:{'Authorization':tokenId},
         success:function(){
             loginPage();
         },
@@ -487,7 +621,7 @@ var isLogin = function(){
         fnAjax({
             url:'/v1/validateToken',
             type:'head',
-            head:{'Authentication':tokenId},
+            head:{'Authorization':tokenId},
             error:function(e,x,h){
                 loginPage();
             }

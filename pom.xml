@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>co.gncloud</groupId>
     <artifactId>gauth</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
     <name>gauth</name>
     <version>1.0.0</version>
     <properties>
@@ -20,6 +20,20 @@
     <build>
         <finalName>gauth</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>${basedir}/src/main/webapp</directory>-->
+                <!--<includes>-->
+                    <!--<include>/META-INF/**/**</include>-->
+                <!--</includes>-->
+            <!--</resource>-->
+            <!--<resource>-->
+                <!--<directory>${basedir}/src/main/resources</directory>-->
+                <!--<includes>-->
+                    <!--<include>**/**</include>-->
+                <!--</includes>-->
+            <!--</resource>-->
+        <!--</resources>-->
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -73,7 +87,6 @@
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
-            <scope>provided</scope>
         </dependency>
 
 
@@ -88,7 +101,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
         </dependency>
 
 

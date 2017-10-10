@@ -33,10 +33,10 @@ public class ScopesApiController implements ScopesApi {
     @Autowired
     private TokenService tokenService;
 
-    public ResponseEntity<?> scopesGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication,
+    public ResponseEntity<?> scopesGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
                                        @ApiParam(value = ""  ) @RequestParam String client) {
         try {
-            tokenService.isAdminToken(authentication);
+            tokenService.isAdminToken(authorization);
             Client searchClient = new Client();
             searchClient.setClientId(client);
             List<Scope> clientScopeList = scopeService.selectClientScope(searchClient);
@@ -50,11 +50,11 @@ public class ScopesApiController implements ScopesApi {
         }
     }
 
-    public ResponseEntity<?> scopesPost(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication,
+    public ResponseEntity<?> scopesPost(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
                                         @ApiParam(value = ""  ) @RequestBody Scope scope) {
         try {
 
-            tokenService.isAdminToken(authentication);
+            tokenService.isAdminToken(authorization);
 
             Scope registerScope = scopeService.insertScope(scope);
 
@@ -68,11 +68,11 @@ public class ScopesApiController implements ScopesApi {
     }
 
     public ResponseEntity<?> scopesScopeIdDelete(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId,
-                                                 @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication,
+                                                 @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
                                                  @RequestParam(value = "clientId", required = true) String clientId) {
         try {
 
-            tokenService.isAdminToken(authentication);
+            tokenService.isAdminToken(authorization);
 
             Scope scope = new Scope();
             scope.setScopeId(scopeId);
@@ -109,11 +109,11 @@ public class ScopesApiController implements ScopesApi {
     }
 
     public ResponseEntity<?> scopesScopeIdPut(@ApiParam(value = "",required=true ) @PathVariable("scopeId") String scopeId,
-                                              @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication,
+                                              @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
                                               @ApiParam(value = ""  ) @RequestBody Scope scope) {
         try {
 
-            tokenService.isAdminToken(authentication);
+            tokenService.isAdminToken(authorization);
 
             scope.setScopeId(scopeId);
 

@@ -7,6 +7,7 @@ import io.swagger.model.UserClientScope;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,11 @@ public interface UserClientScopeService {
      * 유저 클라이언트 등록
      */
     List<UserClientScope> insertUserClientScope(UserClientScope userClientScope);
+
+    /*
+     * 유저 스코프 등록
+     */
+    List<UserClientScope> insertUserScope(UserClientScope userClientScope);
 
     /*
      * 유저 클라이언트 삭제
@@ -70,4 +76,14 @@ public interface UserClientScopeService {
      * 클라이언트의 스코프 제거
      */
     void deleteClientScope(UserClientScope userClientScope);
+
+    /*
+     * 전체 조회시 사용되는 클라이언트 정보 조회
+     */
+    List<UserClientScope> findByUserSearchList(ArrayList<String> searchUser);
+
+    /*
+     * 유저 스코프 삭제
+     */
+    void deleteUserScope(UserClientScope userClientScope);
 }

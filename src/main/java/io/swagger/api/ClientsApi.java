@@ -3,6 +3,7 @@ package io.swagger.api;
 import io.swagger.model.Client;
 
 import io.swagger.annotations.*;
+import io.swagger.model.UserClientScope;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +18,7 @@ public interface ClientsApi {
     @RequestMapping(value = "/clients/{clientId}",
         method = RequestMethod.DELETE)
     ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "target client id", required = true) @PathVariable("clientId") String clientId,
-                                               @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
+                                               @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 
 
     @ApiOperation(value = "client info", notes = "client info", response = Client.class, tags={  })
@@ -26,7 +27,7 @@ public interface ClientsApi {
     @RequestMapping(value = "/clients/{clientId}",
         method = RequestMethod.GET)
     ResponseEntity<?> clientsClientIdGet(@ApiParam(value = "", required = true) @PathVariable("clientId") String clientId,
-                                              @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
+                                              @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 
 
     @ApiOperation(value = "update client", notes = "update client", response = Client.class, tags={  })
@@ -35,7 +36,7 @@ public interface ClientsApi {
     @RequestMapping(value = "/clients/{clientId}",
         method = RequestMethod.PUT)
     ResponseEntity<?> clientsClientIdPut(@ApiParam(value = "", required = true) @PathVariable("clientId") String clientId,
-                                              @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
+                                              @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                               @ApiParam(value = "") @RequestBody Client client);
 
 
@@ -44,7 +45,7 @@ public interface ClientsApi {
         @ApiResponse(code = 200, message = "OK", response = Client.class) })
     @RequestMapping(value = "/clients",
         method = RequestMethod.GET)
-    ResponseEntity<?> clientsGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication);
+    ResponseEntity<?> clientsGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 
 
     @ApiOperation(value = "create client (admin Only)", notes = "create client (admin Only)", response = Client.class, tags={  })
@@ -52,7 +53,7 @@ public interface ClientsApi {
         @ApiResponse(code = 200, message = "OK", response = Client.class) })
     @RequestMapping(value = "/clients",
         method = RequestMethod.POST)
-    ResponseEntity<?> clientsPost(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authentication", required = true) String authentication,
+    ResponseEntity<?> clientsPost(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                        @ApiParam(value = "", required = true) @RequestBody Client client);
 
     @ApiOperation(value = "create UserClientScope", notes = "createUserClientScope", response = Client.class, tags={  })
@@ -61,5 +62,18 @@ public interface ClientsApi {
     @RequestMapping(value = "/userClientScope/{userId}",
             method = RequestMethod.POST)
     ResponseEntity<?> userClientScopePost(@ApiParam(value = "target", required = true) @PathVariable("userId") String userId,
-                                          @RequestParam(value = "clientId", required = true) String clientId);
+                                          @RequestParam(value = "clientId", required = true) String clientId,
+                                          @RequestBody UserClientScope userClientScope);
+
+
+    @ApiOperation(value = "delete user scope", notes = "delete user scope", response = Void.class, tags={  })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Void.class) })
+    @RequestMapping(value = "/userClientScope/{userId}",
+            method = RequestMethod.DELETE)
+    ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "target user id", required = true) @PathVariable("userId") String userId,
+                                            @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                            @RequestParam(value = "clientId", required = true) String clientId,
+                                            @RequestParam(value = "scopeId", required = true) String scopeId);
+
 }

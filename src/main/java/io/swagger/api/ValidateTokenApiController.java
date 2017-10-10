@@ -23,13 +23,13 @@ public class ValidateTokenApiController implements ValidateTokenApi {
     @Autowired
     private TokenService tokenService;
 
-    public ResponseEntity<?> validateTokenHead(@ApiParam(value = "User Authentication BEARER Token" ,required=true ) @RequestHeader(value="Authentication", required=true) String authentication) {
+    public ResponseEntity<?> validateTokenHead(@ApiParam(value = "User Authentication BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
-            Token registerToken = tokenService.isTokenValidate(authentication);
+            Token registerToken = tokenService.isTokenValidate(authorization);
             return new ResponseEntity<Token>(registerToken, HttpStatus.OK);
         } catch (Exception e){
             logger.error("validateTokenHead", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.UNAUTHORIZED);
         }
     }
 

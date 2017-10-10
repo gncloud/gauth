@@ -57,6 +57,15 @@ public class UserClientScopeImpl implements UserClientScopeService {
     }
 
     /*
+     * 유저 스코프 등록
+     */
+    @Override
+    public List<UserClientScope> insertUserScope(UserClientScope userClientScope) {
+        userClientScopeDao.insertUserClientScope(userClientScope);
+        return userClientScopeDao.findByUserClientScope(userClientScope);
+    }
+
+    /*
      * 유저 클라이언트 삭제
      */
     @Override
@@ -126,6 +135,22 @@ public class UserClientScopeImpl implements UserClientScopeService {
     @Override
     public void deleteClientScope(UserClientScope userClientScope) {
         userClientScopeDao.deleteClientScope(userClientScope);
+    }
+
+    /*
+     * 전체 조회시 사용되는 클라이언트 정보 조회
+     */
+    @Override
+    public List<UserClientScope> findByUserSearchList(ArrayList<String> searchUser) {
+        return userClientScopeDao.findByUserSearchList(searchUser);
+    }
+
+    /*
+     * 유저 스코프 삭제
+     */
+    @Override
+    public void deleteUserScope(UserClientScope userClientScope) {
+        userClientScopeDao.deleteUserScope(userClientScope);
     }
 
 

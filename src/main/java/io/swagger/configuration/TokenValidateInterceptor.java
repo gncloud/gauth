@@ -7,6 +7,9 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.security.AccessControlException;
+import java.util.*;
 
 public class TokenValidateInterceptor extends HandlerInterceptorAdapter {
 
@@ -22,6 +25,7 @@ public class TokenValidateInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
         String token = request.getHeader("Authentication");
+
         if(token == null || "".equals(token) || "head".equalsIgnoreCase(request.getMethod())){
             return super.preHandle(request, response, handler);
         }

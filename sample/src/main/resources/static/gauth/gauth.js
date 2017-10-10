@@ -148,7 +148,7 @@
         },
         logout: function(loginUrl){
             var tokenId = this.getCookie();
-            var request = $.gauth.getReq('/tokens', 'delete', {}, {Authentication: tokenId});
+            var request = $.gauth.getReq('/tokens', 'delete', {}, {Authorization: tokenId});
             $.gauth.api(request, function(response, obj){
                 gauth.removeCookie();
                 location.href = loginUrl === undefined ? '/' : loginUrl;
@@ -161,7 +161,7 @@
         },
         isLogin: function(loginUrl){
             var tokenId = this.getCookie();
-            var data = this.getReq('/validateToken', 'head', {}, {Authentication: tokenId});
+            var data = this.getReq('/validateToken', 'head', {}, {Authorization: tokenId});
             this.api(data, function(response, obj){
                 if(response.code != '200'){
                     location.href = loginUrl;

@@ -22,9 +22,6 @@ public class PendingUserResponse   {
   @JsonProperty("expireDate")
   private String expireDate = null;
 
-  @JsonProperty("retryUrl")
-  private String retryUrl = null;
-
   @JsonProperty("clientId")
   private String clientId = null;
 
@@ -100,24 +97,6 @@ public class PendingUserResponse   {
     this.expireDate = expireDate;
   }
 
-  public PendingUserResponse retryUrl(String retryUrl) {
-    this.retryUrl = retryUrl;
-    return this;
-  }
-
-  /**
-   * Get retryUrl
-   * @return retryUrl
-   **/
-  @ApiModelProperty(value = "")
-  public String getRetryUrl() {
-    return retryUrl;
-  }
-
-  public void setRetryUrl(String retryUrl) {
-    this.retryUrl = retryUrl;
-  }
-
   public PendingUserResponse clientId(String clientId) {
     this.clientId = clientId;
     return this;
@@ -149,14 +128,13 @@ public class PendingUserResponse   {
     return Objects.equals(this.email, pendingUserResponse.email) &&
             Objects.equals(this.activateKey, pendingUserResponse.activateKey) &&
             Objects.equals(this.expireDate, pendingUserResponse.expireDate) &&
-            Objects.equals(this.retryUrl, pendingUserResponse.retryUrl) &&
             Objects.equals(this.status, pendingUserResponse.status) &&
             Objects.equals(this.clientId, pendingUserResponse.clientId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(email, activateKey, expireDate, retryUrl, clientId, status);
+    return Objects.hash(email, activateKey, expireDate, clientId, status);
   }
 
   @Override
@@ -167,7 +145,6 @@ public class PendingUserResponse   {
     sb.append("    email: ").append(toIndentedString(email)).append("\n");
     sb.append("    activateKey: ").append(toIndentedString(activateKey)).append("\n");
     sb.append("    expireDate: ").append(toIndentedString(expireDate)).append("\n");
-    sb.append("    retryUrl: ").append(toIndentedString(retryUrl)).append("\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("}");

@@ -1,14 +1,8 @@
 package io.swagger.service.impl;
 
 import io.swagger.dao.UserDao;
-import io.swagger.model.PendingUserRequest;
-import io.swagger.model.PendingUserResponse;
-import io.swagger.model.User;
-import io.swagger.model.UserClientScope;
-import io.swagger.service.ScopeService;
-import io.swagger.service.TokenService;
-import io.swagger.service.UserClientScopeService;
-import io.swagger.service.UserService;
+import io.swagger.model.*;
+import io.swagger.service.*;
 import io.swagger.util.DateUtil;
 import io.swagger.util.RandomUtil;
 import org.slf4j.Logger;
@@ -21,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * 유저 관리를 위한 service 인터페이스
@@ -49,6 +45,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TokenService tokenService;
+
+    @Autowired
+    private ClientService clientService;
 
     @Value("${server.host}")
     private String serverHost;
@@ -103,23 +102,23 @@ public class UserServiceImpl implements UserService {
         if(registerPendingUser == null
                 || !ACTIVE_STATUS.equals(registerPendingUser.getStatus())
                 || !DateUtil.isExpireDate(registerPendingUser.getExpireDate())){
-            throw new Exception("pending invalid");
+            throw new Exception("invalid pending");
         }
 
         Integer isUserCount = isUserId(user.getUserId());
         if (isUserCount != 0) {
-            throw new Exception("user invalid");
+            throw new Exception("invalid userId");
         }
         String password = user.getPassword();
         if (password == null || "".equals(password)) {
-            throw new Exception("no password");
+            throw new Exception("invalid password");
         }
 
         // 회원 정보 등록
         userDao.insertUser(user);
 
         // 펀딩 정보 제거
-        userDao.deletePendingUser(user.getEmail());
+        deletePendingUser(user.getEmail());
 
         // 처음 회원가입한 클라이언트 맵핑 테이블 등록
         UserClientScope userClientScope = new UserClientScope();
@@ -186,7 +185,7 @@ public class UserServiceImpl implements UserService {
      * 유저 전체 조회
      */
     @Override
-    public List<User> findByUsers(String search) {
+    public List<User> findByUsers(Map<String, String> search) {
         return userDao.findByUsers(search);
     }
 
@@ -201,15 +200,16 @@ public class UserServiceImpl implements UserService {
         String email = pendingUserRequest.getEmail();
         String clientId = pendingUserRequest.getClientId();
 
-        if(email == null || "".equals(email)){
-            throw new Exception("email field");
+        if(email == null || "".equals(email) || !email.matches("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$")){
+            throw new Exception("invalid email");
         }else if(clientId == null || "".equals(clientId)){
-            throw new Exception("clientId field");
+            throw new Exception("invalid clientId");
         }
-
-        boolean isEmail = userDao.isEmail(email);
-        if(isEmail){
-            throw new Exception("email field");
+        if(userDao.isEmail(email)){
+            throw new Exception("invalid email");
+        }
+        if(clientService.findByClient(clientId) == null){
+            throw new Exception("not found client");
         }
 
         userDao.deletePendingUser(email);
@@ -256,4 +256,30 @@ public class UserServiceImpl implements UserService {
         return findByPendingUserInfo(activateKey);
     }
 
+    public int selectUserCount(Map<String, String> search){
+        return userDao.selectUserCount(search);
+    }
+
+    /*
+     * 대기 유저 전체 조회
+     */
+    public List<PendingUserResponse> findByPendingUserInfoList(){
+        return userDao.findByPendingUserInfoList();
+    }
+
+    /*
+     * 대기 유저 전체 삭제
+     */
+    @Override
+    public void deleteAllPendUser() {
+        userDao.deleteAllPendUser();
+    }
+
+    /*
+     * 대기 유저 삭제
+     */
+    @Override
+    public void deletePendingUser(String email) {
+        userDao.deletePendingUser(email);
+    }
 }

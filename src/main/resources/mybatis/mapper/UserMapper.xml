@@ -67,31 +67,31 @@
                phone,
                address,
                company,
-               #{tokenId} as token
+               #{param1} as token
          FROM User
         where user_id = (select user_id
                            from Token
-                          where token_id = #{tokenId})
+                          where token_id = #{param1})
     </select>
 
-    <select id="findByUsers" resultType="User" parameterType="String">
-        SELECT user_id,
-               email,
-               name,
-               register_date,
-               phone,
-               address,
-               company
-         FROM User
+    <select id="findByUsers" resultType="User">
+        SELECT a.user_id,
+                a.email,
+                a.name,
+                a.register_date,
+                a.phone,
+                a.address,
+                a.company
+         FROM User a
          where 1=1
-           and user_id != 'admin'
-         <if test="_parameter != null and _parameter != ''">
-            and user_id = #{_parameter}
-             or email = #{_parameter}
-             or company = #{_parameter}
-             or name = #{_parameter}
+           and a.user_id != 'admin'
+         <if test="search != null and search != ''">
+            and a.user_id = #{search}
+             or a.email = #{search}
+             or a.company = #{search}
+             or a.name = #{search}
          </if>
-
+        limit ${p}, 20
     </select>
 
     <insert id="insertPendingUser" parameterType="PendingUserResponse">
@@ -124,7 +124,9 @@
     </select>
 
     <delete id="deletePendingUser" parameterType="String">
-        DELETE FROM Pending WHERE email = #{param1}
+        DELETE FROM Pending
+          WHERE email = #{param1}
+             OR activate_key = #{param1}
     </delete>
 
     <update id="updatePendingStatus" parameterType="PendingUserResponse">
@@ -143,6 +145,31 @@
                    and expire_date >= now()) as count
     </select>
 
+    <select id="selectUserCount" resultType="Integer">
+        select count(*)
+          from User a
+         where 1=1
+           and a.user_id != 'admin'
+        <if test="search != null and search != ''">
+            and a.user_id = #{search}
+            or a.email = #{search}
+            or a.company = #{search}
+            or a.name = #{search}
+        </if>
+    </select>
 
+    <select id="findByPendingUserInfoList" resultType="PendingUserResponse">
+        select email
+              , activate_key
+              , status
+              , expire_date
+              , client_id
+        from Pending
+        order by expire_date
+    </select>
+    
+    <delete id="deleteAllPendUser">
+        delete  from Pending
+    </delete>
 
 </mapper>
