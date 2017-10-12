@@ -28,27 +28,38 @@ public class ActivateApiController implements ActivateApi {
         try {
             PendingUserResponse pendingUserResponse = userService.insertPendingUser(pendingUserRequest);
             return new ResponseEntity<PendingUserResponse>(pendingUserResponse, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("activatePost error", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("activatePost error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
     @Override
     public ResponseEntity<?> activatesPut(@ApiParam(value = "") @RequestParam(value = "activateKey" ,required=true ) String activateKey) {
         try {
-
             PendingUserResponse pendingUserResponse = userService.findByPendingUserInfo(activateKey);
             if(pendingUserResponse == null){
-                throw new Exception("invalid ActivateKey");
+                throw new ApiException("invalid ActivateKey");
             }
-
             PendingUserResponse registerPendingUser = userService.updatePendingStatus(pendingUserResponse.getActivateKey());
-
             return new ResponseEntity<PendingUserResponse>(registerPendingUser, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("activatePost error", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }  catch (Exception e){
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("activatesPut error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 

@@ -41,7 +41,7 @@ public class TokensApiController implements TokensApi {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e){
             logger.error("tokensDelete", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -51,10 +51,11 @@ public class TokensApiController implements TokensApi {
             List<Token> registerTokenList = tokenService.selectToken();
             return new ResponseEntity<List<Token>>(registerTokenList, HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("tokensGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -63,18 +64,25 @@ public class TokensApiController implements TokensApi {
 
             User targetUser = userService.findByUser(user.getUserId());
             if(targetUser == null){
-                throw new Exception("invalid userId");
+                throw new ApiException("invalid userId");
             }else if(!targetUser.isEqualsPassword(user.getPassword())){
-                throw new Exception("invalid password");
+                throw new ApiException("invalid password");
             }
             Token registerToken = tokenService.createToken(user);
             return new ResponseEntity<Token>(registerToken, HttpStatus.OK);
         } catch(AccessControlException e){
-            logger.error("tokensPost", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(4, e.getMessage()), HttpStatus.UNAUTHORIZED);
+            logger.warn("AccessControlException {}", e.getMessage());
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.INFO, e.getMessage()), HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
-            logger.error("tokensPost", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("tokensPost error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -85,10 +93,18 @@ public class TokensApiController implements TokensApi {
             tokenService.deleteToekn(tokenId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
-            logger.error("tokensTokenIdDelete", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("tokensTokenIdDelete error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -98,7 +114,7 @@ public class TokensApiController implements TokensApi {
             return new ResponseEntity<Token>(registerToken, HttpStatus.OK);
         } catch (Exception e){
             logger.error("tokensTokenIdGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -16,7 +16,7 @@ public interface ScopesApi {
     @RequestMapping(value = "/scopes",
         method = RequestMethod.GET)
     ResponseEntity<?> scopesGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
-                                   @ApiParam(value = "") @RequestParam String client);
+                                   @ApiParam(value = "") @RequestParam String clientId);
 
 
     @ApiOperation(value = "create scope (admin Only)", notes = "create scope (admin Only)", response = Scope.class, tags={  })

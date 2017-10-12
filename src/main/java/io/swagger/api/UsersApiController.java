@@ -98,10 +98,18 @@ public class UsersApiController implements UsersApi {
 
             return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
-            logger.error("usersGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("usersGet error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -116,24 +124,40 @@ public class UsersApiController implements UsersApi {
             }
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
-            logger.error("usersGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("usersPost error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
     public ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target",required=true ) @PathVariable("userId") String userId,
                                                @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
-                                               @ApiParam(value = "client id" ,required=true ) @RequestParam String client) {
+                                               @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId) {
         try {
-            userService.deleteUser(userId, client);
+            userService.deleteUser(userId, clientId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
-            logger.error("usersGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("usersUserIdDelete error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -153,6 +177,7 @@ public class UsersApiController implements UsersApi {
 
             return new ResponseEntity<Map<String, Object>>(result, HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("usersUserIdGet", e);
@@ -168,8 +193,15 @@ public class UsersApiController implements UsersApi {
             User registerUser = userService.updateUser(user);
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (Exception e){
-            logger.error("usersUserIdGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("usersUseridPut error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -180,6 +212,7 @@ public class UsersApiController implements UsersApi {
             List<PendingUserResponse> pendUserList = userService.findByPendingUserInfoList();
             return new ResponseEntity<List<PendingUserResponse>>(pendUserList, HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("pendusersGet", e);
@@ -194,6 +227,7 @@ public class UsersApiController implements UsersApi {
             userService.deleteAllPendUser();
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("pendusersDelete", e);
@@ -209,6 +243,7 @@ public class UsersApiController implements UsersApi {
             userService.deletePendingUser(activateKey);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("pendusersEmailDelete", e);

@@ -44,7 +44,7 @@ public interface UsersApi {
         method = RequestMethod.DELETE)
     ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target", required = true) @PathVariable("userId") String userId,
                                            @ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
-                                        @ApiParam(value = "client id" ,required=true ) @RequestParam String client);
+                                        @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId);
 
 
     @ApiOperation(value = "user info (admin only)", notes = "user info (admin only)", response = User.class, tags={  })

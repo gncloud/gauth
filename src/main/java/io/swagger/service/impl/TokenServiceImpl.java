@@ -1,5 +1,6 @@
 package io.swagger.service.impl;
 
+import io.swagger.api.ApiException;
 import io.swagger.dao.TokenDao;
 import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Token;
@@ -82,7 +83,7 @@ public class TokenServiceImpl implements TokenService{
 
         Token registerToken = tokenDao.findByToken(tokenId);
         if(registerToken == null){
-            throw new Exception("Token invalid");
+            throw new ApiException("invalid Token");
         }
 
         return registerToken;
@@ -114,7 +115,7 @@ public class TokenServiceImpl implements TokenService{
         // 토큰 발급 클라이언트 확인
         String registerClientId = registerToken.getClientId();
         if(!registerClientId.equals(client)){
-            throw new AccessControlException("invalid");
+            throw new AccessControlException("invalid client");
         }
 
         return registerToken;
@@ -134,7 +135,7 @@ public class TokenServiceImpl implements TokenService{
 
         boolean isExpireDate = DateUtil.isExpireDate(registerToken.getExpireDate());
         if(!isExpireDate){
-            throw new AccessControlException("invalid");
+            throw new AccessControlException("invalid expireDate");
         }
 
         return registerToken;
@@ -148,7 +149,7 @@ public class TokenServiceImpl implements TokenService{
         User registerUser = userService.fienByTokenToUserInfo(token);
         if(registerUser == null){
             logger.debug("Not Found User : {}", token);
-            throw new Exception("invalid");
+            throw new ApiException("invalid token");
         }
     }
 

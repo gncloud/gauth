@@ -1,5 +1,6 @@
 package io.swagger.service.impl;
 
+import io.swagger.api.ApiException;
 import io.swagger.dao.ScopeDao;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
@@ -34,7 +35,7 @@ public class ScopeServiceImpl implements ScopeService {
         String clientId = scope.getClientId();
         String scopeId = scope.getScopeId();
         if(isNull(clientId) || isNull(scopeId)){
-            throw new Exception("invalid");
+            throw new ApiException("invalid data");
         }
 
         return scopeDao.findByScope(scope);
@@ -48,7 +49,7 @@ public class ScopeServiceImpl implements ScopeService {
     public List<Scope> selectClientScope(Client client) throws Exception {
         String clientId = client.getClientId();
         if(isNull(clientId)){
-            throw new Exception("invalid");
+            throw new ApiException("invalid clientId");
         }
 
         Scope scope = new Scope();
@@ -68,7 +69,7 @@ public class ScopeServiceImpl implements ScopeService {
         String clientId = scope.getClientId();
         String scopeId = scope.getScopeId();
         if(isNull(clientId) || isNull(scopeId)){
-            throw new Exception("invalid");
+            throw new ApiException("invalid data");
         }
 
         String isDefault = scope.getIsDefault();
@@ -102,7 +103,7 @@ public class ScopeServiceImpl implements ScopeService {
         String clientId = scope.getClientId();
         String scopeId = scope.getScopeId();
         if(isNull(clientId) || isNull(scopeId)){
-            throw new Exception("invalid");
+            throw new ApiException("invalid data");
         }
 
         UserClientScope userClientScope = new UserClientScope();
@@ -124,7 +125,7 @@ public class ScopeServiceImpl implements ScopeService {
         String clientId = scope.getClientId();
         String scopeId = scope.getScopeId();
         if(isNull(clientId) || isNull(scopeId)){
-            throw new Exception("invalid");
+            throw new ApiException("invalid data");
         }
 
         String isDefault = scope.getIsDefault();

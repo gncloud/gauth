@@ -55,7 +55,7 @@ public class RestClientApiTest {
     }
 
     // authorization
-    private String adminToken  = "52eed95c98e6317803b33cd9c9232a111ec7b97795567b8f849c76cdba50aece";
+    private String adminToken  = "6d8c9461275d90612a251e6ea6e76567e105746dfd2d2e62e9ef12f669c466af";
 
     HttpHeaders httpHeaders = new HttpHeaders();
 
@@ -74,7 +74,7 @@ public class RestClientApiTest {
         // 클라이언트
 
         Client client = new Client();
-        client.setClientId("gncloud");
+        client.setClientId("test");
         client.setDescription("test client");
         client.setDomain("gncloud.io");
 
@@ -109,7 +109,7 @@ public class RestClientApiTest {
         scope4.setIsDefault("n");
         scope4.setDescription("test4");
         request("/scopes", "post", scope4, httpHeaders);
-        request("/scopes?client=" + client.getClientId(), "get", null, httpHeaders);
+        request("/scopes?clientId=" + client.getClientId(), "get", null, httpHeaders);
 
 
 
@@ -157,14 +157,14 @@ public class RestClientApiTest {
 
         request("/token", "delete", null, userHeader);
 
-        request("/users/" + user.getUserId() + "?client=" + client.getClientId(), "delete", null, userHeader);
+        request("/users/" + user.getUserId() + "?clientId=" + client.getClientId(), "delete", null, userHeader);
 
 
         request("/scopes/" + scope.getScopeId() + "?clientId=" + client.getClientId(), "delete", null, httpHeaders);
         request("/scopes/" + scope2.getScopeId() + "?clientId=" + client.getClientId(), "delete", null, httpHeaders);
         request("/scopes/" + scope3.getScopeId() + "?clientId=" + client.getClientId(), "delete", null, httpHeaders);
         request("/scopes/" + scope4.getScopeId() + "?clientId=" + client.getClientId(), "delete", null, httpHeaders);
-        request("/scopes?client=" + client.getClientId(), "get", null, httpHeaders);
+        request("/scopes?clientId=" + client.getClientId(), "get", null, httpHeaders);
 
 
         client.setDescription("update1");

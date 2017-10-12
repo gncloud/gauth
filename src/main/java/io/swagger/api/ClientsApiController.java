@@ -2,10 +2,12 @@ package io.swagger.api;
 
 import io.swagger.annotations.ApiParam;
 import io.swagger.model.Client;
+import io.swagger.model.User;
 import io.swagger.model.UserClientScope;
 import io.swagger.service.ClientService;
 import io.swagger.service.TokenService;
 import io.swagger.service.UserClientScopeService;
+import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,9 @@ public class ClientsApiController implements ClientsApi {
     @Autowired
     private UserClientScopeService userClientScopeService;
 
+    @Autowired
+    private UserService userService;
+
     public ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "target client id",required=true ) @PathVariable("clientId") String clientId,
                                                    @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
@@ -45,10 +50,18 @@ public class ClientsApiController implements ClientsApi {
             clientService.deleteClient(clientId);
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
-            logger.error("clientsClientIdDelete", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("clientsClientIdDelete error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -61,10 +74,18 @@ public class ClientsApiController implements ClientsApi {
 
             return new ResponseEntity<Client>(registerClient, HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
-            logger.error("clientsClientIdGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("clientsClientIdGet error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -79,10 +100,18 @@ public class ClientsApiController implements ClientsApi {
 
             return new ResponseEntity<Client>(registerClient, HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
-            logger.error("clientsClientIdPut", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("clientsClientIdPut error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -94,10 +123,18 @@ public class ClientsApiController implements ClientsApi {
 
             return new ResponseEntity<List<Client>>(registerClients, HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } catch (Exception e){
-            logger.error("clientsGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }  catch (Exception e){
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("clientsGet error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -109,14 +146,22 @@ public class ClientsApiController implements ClientsApi {
             Client registerClient = clientService.insertClient(client);
 
             if(registerClient == null){
-                throw new Exception("create client fail");
+                throw new ApiException("create client fail");
             }
             return new ResponseEntity<Client>(registerClient, HttpStatus.OK);
         } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } catch (Exception e) {
-            logger.error("clientsPost", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("clientsPost error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -125,6 +170,16 @@ public class ClientsApiController implements ClientsApi {
                                          @RequestParam(value = "clientId", required = true) String clientId,
                                                  @RequestBody(required = false) UserClientScope userClientScope) {
         try {
+
+            User registerUser = userService.findByUser(userId);
+            if(registerUser == null){
+                throw new ApiException("not found user");
+            }
+            Client registerClient = clientService.findByClient(clientId);
+            if(registerClient == null){
+                throw new ApiException("not found clientId");
+            }
+
             List<UserClientScope> registerUserClientScopeList = null;
             if(userClientScope != null
                     && userClientScope.getScopeId() != null
@@ -139,9 +194,16 @@ public class ClientsApiController implements ClientsApi {
                 registerUserClientScopeList = userClientScopeService.insertUserClientScope(userClientScope);
             }
             return new ResponseEntity<List<UserClientScope>>(registerUserClientScopeList, HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("userClientScopePost", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("userClientScopePost error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 
@@ -151,15 +213,25 @@ public class ClientsApiController implements ClientsApi {
                                                    @RequestParam(value = "clientId", required = true) String clientId,
                                                    @RequestParam(value = "scopeId", required = true) String scopeId) {
         try {
+
+            tokenService.isAdminToken(authorization);
+
             UserClientScope userClientScope = new UserClientScope();
             userClientScope.setClientId(clientId);
             userClientScope.setUserId(userId);
             userClientScope.setScopeId(scopeId);
             userClientScopeService.deleteUserScope(userClientScope);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            logger.error("userClientScopePost", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+        } catch (Exception e){
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("clientsClientIdDelete error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
         }
     }
 }

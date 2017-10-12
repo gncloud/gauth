@@ -1,7 +1,11 @@
 package io.swagger.service.impl;
 
+import io.swagger.api.ApiException;
 import io.swagger.dao.UserDao;
-import io.swagger.model.*;
+import io.swagger.model.PendingUserRequest;
+import io.swagger.model.PendingUserResponse;
+import io.swagger.model.User;
+import io.swagger.model.UserClientScope;
 import io.swagger.service.*;
 import io.swagger.util.DateUtil;
 import io.swagger.util.RandomUtil;
@@ -16,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * 유저 관리를 위한 service 인터페이스
@@ -102,16 +105,16 @@ public class UserServiceImpl implements UserService {
         if(registerPendingUser == null
                 || !ACTIVE_STATUS.equals(registerPendingUser.getStatus())
                 || !DateUtil.isExpireDate(registerPendingUser.getExpireDate())){
-            throw new Exception("invalid pending");
+            throw new ApiException("invalid pending");
         }
 
         Integer isUserCount = isUserId(user.getUserId());
         if (isUserCount != 0) {
-            throw new Exception("invalid userId");
+            throw new ApiException("invalid userId");
         }
         String password = user.getPassword();
         if (password == null || "".equals(password)) {
-            throw new Exception("invalid password");
+            throw new ApiException("invalid password");
         }
 
         // 회원 정보 등록
@@ -201,15 +204,15 @@ public class UserServiceImpl implements UserService {
         String clientId = pendingUserRequest.getClientId();
 
         if(email == null || "".equals(email) || !email.matches("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$")){
-            throw new Exception("invalid email");
+            throw new ApiException("invalid email");
         }else if(clientId == null || "".equals(clientId)){
-            throw new Exception("invalid clientId");
+            throw new ApiException("invalid clientId");
         }
         if(userDao.isEmail(email)){
-            throw new Exception("invalid email");
+            throw new ApiException("invalid email");
         }
         if(clientService.findByClient(clientId) == null){
-            throw new Exception("not found client");
+            throw new ApiException("not found client");
         }
 
         userDao.deletePendingUser(email);

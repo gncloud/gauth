@@ -215,7 +215,7 @@ var updateUserScopeModal = function(userId, clientId){
     $('#updateUserScopeTitle').html(userId + '의 ' + clientId);
     $('#userScopeList tbody').empty();
     fnAjax({
-        url:'/v1/scopes?client=' + clientId,
+        url:'/v1/scopes?clientId=' + clientId,
         type:'get',
         head:{'Authorization':getCookie('gauth')},
         success:function(data){
@@ -435,7 +435,7 @@ var findScopeList = function(clientId, obj){
     $('#clientList .scopeDiv[data-client-id=' + clientId + '] #scopeTItle').text(clientId);
 
     fnAjax({
-        url:'/v1/scopes?client=' + clientId,
+        url:'/v1/scopes?clientId=' + clientId,
         type:'get',
         head:{'Authorization':getCookie('gauth')},
         success:function(data){
