@@ -42,7 +42,11 @@ var loginRequest = function(userId, password){
         error: function(x,h,r){
             console.log(x);
             var errorData = JSON.parse(x.responseText).message;
-            if(errorData == 'invalid userId'){
+            if(errorData == 'user userClientScope empty'){
+                alert('접근 권한이 없습니다.');
+                $('input').val('').eq(0).focus();
+                return false;
+            }else if(errorData == 'invalid userId'){
                 alert('회원 정보가 없습니다.');
                 $('input').val('').eq(0).focus();
                 return false;

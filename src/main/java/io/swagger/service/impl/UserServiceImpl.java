@@ -2,10 +2,7 @@ package io.swagger.service.impl;
 
 import io.swagger.api.ApiException;
 import io.swagger.dao.UserDao;
-import io.swagger.model.PendingUserRequest;
-import io.swagger.model.PendingUserResponse;
-import io.swagger.model.User;
-import io.swagger.model.UserClientScope;
+import io.swagger.model.*;
 import io.swagger.service.*;
 import io.swagger.util.DateUtil;
 import io.swagger.util.RandomUtil;
@@ -96,15 +93,17 @@ public class UserServiceImpl implements UserService {
         // 펀딩 유저 활성화 안되어 있으면 Exception
         PendingUserResponse registerPendingUser = userDao.findByLastPending(user.getEmail());
 
-
-        if(PENDING_STATUS.equals(registerPendingUser.getStatus())
+        if(registerPendingUser != null
+                && PENDING_STATUS.equals(registerPendingUser.getStatus())
                 && registerPendingUser.getActivateKey().equals(activateKey)){
+
             registerPendingUser.setStatus(ACTIVE_STATUS);
         }
 
         if(registerPendingUser == null
                 || !ACTIVE_STATUS.equals(registerPendingUser.getStatus())
                 || !DateUtil.isExpireDate(registerPendingUser.getExpireDate())){
+
             throw new ApiException("invalid pending");
         }
 
@@ -266,8 +265,8 @@ public class UserServiceImpl implements UserService {
     /*
      * 대기 유저 전체 조회
      */
-    public List<PendingUserResponse> findByPendingUserInfoList(){
-        return userDao.findByPendingUserInfoList();
+    public List<PendingUserResponse> findByPendingUserInfoList(Token adminToken){
+        return userDao.findByPendingUserInfoList(adminToken);
     }
 
     /*

@@ -54,7 +54,7 @@ public class ScopesApiController implements ScopesApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("scopesGet error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 
@@ -79,7 +79,7 @@ public class ScopesApiController implements ScopesApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("scopesPost error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 
@@ -109,7 +109,7 @@ public class ScopesApiController implements ScopesApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("scopesScopeIdDelete error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 
@@ -136,7 +136,7 @@ public class ScopesApiController implements ScopesApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("scopesScopeIdGet error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 
@@ -164,7 +164,7 @@ public class ScopesApiController implements ScopesApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("scopesScopeIdPut error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 

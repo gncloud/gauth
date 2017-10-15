@@ -2,6 +2,7 @@ package io.swagger.api;
 
 import io.swagger.annotations.ApiParam;
 import io.swagger.model.Client;
+import io.swagger.model.Token;
 import io.swagger.model.User;
 import io.swagger.model.UserClientScope;
 import io.swagger.service.ClientService;
@@ -117,9 +118,9 @@ public class ClientsApiController implements ClientsApi {
 
     public ResponseEntity<?> clientsGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
-            tokenService.isAdminToken(authorization);
+            Token AdminToken = tokenService.isAdminToken(authorization);
 
-            List<Client> registerClients = clientService.selectClients();
+            List<Client> registerClients = clientService.selectClients(AdminToken);
 
             return new ResponseEntity<List<Client>>(registerClients, HttpStatus.OK);
         } catch (AccessControlException e){
@@ -134,7 +135,7 @@ public class ClientsApiController implements ClientsApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("clientsGet error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 
@@ -161,10 +162,9 @@ public class ClientsApiController implements ClientsApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("clientsPost error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
-
 
     public ResponseEntity<?> userClientScopePost(@ApiParam(value = "target",required=true ) @PathVariable("userId") String userId,
                                          @RequestParam(value = "clientId", required = true) String clientId,
@@ -203,7 +203,7 @@ public class ClientsApiController implements ClientsApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("userClientScopePost error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 
@@ -231,7 +231,7 @@ public class ClientsApiController implements ClientsApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("clientsClientIdDelete error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 }

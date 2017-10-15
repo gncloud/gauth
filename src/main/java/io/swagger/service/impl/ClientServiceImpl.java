@@ -3,6 +3,7 @@ package io.swagger.service.impl;
 import io.swagger.dao.ClientDao;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
+import io.swagger.model.Token;
 import io.swagger.service.ClientService;
 import io.swagger.service.ScopeService;
 import io.swagger.service.TokenService;
@@ -52,12 +53,12 @@ public class ClientServiceImpl implements ClientService {
         userScope.setClientId(client.getClientId());
         userScope.setIsDefault("Y");
         userScope.setDescription("사용자");
-        userScope.setScopeId("User");
+        userScope.setScopeId(ClientService.SCOPE_USER);
         scopeService.insertScope(userScope);
 
         //Admin Scope
         Scope adminScope = new Scope();
-        adminScope.setScopeId("Admin");
+        adminScope.setScopeId(ClientService.SCOPE_ADMIN);
         adminScope.setDescription("관리자");
         adminScope.setIsDefault("N");
         adminScope.setClientId(client.getClientId());
@@ -114,8 +115,8 @@ public class ClientServiceImpl implements ClientService {
      * 클라이언트 전체 조회
      */
     @Override
-    public List<Client> selectClients() {
-        return clientDao.selectClients();
+    public List<Client> selectClients(Token adminToken) {
+        return clientDao.selectClients(adminToken);
     }
 
 

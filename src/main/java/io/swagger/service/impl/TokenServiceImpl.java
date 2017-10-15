@@ -5,6 +5,8 @@ import io.swagger.dao.TokenDao;
 import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Token;
 import io.swagger.model.User;
+import io.swagger.model.UserClientScope;
+import io.swagger.service.ClientService;
 import io.swagger.service.TokenService;
 import io.swagger.service.UserClientScopeService;
 import io.swagger.service.UserService;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.AccessControlException;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -43,8 +46,21 @@ public class TokenServiceImpl implements TokenService{
      */
     public Token createToken(AuthenticationRequest user) throws Exception {
 
+
+        User findUser = new User();
+        findUser.setUserId(user.getUserId());
+        Iterator<UserClientScope> findUserScopeList = userClientScopeService.selectUserMappingList(findUser).iterator();
+        boolean isAdmin = false;
+        while (findUserScopeList.hasNext()){
+            UserClientScope userClientScope = findUserScopeList.next();
+            if(userClientScope != null && ClientService.SCOPE_ADMIN.equals(userClientScope.getScopeId())){
+                isAdmin = true;
+                break;
+            }
+        }
+
         // 유저가 클라이언트에 등록 여부를 확인한다.
-        if(!userClientScopeService.isUserClientScope(user)){
+        if(!userClientScopeService.isUserClientScope(user) && !isAdmin){
             logger.debug("user userClientScope empty");
             throw new AccessControlException("user userClientScope empty");
         }
@@ -166,15 +182,17 @@ public class TokenServiceImpl implements TokenService{
      * admin check
      */
     @Override
-    public void isAdminToken(String authentication) throws AccessControlException {
+    public Token isAdminToken(String authentication) throws AccessControlException {
+
         Token token = new Token();
         token.setTokenId(authentication);
-        token.setClientId(TokenService.ADMIN_CLIENT);
+//        token.setClientId(TokenService.ADMIN_CLIENT);
         Token registerAdminToken = tokenDao.findByAdminToken(token);
 
         if(registerAdminToken == null || !DateUtil.isExpireDate(registerAdminToken.getExpireDate())){
             throw new AccessControlException("token invalid");
         }
+        return registerAdminToken;
     }
 
     @Override

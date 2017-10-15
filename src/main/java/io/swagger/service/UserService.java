@@ -2,6 +2,7 @@ package io.swagger.service;
 
 import io.swagger.model.PendingUserRequest;
 import io.swagger.model.PendingUserResponse;
+import io.swagger.model.Token;
 import io.swagger.model.User;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,7 +81,7 @@ public interface UserService {
     /*
      * 대기 유저 전체 조회
      */
-    List<PendingUserResponse> findByPendingUserInfoList();
+    List<PendingUserResponse> findByPendingUserInfoList(Token adminToken);
 
     /*
      * 대기 유저 전체 삭제

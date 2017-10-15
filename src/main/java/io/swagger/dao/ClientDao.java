@@ -1,6 +1,7 @@
 package io.swagger.dao;
 
 import io.swagger.model.Client;
+import io.swagger.model.Token;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -40,8 +41,8 @@ public class ClientDao {
     /*
      * 클라이언트 전체 조회
      */
-    public List<Client> selectClients() {
-        return sqlSession.selectList("client.selectClients");
+    public List<Client> selectClients(Token adminToken) {
+        return sqlSession.selectList("client.selectClients", adminToken);
     }
 
     public Integer isDomain(String domain) {

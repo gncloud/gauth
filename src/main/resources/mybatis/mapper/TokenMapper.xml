@@ -84,14 +84,11 @@
                 expire_date
          from Token
         where token_id = #{tokenId}
-          and client_id = #{clientId}
           and exists  (select 1
                          from UserClientScope
-                        where (user_id, client_id,scope_id) = (select user_id
-                                                                    , client_id
-                                                                    , 'Admin'
-                                                                 from Token
-                                                                where token_id = #{tokenId}))
+                        where (user_id, scope_id) = (select user_id
+                                                          , 'Admin'
+                                                       from Token
+                                                      where token_id = #{tokenId}))
     </select>
-
 </mapper>

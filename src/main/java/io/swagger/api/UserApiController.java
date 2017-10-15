@@ -29,7 +29,7 @@ public class UserApiController implements UserApi {
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (Exception e){
             logger.error("userGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.toString()), HttpStatus.BAD_REQUEST);
         }
     }
 

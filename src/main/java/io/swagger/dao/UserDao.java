@@ -1,7 +1,7 @@
 package io.swagger.dao;
 
-import io.swagger.model.PendingUserRequest;
 import io.swagger.model.PendingUserResponse;
+import io.swagger.model.Token;
 import io.swagger.model.User;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,8 +127,8 @@ public class UserDao {
     /*
      * 대기 유저 조회
      */
-    public List<PendingUserResponse> findByPendingUserInfoList(){
-        return sqlSession.selectList("user.findByPendingUserInfoList");
+    public List<PendingUserResponse> findByPendingUserInfoList(Token adminToken){
+        return sqlSession.selectList("user.findByPendingUserInfoList", adminToken);
     }
 
     /*

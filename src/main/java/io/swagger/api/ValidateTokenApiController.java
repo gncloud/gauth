@@ -39,7 +39,7 @@ public class ValidateTokenApiController implements ValidateTokenApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("usersPost error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 

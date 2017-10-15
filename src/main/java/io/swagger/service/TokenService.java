@@ -54,7 +54,7 @@ public interface TokenService {
     /*
      * admin 토큰 유효성 검사
      */
-    void isAdminToken(String authentication) throws AccessControlException;
+    Token isAdminToken(String authentication) throws AccessControlException;
 
     /*
      * delete client

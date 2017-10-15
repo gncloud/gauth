@@ -41,7 +41,7 @@ public class TokensApiController implements TokensApi {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e){
             logger.error("tokensDelete", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -55,7 +55,7 @@ public class TokensApiController implements TokensApi {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("tokensGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -114,7 +114,7 @@ public class TokensApiController implements TokensApi {
             return new ResponseEntity<Token>(registerToken, HttpStatus.OK);
         } catch (Exception e){
             logger.error("tokensTokenIdGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), HttpStatus.BAD_REQUEST);
         }
     }
 

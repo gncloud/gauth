@@ -34,13 +34,24 @@
          WHERE client_id = #{clientId}
     </update>
 
-    <select id="selectClients" resultType="Client">
-        select client_id
-              , client_secret
-              , description
-              , domain
-          from Client
-         where client_id != 'gauth'
+    <select id="selectClients" parameterType="Token" resultType="Client">
+        select a.client_id
+            , a.client_secret
+            , a.description
+            , a.domain
+        from Client a
+        where a.client_id in (select distinct aa.client_id
+                                from UserClientScope aa
+                                where aa.user_id in (select aaa.user_id
+                                                    from Token aaa
+                                                    where aaa.token_id = #{tokenId})
+                                                    and aa.scope_id = 'Admin'
+                                                    and aa.client_id != 'gauth')
+        or exists (select 1
+                    from Token aaa
+                    where aaa.token_id = #{tokenId}
+                    and aaa.user_id = 'admin'
+                    and 'gauth' != a.client_id)
     </select>
 
     <select id="isDomain" resultType="Integer" parameterType="String">

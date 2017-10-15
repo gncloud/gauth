@@ -2,6 +2,7 @@ package io.swagger.api;
 
 import io.swagger.annotations.ApiParam;
 import io.swagger.model.PendingUserResponse;
+import io.swagger.model.Token;
 import io.swagger.model.User;
 import io.swagger.model.UserClientScope;
 import io.swagger.service.TokenService;
@@ -19,10 +20,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.AccessControlException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
@@ -45,12 +43,13 @@ public class UsersApiController implements UsersApi {
                                       @ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search,
                                       @ApiParam(value = "current page") @RequestParam(value = "p", required = false, defaultValue = "1") String p) {
         try {
-            tokenService.isAdminToken(authorization);
+            Token adminToken = tokenService.isAdminToken(authorization);
 
             Map<String, Object> result = new HashMap<>();
 
             Map<String, String> searchMap = new HashMap<>();
             searchMap.put("search", search);
+            searchMap.put("adminToken", adminToken.getTokenId());
             int page = (Integer.parseInt(p) - 1) * 20;
             searchMap.put("p", String.valueOf(page));
             List<User> registerUserList = userService.findByUsers(searchMap);
@@ -109,7 +108,7 @@ public class UsersApiController implements UsersApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("usersGet error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 
@@ -135,7 +134,7 @@ public class UsersApiController implements UsersApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("usersPost error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 
@@ -157,7 +156,7 @@ public class UsersApiController implements UsersApi {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("usersUserIdDelete error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }
 
@@ -181,7 +180,7 @@ public class UsersApiController implements UsersApi {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("usersUserIdGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.toString()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -208,15 +207,15 @@ public class UsersApiController implements UsersApi {
     @Override
     public ResponseEntity<?> pendusersGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization) {
         try {
-            tokenService.isAdminToken(authorization);
-            List<PendingUserResponse> pendUserList = userService.findByPendingUserInfoList();
+            Token adminToken = tokenService.isAdminToken(authorization);
+            List<PendingUserResponse> pendUserList = userService.findByPendingUserInfoList(adminToken);
             return new ResponseEntity<List<PendingUserResponse>>(pendUserList, HttpStatus.OK);
         } catch (AccessControlException e){
             logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("pendusersGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.toString()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -231,7 +230,7 @@ public class UsersApiController implements UsersApi {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("pendusersDelete", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.toString()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -247,7 +246,26 @@ public class UsersApiController implements UsersApi {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("pendusersEmailDelete", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.getMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.toString()), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> userIdcheckGet(@ApiParam(value = "userid check", required = true) @RequestParam(value = "userId", required = true) String userId) {
+        try {
+
+            User registerUser = userService.findByUser(userId);
+            Map<String, Object> responseMap = new HashMap<>();
+            registerUser.getUserId();
+            if(registerUser != null){
+                responseMap.put("isUserId", false);
+            }else{
+                responseMap.put("isUserId", true);
+            }
+            return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
+        } catch (Exception e){
+            logger.error("userUserIdcheckGet", e);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.toString()), HttpStatus.BAD_REQUEST);
         }
     }
 
