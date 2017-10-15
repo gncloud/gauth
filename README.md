@@ -8,6 +8,7 @@
   - Maven으로 package한다 (명령어 : man package)
   - Gauth spring boot 프로젝트를 실행한다. (스크립트 사용 권장 -> gauth start)
   - http://localhost:7979/v1/admin  어드민의 로그인 페이지이다.(root 계정은 admin/1111)
+  
   - 샘플 로그인 프로젝트는 gauth안의 별도의 sample 프로젝트가 있다.
   - Sample 디렉터리 에서 Maven으로 package한다 (명령어 : man package)
   - Gauth-sample spring boot 프로젝트를 실행한다. (스크립트 사용 권장 -> gauth-sample start)
@@ -55,7 +56,7 @@
 - 클라이언트 메뉴에서 생성버튼을 누른 후 각 입력항목을 등록한다.
 - 클라이언트 기본 스코프는 Admin,User 두가지가 기본 생성된다.
 - 기본값으로 선택되어 있을 시 사용자가 회원가입시 부여 받게될 권한이다.
-- Admin으로 권한을 부여 시 관리자 페이지 접근이 가능하다.
+- Admin으로 권한을 부여 시 관리자 페이지 접근이 가능하다. 
 - * 절대 기본값으로 Admin 스코프를 부여하지 않도록 한다.
 - 클라이언트 등록완료.
 
@@ -67,7 +68,7 @@
 - 2단계
 - 회원 정보를 입력한다.
 - activateKey는 메일 인증시 발급한 확인 키이다.
-- PUT http://localhost:7979/v1/activates 요청으로 메일을 인증 할 수 있다.
+- PUT http://localhost:7979/v1/activates 요청으로 메일을 인증 할 수 있다. 
 - 또는 회원가입 요청에 QueryString으로 포함하여 인증 할 수 있다.
 - 회원가입 요청시 상태코드 200이면 정상이다.
 
