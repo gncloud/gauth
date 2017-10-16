@@ -14,18 +14,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Api(value = "activate", description = "the activate API")
 public interface ActivateApi {
 
-    @ApiOperation(value = "create activate pending user", notes = "create activate pending user", response = PendingUserResponse.class, tags={  })
+    @ApiOperation(value = "create pending email", notes = "create pending email", response = PendingUserResponse.class, tags={  })
     @ApiResponses(value = {
         @ApiResponse(code = 200, message = "OK", response = PendingUserResponse.class) })
-    @RequestMapping(value = "/activates",
+    @RequestMapping(value = "/register",
         method = RequestMethod.POST)
     ResponseEntity<?> activatesPost(@ApiParam(value = "") @RequestBody PendingUserRequest pendingUserRequest);
 
-    @ApiOperation(value = "active pending user", notes = "active pending user", response = PendingUserResponse.class, tags={  })
+    @ApiOperation(value = "active pending email", notes = "active pending email", response = PendingUserResponse.class, tags={  })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = PendingUserResponse.class) })
-    @RequestMapping(value = "/activates",
-            method = RequestMethod.PUT)
+    @RequestMapping(value = "/activate",
+            method = RequestMethod.POST)
     ResponseEntity<?> activatesPut(@ApiParam(value = "") @RequestParam(value = "activateKey" ,required=true ) String activateKey);
 
 }

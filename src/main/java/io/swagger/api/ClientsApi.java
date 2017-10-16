@@ -59,7 +59,7 @@ public interface ClientsApi {
     @ApiOperation(value = "create UserClientScope", notes = "createUserClientScope", response = Client.class, tags={  })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Client.class) })
-    @RequestMapping(value = "/userClientScope/{userId}",
+    @RequestMapping(value = "/userClientScope",
             method = RequestMethod.POST)
     ResponseEntity<?> userClientScopePost(@ApiParam(value = "target", required = true) @PathVariable("userId") String userId,
                                           @RequestParam(value = "clientId", required = true) String clientId,
@@ -69,10 +69,10 @@ public interface ClientsApi {
     @ApiOperation(value = "delete user scope", notes = "delete user scope", response = Void.class, tags={  })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Void.class) })
-    @RequestMapping(value = "/userClientScope/{userId}",
+    @RequestMapping(value = "/userClientScope",
             method = RequestMethod.DELETE)
-    ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "target user id", required = true) @PathVariable("userId") String userId,
-                                            @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+    ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                            @RequestParam(value = "userId", required = true) String userId,
                                             @RequestParam(value = "clientId", required = true) String clientId,
                                             @RequestParam(value = "scopeId", required = true) String scopeId);
 

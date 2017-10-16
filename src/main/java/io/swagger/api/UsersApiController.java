@@ -246,27 +246,27 @@ public class UsersApiController implements UsersApi {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             logger.error("pendusersEmailDelete", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.toString()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.toString()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @Override
-    public ResponseEntity<?> userIdcheckGet(@ApiParam(value = "userid check", required = true) @RequestParam(value = "userId", required = true) String userId) {
-        try {
-
-            User registerUser = userService.findByUser(userId);
-            Map<String, Object> responseMap = new HashMap<>();
-            registerUser.getUserId();
-            if(registerUser != null){
-                responseMap.put("isUserId", false);
-            }else{
-                responseMap.put("isUserId", true);
-            }
-            return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
-        } catch (Exception e){
-            logger.error("userUserIdcheckGet", e);
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.toString()), HttpStatus.BAD_REQUEST);
-        }
-    }
+//    @Override
+//    public ResponseEntity<?> userIdcheckGet(@ApiParam(value = "userid check", required = true) @RequestParam(value = "userId", required = true) String userId) {
+//        try {
+//
+//            User registerUser = userService.findByUser(userId);
+//            Map<String, Object> responseMap = new HashMap<>();
+//            registerUser.getUserId();
+//            if(registerUser != null){
+//                responseMap.put("isUserId", false);
+//            }else{
+//                responseMap.put("isUserId", true);
+//            }
+//            return new ResponseEntity<Map<String, Object>>(responseMap, HttpStatus.OK);
+//        } catch (Exception e){
+//            logger.error("userUserIdcheckGet", e);
+//            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(1, e.toString()), HttpStatus.BAD_REQUEST);
+//        }
+//    }
 
 }

@@ -88,12 +88,12 @@ public interface UsersApi {
     ResponseEntity<?> pendusersEmailDelete(@ApiParam(value = "delete target", required = true) @PathVariable("activateKey") String activateKey,
                                            @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 
-    @ApiOperation(value = "userId check", notes = "userId check", response = User.class, tags={  })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Void.class) })
-    @RequestMapping(value = "/users/idcheck",
-            method = RequestMethod.GET)
-    ResponseEntity<?> userIdcheckGet(@ApiParam(value = "userid check", required = true) @RequestParam(value = "userId", required = true) String userId);
+//    @ApiOperation(value = "userId check", notes = "userId check", response = User.class, tags={  })
+//    @ApiResponses(value = {
+//            @ApiResponse(code = 200, message = "OK", response = Void.class) })
+//    @RequestMapping(value = "/users/idcheck",
+//            method = RequestMethod.GET)
+//    ResponseEntity<?> userIdcheckGet(@ApiParam(value = "userid check", required = true) @RequestParam(value = "userId", required = true) String userId);
 
 
 }

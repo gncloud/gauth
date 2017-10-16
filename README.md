@@ -20,15 +20,15 @@
 
 | TYPE | URI | description |
 | ------ | ------ | ------ |
-| POST | activates | create activate pending user |
-| PUT | activates | active pending user |
+| POST | /register | create activate pending user |
+| POST | /activate | active pending user |
 | DELETE | /clients/{clientId} | delete client |
 | GET | /clients/{clientId} | client info |
 | PUT | /clients/{clientId} | update client |
 | GET | /clients | client list (admin Only) |
 | POST| /clients | create client (admin Only) |
-| POST | /userClientScope/{userId} | create UserClientScope |
-| DELETE | /userClientScope/{userId} | delete user scope |
+| POST | /userClientScope | create UserClientScope |
+| DELETE | /userClientScope | delete user scope |
 | GET | /scopes | scope info list (admin Only) |
 | POST | /scopes | create scope (admin Only) |
 | DELETE | /scopes/{scopeId} | delete scope |
@@ -45,10 +45,10 @@
 | DELETE | /users/{userId} | delete user |
 | GET | /users/{userId} | user info (admin only) |
 | PUT | /users/{userId} | update user |
-| GET | /pendusers | user info keyword search (admin Only) |
-| DELETE | /pendusers | delete penduser |
-| DELETE | /pendusers/{activateKey} | delete penduser |
-| GET | /users/idcheck | userId check |
+| GET | /users?state=pending | list pending users |
+| DELETE | /users?state=pending&activateKey={key} <br> /users?state=pending&email={email} | delete one pending user |
+| DELETE | /users?state=pending&truncate=true | delete all pending users |
+
 
 
 ### 클라이언트 등록
