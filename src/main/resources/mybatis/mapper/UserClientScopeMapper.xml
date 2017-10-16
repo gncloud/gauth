@@ -16,7 +16,7 @@
     <select id="findUserCount" parameterType="User" resultType="Integer">
         SELECT count(*)
           FROM UserClientScope
-         WHERE user_id = #{userId}
+         WHERE user_id = #{userCode}
     </select>
 
     <insert id="insertUserClientScope" parameterType="UserClientScope">
@@ -25,7 +25,7 @@
         scope_id,
         client_id)
         VALUES
-        (#{userId},
+        (#{userCode},
         #{scopeId,jdbcType=VARCHAR},
         #{clientId})
     </insert>
@@ -35,7 +35,7 @@
                scope_id,
                client_id
           FROM UserClientScope
-         where user_id = #{userId}
+         where user_id = #{userCode}
         <if test="scopeId != null and scopeId != ''">
             and scope_id = #{scopeId}
         </if>
@@ -49,7 +49,7 @@
 
     <delete id="deleteUserClientScope" parameterType="UserClientScope">
         DELETE FROM UserClientScope
-         WHERE user_id = #{userId}
+         WHERE user_id = #{userCode}
            AND client_id = #{clientId}
     </delete>
 
@@ -63,20 +63,20 @@
         scope_id,
         client_id
         FROM UserClientScope
-        where user_id = #{userId}
+        where user_id = #{userCode}
     </select>
 
     <select id="isUserClientScope" parameterType="AuthenticationRequest" resultType="Integer">
         SELECT count(*)
         FROM UserClientScope
-        where user_id = #{userId}
+        where user_id = #{userCode}
           AND client_id = #{clientId}
     </select>
 
     <select id="findByScopeIdList" parameterType="UserClientScope" resultType="String">
         SELECT scope_id
         FROM UserClientScope
-        where user_id = #{userId}
+        where user_id = #{userCode}
         AND client_id = #{clientId}
     </select>
 
@@ -90,7 +90,7 @@
         DELETE FROM UserClientScope
         WHERE client_id = #{clientId}
           and scope_id = #{scopeId}
-          and user_id = #{userId}
+          and user_id = #{userCode}
     </delete>
 
 </mapper>

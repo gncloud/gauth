@@ -31,9 +31,6 @@ public class UserServiceImpl implements UserService {
 
     private static Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
-    private final String PENDING_STATUS = "pending";
-    private final String ACTIVE_STATUS = "active";
-
     @Autowired
     private UserDao userDao;
 
@@ -107,7 +104,7 @@ public class UserServiceImpl implements UserService {
             throw new ApiException("invalid pending");
         }
 
-        Integer isUserCount = isUserId(user.getUserId());
+        Integer isUserCount = isUserId(user.getUserCode());
         if (isUserCount != 0) {
             throw new ApiException("invalid userId");
         }
@@ -120,16 +117,16 @@ public class UserServiceImpl implements UserService {
         userDao.insertUser(user);
 
         // 펀딩 정보 제거
-        deletePendingUser(user.getEmail());
+        deletePendUserEmail(user.getEmail());
 
         // 처음 회원가입한 클라이언트 맵핑 테이블 등록
         UserClientScope userClientScope = new UserClientScope();
         userClientScope.setClientId(clientId);
-        userClientScope.setUserId(user.getUserId());
+        userClientScope.setUserId(user.getUserCode());
         userClientScopeService.insertUserClientScope(userClientScope);
 
         // 등록된 DB 유저 가져오기
-        User registerUser = findByUser(user.getUserId());
+        User registerUser = findByUser(user.getUserCode());
         return registerUser;
     }
 
@@ -140,7 +137,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String userId, String client) {
 
         // 토큰 정보 삭제
-        tokenService.deleteSearchUserId(userId);
+        tokenService.deleteTokenByUserId(userId);
 
         // 유저,클라이언트 관계 데이터 삭제
         UserClientScope userClientScope = new UserClientScope();
@@ -169,11 +166,11 @@ public class UserServiceImpl implements UserService {
         // 토큰으로 왔을 시 토큰으로 아이디 조회
 //        if(user.getTokenId() != null && !"".equals(user.getTokenId())){
 //            targetUser = userDao.fienByTokenToUserInfo(user.getTokenId());
-//            user.setUserId(targetUser.getUserId());
+//            user.setUserCode(targetUser.getUserCode());
 //        }
 
         userDao.updateUser(user);
-        return userDao.findByUser(user.getUserId());
+        return userDao.findByUser(user.getUserCode());
     }
     /*
      * 토큰으로 회원 정보 조회
@@ -214,7 +211,7 @@ public class UserServiceImpl implements UserService {
             throw new ApiException("not found client");
         }
 
-        userDao.deletePendingUser(email);
+        userDao.deletePendUserEmail(email);
         String mTime = String.valueOf(System.currentTimeMillis());
         String activateKey = RandomUtil.randomString(32 - mTime.length()) + mTime;
 
@@ -278,10 +275,19 @@ public class UserServiceImpl implements UserService {
     }
 
     /*
-     * 대기 유저 삭제
+     * 대기 유저 삭제 target : email
      */
     @Override
-    public void deletePendingUser(String email) {
-        userDao.deletePendingUser(email);
+    public void deletePendUserEmail(String email) {
+        userDao.deletePendUserEmail(email);
     }
+
+    /*
+     * 대기 유저 삭제 target : activateKey
+     */
+    @Override
+    public void deletePendUserActivateKey(String activateKey) {
+        userDao.deletePendUserActivateKey(activateKey);
+    }
+
 }

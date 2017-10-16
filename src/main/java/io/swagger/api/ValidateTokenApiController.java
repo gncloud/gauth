@@ -25,7 +25,7 @@ public class ValidateTokenApiController implements ValidateTokenApi {
 
     public ResponseEntity<?> validateTokenHead(@ApiParam(value = "User Authentication BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
-            Token registerToken = tokenService.isTokenValidate(authorization);
+            Token registerToken = tokenService.isTokenValid(authorization);
             if(registerToken == null){
                 throw new ApiException("invalid token");
             }

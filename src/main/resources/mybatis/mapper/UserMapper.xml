@@ -14,7 +14,7 @@
                     company)
                     VALUES
                     (
-                    #{userId},
+                    #{userCode},
                     #{password},
                     #{email},
                     #{name},
@@ -56,7 +56,7 @@
                phone = #{phone},
                address = #{address},
                company = #{company}
-         WHERE user_id = #{userId}
+         WHERE user_id = #{userCode}
     </update>
 
     <select id="fienByTokenToUserInfo" parameterType="String" resultType="User">
@@ -134,10 +134,14 @@
         limit 1
     </select>
 
-    <delete id="deletePendingUser" parameterType="String">
+    <delete id="deletePendUserEmail" parameterType="String">
         DELETE FROM Pending
           WHERE email = #{param1}
-             OR activate_key = #{param1}
+    </delete>
+
+    <delete id="deletePendUserActivateKey" parameterType="String">
+        DELETE FROM Pending
+        WHERE activate_key = #{param1}
     </delete>
 
     <update id="updatePendingStatus" parameterType="PendingUserResponse">

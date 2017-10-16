@@ -24,7 +24,8 @@ public interface UsersApi {
         method = RequestMethod.GET)
     ResponseEntity<?> usersGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                @ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search,
-                               @ApiParam(value = "current page") @RequestParam(value = "p", required = false) String p);
+                               @ApiParam(value = "current page") @RequestParam(value = "p", required = false) String p,
+                               @ApiParam(value = "state") @RequestParam(value = "state", required = false) String state);
 
 
     @ApiOperation(value = "user sign up", notes = "user sign up", response = User.class, tags={  })
@@ -33,7 +34,7 @@ public interface UsersApi {
     @RequestMapping(value = "/users",
         method = RequestMethod.POST)
     ResponseEntity<?> usersPost(@ApiParam(value = "client id", required = true) @RequestParam(value = "clientId", required = true) String clientId,
-                                   @ApiParam(value = "", required = true) @RequestBody User user,
+                                @ApiParam(value = "", required = true) @RequestBody User user,
                                 @ApiParam(value = "activateKey") @RequestParam(value = "activateKey", required = false) String activateKey);
 
 
@@ -43,8 +44,12 @@ public interface UsersApi {
     @RequestMapping(value = "/users/{userId}",
         method = RequestMethod.DELETE)
     ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target", required = true) @PathVariable("userId") String userId,
-                                           @ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
-                                        @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId);
+                                        @ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                        @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId,
+                                        @ApiParam(value = "state" ,required=false ) @RequestParam String state,
+                                        @ApiParam(value = "truncate" ,required=false ) @RequestParam String truncate,
+                                        @ApiParam(value = "activateKey" ,required=false ) @RequestParam String activateKey,
+                                        @ApiParam(value = "email" ,required=false ) @RequestParam String email);
 
 
     @ApiOperation(value = "user info (admin only)", notes = "user info (admin only)", response = User.class, tags={  })
@@ -66,34 +71,6 @@ public interface UsersApi {
                                        @ApiParam(value = "") @RequestBody User user);
 
 
-    @ApiOperation(value = "user info keyword search (admin Only)", notes = "user info keyword search (admin Only)", response = User.class, responseContainer = "List", tags={  })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = User.class) })
-    @RequestMapping(value = "/pendusers",
-            method = RequestMethod.GET)
-    ResponseEntity<?> pendusersGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
-
-    @ApiOperation(value = "delete penduser", notes = "delete penduser", response = Void.class, tags={  })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Void.class) })
-    @RequestMapping(value = "/pendusers",
-            method = RequestMethod.DELETE)
-    ResponseEntity<?> pendusersDelete(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
-
-    @ApiOperation(value = "delete penduser", notes = "delete penduser", response = Void.class, tags={  })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "OK", response = Void.class) })
-    @RequestMapping(value = "/pendusers/{activateKey}",
-            method = RequestMethod.DELETE)
-    ResponseEntity<?> pendusersEmailDelete(@ApiParam(value = "delete target", required = true) @PathVariable("activateKey") String activateKey,
-                                           @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
-
-//    @ApiOperation(value = "userId check", notes = "userId check", response = User.class, tags={  })
-//    @ApiResponses(value = {
-//            @ApiResponse(code = 200, message = "OK", response = Void.class) })
-//    @RequestMapping(value = "/users/idcheck",
-//            method = RequestMethod.GET)
-//    ResponseEntity<?> userIdcheckGet(@ApiParam(value = "userid check", required = true) @RequestParam(value = "userId", required = true) String userId);
 
 
 }

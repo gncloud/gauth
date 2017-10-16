@@ -37,7 +37,7 @@ public class TokensApiController implements TokensApi {
 
     public ResponseEntity<?> tokenDelete(@RequestHeader(value="Authorization", required=true) String authorization) {
         try {
-            tokenService.deleteToekn(authorization);
+            tokenService.deleteToken(authorization);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e){
             logger.error("tokensDelete", e);
@@ -90,7 +90,7 @@ public class TokensApiController implements TokensApi {
                                                  @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
             tokenService.isAdminToken(authorization);
-            tokenService.deleteToekn(tokenId);
+            tokenService.deleteToken(tokenId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (AccessControlException e){
             logger.warn("AccessControlException {}", e.getMessage());
@@ -110,7 +110,7 @@ public class TokensApiController implements TokensApi {
 
     public ResponseEntity<?> tokensTokenIdGet(@ApiParam(value = "read token info",required=true ) @PathVariable("tokenId") String tokenId) {
         try {
-            Token registerToken = tokenService.findByToken(tokenId);
+            Token registerToken = tokenService.getToken(tokenId);
             return new ResponseEntity<Token>(registerToken, HttpStatus.OK);
         } catch (Exception e){
             logger.error("tokensTokenIdGet", e);

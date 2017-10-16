@@ -19,10 +19,10 @@ public class TokenDao {
     }
 
     public Token findByToken(String tokenId) {
-        return sqlSession.selectOne("token.findByToken", tokenId);
+        return sqlSession.selectOne("token.getToken", tokenId);
     }
     public Token findByToken(AuthenticationRequest user) {
-        return sqlSession.selectOne("token.findByUserToToken", user);
+        return sqlSession.selectOne("token.findTokenByUser", user);
     }
 
     public void deleteToken(String tokenId) {

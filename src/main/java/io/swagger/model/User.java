@@ -14,6 +14,10 @@ import java.util.Objects;
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
 public class User   {
+
+  @JsonProperty("userCode")
+  private String userCode = null;
+
   @JsonProperty("userId")
   private String userId = null;
 
@@ -42,21 +46,21 @@ public class User   {
   private String token = null;
 
   public User userId(String userId) {
-    this.userId = userId;
+    this.userCode = userId;
     return this;
   }
 
    /**
-   * Get userId
-   * @return userId
+   * Get userCode
+   * @return userCode
   **/
   @ApiModelProperty(value = "")
-  public String getUserId() {
-    return userId;
+  public String getUserCode() {
+    return userCode;
   }
 
-  public void setUserId(String userId) {
-    this.userId = userId;
+  public void setUserCode(String userCode) {
+    this.userCode = userCode;
   }
 
   public User password(String password) {
@@ -216,7 +220,8 @@ public class User   {
       return false;
     }
     User user = (User) o;
-    return Objects.equals(this.userId, user.userId) &&
+    return Objects.equals(this.userCode, user.userCode) &&
+        Objects.equals(this.userId, user.userId) &&
         Objects.equals(this.password, user.password) &&
         Objects.equals(this.email, user.email) &&
         Objects.equals(this.name, user.name) &&
@@ -229,7 +234,7 @@ public class User   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, password, email, name, registerDate, phone, address, company, token);
+    return Objects.hash(userCode, userId, password, email, name, registerDate, phone, address, company, token);
   }
 
   @Override
@@ -237,6 +242,7 @@ public class User   {
     StringBuilder sb = new StringBuilder();
     sb.append("class User {\n");
     
+    sb.append("    userCode: ").append(toIndentedString(userCode)).append("\n");
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    email: ").append(toIndentedString(email)).append("\n");

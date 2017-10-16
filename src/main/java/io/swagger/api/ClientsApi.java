@@ -61,8 +61,7 @@ public interface ClientsApi {
             @ApiResponse(code = 200, message = "OK", response = Client.class) })
     @RequestMapping(value = "/userClientScope",
             method = RequestMethod.POST)
-    ResponseEntity<?> userClientScopePost(@ApiParam(value = "target", required = true) @PathVariable("userId") String userId,
-                                          @RequestParam(value = "clientId", required = true) String clientId,
+    ResponseEntity<?> userClientScopePost(@RequestParam(value = "clientId", required = true) String clientId,
                                           @RequestBody UserClientScope userClientScope);
 
 

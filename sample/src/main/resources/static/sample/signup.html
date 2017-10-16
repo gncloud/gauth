@@ -185,7 +185,7 @@ $(function(){
         var clientId = $('#s_client_id').val();
         var activateKey = $('#s_activate_key').val();
 
-        var userId = $('#s_user_id').val();
+        var userCode = $('#s_user_id').val();
         var password = $('#s_password').val();
         var email = $('#s_email').val();
         var address = $('#s_address').val();
@@ -193,7 +193,7 @@ $(function(){
         var name = $('#s_name').val();
         var phone = $('#s_phone').val();
 
-        if(userId === undefined || userId == ''
+        if(userCode === undefined || userCode == ''
             || password === undefined || password == ''
             || email === undefined || email == ''
             || clientId === undefined || clientId == ''){
@@ -202,7 +202,7 @@ $(function(){
         }
 
         var guathData = {
-            userId: userId,
+            userCode: userCode,
             password: password,
             email: email,
             address: address,
@@ -218,17 +218,17 @@ $(function(){
 
     $('#addSubmit').click(function(){
         var clientId = $('#addClientId').val();
-        var userId = $('#addUserId').val();
+        var userCode = $('#addUserId').val();
         if(clientId === undefined || clientId == ''){
             alert('클라이언트를 입력하세요.');
             return false;
         }
-        if(userId === undefined || userId == ''){
+        if(userCode === undefined || userCode == ''){
             alert('아이디를 입력하세요.');
             return false;
         }
 
-        var request = $.gauth.getReq('/userClientScope/' + userId + '?clientId='+clientId, 'post');
+        var request = $.gauth.getReq('/userClientScope/' + userCode + '?clientId='+clientId, 'post');
         $.gauth.api(request, success_addClientRes, error_addClientRes);
 
     });

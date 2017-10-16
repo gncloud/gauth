@@ -166,17 +166,15 @@ public class ClientsApiController implements ClientsApi {
         }
     }
 
-    public ResponseEntity<?> userClientScopePost(@ApiParam(value = "target",required=true ) @PathVariable("userId") String userId,
-                                         @RequestParam(value = "clientId", required = true) String clientId,
+    public ResponseEntity<?> userClientScopePost(@RequestParam(value = "clientId", required = true) String clientId,
                                                  @RequestBody(required = false) UserClientScope userClientScope) {
         try {
-
+            String userId = userClientScope.getUserId();
             User registerUser = userService.findByUser(userId);
+            Client registerClient = clientService.findByClient(clientId);
             if(registerUser == null){
                 throw new ApiException("not found user");
-            }
-            Client registerClient = clientService.findByClient(clientId);
-            if(registerClient == null){
+            }else if(registerClient == null){
                 throw new ApiException("not found clientId");
             }
 
@@ -208,8 +206,8 @@ public class ClientsApiController implements ClientsApi {
     }
 
     @Override
-    public ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "target user id", required = true) @PathVariable("userId") String userId,
-                                                   @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+    public ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                                   @RequestParam(value = "userId", required = true) String userId,
                                                    @RequestParam(value = "clientId", required = true) String clientId,
                                                    @RequestParam(value = "scopeId", required = true) String scopeId) {
         try {

@@ -144,16 +144,16 @@ paths:
           schema:
             items:
               $ref: '#/definitions/User'
-  /users/{userId}:
+  /users/{userCode}:
     get:
       summary: 'read users'
       description: 'read users'
       parameters: 
         - in: path
-          name: userId
+          name: userCode
           required: true
           type: string
-          description: 'search userId'
+          description: 'search userCode'
       responses:
         200:
           description: OK
@@ -177,7 +177,7 @@ paths:
       description: 'integrated delete user'
       parameters: 
         - in: path
-          name: userId
+          name: userCode
           required: true
           type: string
           description: 'user id'
@@ -364,7 +364,7 @@ definitions:
     type: object
     description: 'user info'
     properties:
-      userId:
+      userCode:
         type: string
       password:
         type: string
@@ -402,7 +402,7 @@ definitions:
     properties:
       tokenId:
         type: string
-      userId:
+      userCode:
         type: string
       clientId:
         type: string
@@ -426,7 +426,7 @@ definitions:
     type: object
     description: ''
     properties:
-      userId:
+      userCode:
         type: string
       scopeId:
         type: string

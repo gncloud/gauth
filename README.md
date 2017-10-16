@@ -27,8 +27,10 @@
 | PUT | /clients/{clientId} | update client |
 | GET | /clients | client list (admin Only) |
 | POST| /clients | create client (admin Only) |
+
 | POST | /userClientScope | create UserClientScope |
 | DELETE | /userClientScope | delete user scope |
+
 | GET | /scopes | scope info list (admin Only) |
 | POST | /scopes | create scope (admin Only) |
 | DELETE | /scopes/{scopeId} | delete scope |
@@ -39,13 +41,15 @@
 | POST | /tokens | create token / login action |
 | DELETE | /tokens/{tokenId} | delete token (admin Only) |
 | GET | /tokens/{tokenId} | read token info |
+
+
 | GET | /user | my info |
-| GET | /users | user info keyword search (admin Only) |
 | POST | /users | user sign up |
-| DELETE | /users/{userId} | delete user |
-| GET | /users/{userId} | user info (admin only) |
-| PUT | /users/{userId} | update user |
-| GET | /users?state=pending | list pending users |
+| PUT | /users/{userCode} | update user |
+| GET | /users/{userCode} | user info (admin only) |
+| GET | /users?state=pending | list pending users (admin only) |
+| GET | /users | user info keyword search (admin Only) |
+| DELETE | /users/{userCode} | delete user |
 | DELETE | /users?state=pending&activateKey={key} <br> /users?state=pending&email={email} | delete one pending user |
 | DELETE | /users?state=pending&truncate=true | delete all pending users |
 

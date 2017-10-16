@@ -48,7 +48,7 @@ public class TokenServiceImpl implements TokenService{
 
 
         User findUser = new User();
-        findUser.setUserId(user.getUserId());
+        findUser.setUserCode(user.getUserId());
         Iterator<UserClientScope> findUserScopeList = userClientScopeService.selectUserMappingList(findUser).iterator();
         boolean isAdmin = false;
         while (findUserScopeList.hasNext()){
@@ -66,7 +66,7 @@ public class TokenServiceImpl implements TokenService{
         }
 
         // 기존 토큰 삭제
-        deleteSearchUserId(user.getUserId());
+        deleteTokenByUserId(user.getUserId());
 
 
         // 요청시간과 만료시간 생성
@@ -87,7 +87,7 @@ public class TokenServiceImpl implements TokenService{
 
         tokenDao.insertToekn(token);
 
-        Token registerToken = findByToken(token.getTokenId());
+        Token registerToken = getToken(token.getTokenId());
 
         return registerToken;
     }
@@ -95,7 +95,7 @@ public class TokenServiceImpl implements TokenService{
     /*
      * 토큰 아이디로 토큰 정보 조회
      */
-    public Token findByToken(String tokenId) throws Exception {
+    public Token getToken(String tokenId) throws Exception {
 
         Token registerToken = tokenDao.findByToken(tokenId);
         if(registerToken == null){
@@ -108,7 +108,7 @@ public class TokenServiceImpl implements TokenService{
     /*
      * 토큰 아이디로 토큰 정보 삭제
      */
-    public void deleteToekn(String tokenId){
+    public void deleteToken(String tokenId){
         tokenDao.deleteToken(tokenId);
     }
 
@@ -124,9 +124,9 @@ public class TokenServiceImpl implements TokenService{
      * 토큰 유효성 검사, 발급 클라이언트 도 확인
      */
     @Override
-    public Token isTokenValidate(String token, String client) throws Exception, AccessControlException{
+    public Token isTokenValid(String token, String client) throws Exception, AccessControlException{
 
-        Token registerToken = isTokenValidate(token);
+        Token registerToken = isTokenValid(token);
 
         // 토큰 발급 클라이언트 확인
         String registerClientId = registerToken.getClientId();
@@ -141,7 +141,7 @@ public class TokenServiceImpl implements TokenService{
      * 토큰 유효성 검사
      */
     @Override
-    public Token isTokenValidate(String token) throws Exception {
+    public Token isTokenValid(String token) throws Exception {
 
         // 토큰으로 유저 정보 조회, 없으면 Exception
         isUser(token);
@@ -174,7 +174,7 @@ public class TokenServiceImpl implements TokenService{
      * 유저아이디, 클라이언트아이디 필수
      */
     @Override
-    public Token findByUserToToken(AuthenticationRequest authenticationRequest) throws Exception {
+    public Token findTokenByUser(AuthenticationRequest authenticationRequest) throws Exception {
         return tokenDao.findByToken(authenticationRequest);
     }
 
@@ -196,7 +196,7 @@ public class TokenServiceImpl implements TokenService{
     }
 
     @Override
-    public void deleteSearchUserId(String userId){
+    public void deleteTokenByUserId(String userId){
         AuthenticationRequest user = new AuthenticationRequest();
         user.setUserId(userId);
         tokenDao.deleteClientToken(user);

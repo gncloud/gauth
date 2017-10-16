@@ -21,6 +21,9 @@ import java.util.Map;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public interface UserService {
 
+    final String PENDING_STATUS = "pending";
+    final String ACTIVE_STATUS = "active";
+
     /*
      * 유저 조회
      * 아이디로 조회
@@ -89,8 +92,13 @@ public interface UserService {
     void deleteAllPendUser();
 
     /*
-     * 대기 유저 삭제
+     * 대기 유저 삭제 target : email
      */
-    void deletePendingUser(String email);
+    void deletePendUserEmail(String email);
+
+    /*
+     * 대기 유저 삭제 target : activateKey
+     */
+    void deletePendUserActivateKey(String activateKey);
 
 }

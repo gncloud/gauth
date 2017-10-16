@@ -129,7 +129,7 @@ public class RestClientApiTest {
 
         User user = new User();
         user.setPassword("1111");
-        user.setUserId("test");
+        user.setUserCode("test");
         user.setAddress("abc");
         user.setCompany("com");
         user.setEmail("test@test.com");
@@ -137,7 +137,7 @@ public class RestClientApiTest {
         user.setPhone("123123");
         request("/users?clientId="+ client.getClientId() +"&activateKey=" + activateKey, "post", user, null);
 
-        request("/userClientScope/" + user.getUserId() + "?clientId="+ client.getClientId(), "post", user, null);
+        request("/userClientScope/" + user.getUserCode() + "?clientId="+ client.getClientId(), "post", user, null);
 
 
         AuthenticationRequest actionUser = new AuthenticationRequest();
@@ -157,7 +157,7 @@ public class RestClientApiTest {
 
         request("/token", "delete", null, userHeader);
 
-        request("/users/" + user.getUserId() + "?clientId=" + client.getClientId(), "delete", null, userHeader);
+        request("/users/" + user.getUserCode() + "?clientId=" + client.getClientId(), "delete", null, userHeader);
 
 
         request("/scopes/" + scope.getScopeId() + "?clientId=" + client.getClientId(), "delete", null, httpHeaders);

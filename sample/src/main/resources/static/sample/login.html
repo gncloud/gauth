@@ -41,7 +41,7 @@
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon">아이디</span>
-                            <input type="text" class="form-control" placeholder="jwkim" id="userId"/>
+                            <input type="text" class="form-control" placeholder="jwkim" id="userCode"/>
                         </div>
                         <div class="input-group">
                             <span class="input-group-addon">비밀번호</span>
@@ -71,18 +71,18 @@ $(function(){
 
     $('#submit').click(function(){
         console.log('인증 요청');
-        var userId = $('#userId').val();
+        var userCode = $('#userCode').val();
         var password = $('#password').val();
         var clientId = $('#clientId').val();
 
-        if(userId !== undefined
+        if(userCode !== undefined
                 && clientId !== undefined
                 && password !== undefined
-                && userId != ''
+                && userCode != ''
                 && clientId != ''
                 && password != ''){
 
-            $.gauth.login(clientId, userId, password, success, error);
+            $.gauth.login(clientId, userCode, password, success, error);
         }else {
             console.log('인증 요청 실패');
             alert('아이디, 비밀번호, 클라이언트 아이디를 입력하세요.');

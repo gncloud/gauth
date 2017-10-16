@@ -4,7 +4,7 @@
 
     <resultMap id="TokenMap" type="Token">
         <result property="clientId" column="client_id" javaType="java.lang.String" jdbcType="VARCHAR"/>
-        <collection property="scopes" column="{clientId=client_id,userId=user_id}" javaType="java.util.ArrayList" ofType="String" select="token.selectClientAllScopeList"/>
+        <collection property="scopes" column="{clientId=client_id,userCode=user_id}" javaType="java.util.ArrayList" ofType="String" select="token.selectScopeList"/>
     </resultMap>
 
     <insert id="insertToken" parameterType="Token">
@@ -16,13 +16,13 @@
         expire_date)
         VALUES
         (#{tokenId},
-        #{userId},
+        #{userCode},
         #{clientId},
         #{createTime},
         #{expireDate})
     </insert>
 
-    <select id="findByToken" parameterType="String" resultMap="TokenMap">
+    <select id="getToken" parameterType="String" resultMap="TokenMap">
         select token_id,
 			   user_id,
 			   client_id,
@@ -32,23 +32,23 @@
          where token_id = #{tokenId}
     </select>
 
-    <select id="selectClientAllScopeList" parameterType="java.util.Map" resultType="String">
+    <select id="selectScopeList" parameterType="java.util.Map" resultType="String">
         select scope_id
         from UserClientScope
         where client_id = #{clientId}
-          AND user_id = #{userId}
+          AND user_id = #{userCode}
     </select>
 
 
 
-    <select id="findByUserToToken" resultType="Token" parameterType="AuthenticationRequest">
+    <select id="findToken" resultType="Token" parameterType="AuthenticationRequest">
         select token_id,
 			   user_id,
 			   client_id,
 			   create_time,
 			   expire_date
           from Token
-         where user_id = #{userId}
+         where user_id = #{userCode}
            and client_id = #{clientId}
     </select>
 
@@ -57,12 +57,12 @@
          WHERE token_id = #{tokenId}
     </delete>
 
-    <delete id="deleteClientToken" parameterType="AuthenticationRequest">
+    <delete id="deleteTokenByUser" parameterType="AuthenticationRequest">
       DELETE FROM Token
-         WHERE user_id = #{userId}
+         WHERE user_id = #{userCode}
     </delete>
 
-    <delete id="deleteClient" parameterType="String">
+    <delete id="deleteTokenByClient" parameterType="String">
         DELETE FROM Token
         WHERE client_id = #{param1}
     </delete>

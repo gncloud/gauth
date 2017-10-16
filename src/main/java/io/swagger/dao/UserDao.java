@@ -82,10 +82,17 @@ public class UserDao {
     }
 
     /*
-     * 이메일 기준 전체 삭제
+     * 대기 회원 이메일 기준 삭제
      */
-    public void deletePendingUser(String email){
-        sqlSession.delete("user.deletePendingUser", email);
+    public void deletePendUserEmail(String email){
+        sqlSession.delete("user.deletePendUserEmail", email);
+    }
+
+    /*
+     * 대기 회원 activateKey 기준 삭제
+     */
+    public void deletePendUserActivateKey(String activateKey){
+        sqlSession.delete("user.deletePendUserActivateKey", activateKey);
     }
 
     /*
