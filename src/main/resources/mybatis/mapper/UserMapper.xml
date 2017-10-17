@@ -14,7 +14,7 @@
                     company)
                     VALUES
                     (
-                    #{userCode},
+                    #{userId},
                     #{password},
                     #{email},
                     #{name},
@@ -47,13 +47,12 @@
                    company
              FROM User
             WHERE 1=1
-        <if test="userCode != null and userCode != ''">
+        <if test="userCode != null and userCode != ''.toString()">
               and user_code = #{userCode}
         </if>
-        <if test="userId != null and userId != ''">
-            and user_id = #{userId}
+        <if test="userId != null and userId != ''.toString()">
+              and user_id = #{userId}
         </if>
-
     </select>
 
 
@@ -65,10 +64,10 @@
                phone = #{phone},
                address = #{address},
                company = #{company},
-         WHERE user_code = #{userCode}
+         WHERE user_code = #{userId}
     </update>
 
-    <select id="fienTokenByUser" parameterType="String" resultType="User">
+    <select id="findTokenByUser" parameterType="String" resultType="User">
         SELECT user_id,
                user_code,
                email,

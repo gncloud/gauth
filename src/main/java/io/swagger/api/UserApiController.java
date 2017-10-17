@@ -30,7 +30,7 @@ public class UserApiController implements UserApi {
 
             tokenService.isTokenValid(authorization);
 
-            User registerUser = userService.fienTokenByUser(authorization);
+            User registerUser = userService.findTokenByUser(authorization);
 
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (Exception e){

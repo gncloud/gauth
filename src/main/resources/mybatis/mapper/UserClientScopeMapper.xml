@@ -16,7 +16,7 @@
     <select id="findRelationCount" parameterType="User" resultType="Integer">
         SELECT count(*)
           FROM UserClientScope
-         WHERE user_code = #{userCode}
+         WHERE user_code = #{userId}
     </select>
 
     <insert id="insertRelation" parameterType="UserClientScope">
@@ -25,7 +25,7 @@
         scope_id,
         client_id)
         VALUES
-        (#{userCode},
+        (#{userId},
         #{scopeId,jdbcType=VARCHAR},
         #{clientId})
     </insert>
@@ -35,7 +35,7 @@
                scope_id,
                client_id
           FROM UserClientScope
-         where user_code = #{userCode}
+         where user_code = #{userId}
         <if test="scopeId != null and scopeId != ''">
             and scope_id = #{scopeId}
         </if>
@@ -44,7 +44,7 @@
 
     <!--<delete id="deleteRelationByUserCode" parameterType="UserClientScope">-->
         <!--DELETE FROM UserClientScope-->
-         <!--WHERE user_code = #{userCode}-->
+         <!--WHERE user_code = #{userId}-->
         <!--<if test="clientId != null and clientId != ''">-->
             <!--AND client_id = #{clientId}-->
         <!--</if>-->
@@ -55,13 +55,13 @@
         scope_id,
         client_id
         FROM UserClientScope
-        where user_code = #{userCode}
+        where user_code = #{userId}
     </select>
 
     <select id="isRelationCount" parameterType="AuthenticationRequest" resultType="Integer">
         SELECT count(*)
         FROM UserClientScope
-        where user_code = #{userCode}
+        where user_code = #{userId}
           AND client_id = #{clientId}
     </select>
 
@@ -71,8 +71,8 @@
         <if test="scopeId != null and scopeId != ''">
             and scope_id = #{scopeId}
         </if>
-        <if test="userCode != null and userCode != ''">
-            and user_code = #{userCode}
+        <if test="userId != null and userId != ''">
+            and user_code = #{userId}
         </if>
     </delete>
 

@@ -53,7 +53,7 @@ public interface UserService {
     /*
      * 토큰으로 회원 정보 조회
      */
-    User fienTokenByUser(String token);
+    User findTokenByUser(String token);
 
     /*
      * 유저 전체 조회

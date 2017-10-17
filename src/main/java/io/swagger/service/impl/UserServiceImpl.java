@@ -177,7 +177,7 @@ public class UserServiceImpl implements UserService {
         // 토큰으로 왔을 시 토큰으로 아이디 조회
 //        if(user.getTokenId() != null && !"".equals(user.getTokenId())){
 //            targetUser = userDao.findByTokenToUserInfo(user.getTokenId());
-//            user.setUserCode(targetUser.getUserCode());
+//            user.setUserId(targetUser.getUserId());
 //        }
 
         userDao.updateUser(user);
@@ -188,8 +188,8 @@ public class UserServiceImpl implements UserService {
      * 토큰으로 회원 정보 조회
      */
     @Override
-    public User fienTokenByUser(String token) {
-        return userDao.fienTokenByUser(token);
+    public User findTokenByUser(String token) {
+        return userDao.findTokenByUser(token);
     }
 
 //    @Override

@@ -43,7 +43,12 @@ public class UserDao {
      * 유저아이디로 조회
      * */
     public User getUser(User user) {
-        return sqlSession.selectOne("user.getUser", user);
+
+
+        User registerUser = sqlSession.selectOne("user.getUser", user);
+
+
+        return registerUser;
     }
 
     /*
@@ -63,8 +68,8 @@ public class UserDao {
     /*
      *  토큰으로 회원정보 조회
      * */
-    public User fienTokenByUser(String token) {
-        return sqlSession.selectOne("user.fienTokenByUser", token);
+    public User findTokenByUser(String token) {
+        return sqlSession.selectOne("user.findTokenByUser", token);
     }
 
     /*

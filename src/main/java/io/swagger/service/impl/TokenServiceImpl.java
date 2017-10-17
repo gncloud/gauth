@@ -169,7 +169,7 @@ public class TokenServiceImpl implements TokenService{
      */
     private void isUser(String token) throws Exception {
         // 토큰으로 유저 정보 조회
-        User registerUser = userService.fienTokenByUser(token);
+        User registerUser = userService.findTokenByUser(token);
         if(registerUser == null){
             logger.debug("Not Found User : {}", token);
             throw new ApiException("invalid token");
