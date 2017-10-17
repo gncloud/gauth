@@ -43,7 +43,7 @@ public class UserClientScopeDao {
     }
 
     public Integer isRelationCount(AuthenticationRequest user){
-        return sqlSession.selectOne("userClientScope.isUserClientScope", user);
+        return sqlSession.selectOne("userClientScope.isRelationCount", user);
     }
 
 //    public List<String> findByScopeIdList(UserClientScope userClientScope) {

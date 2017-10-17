@@ -101,7 +101,7 @@ public class ClientServiceImpl implements ClientService {
      */
     @Override
     public Client findByClient(String clientId) throws NotFoundException {
-        Client registerClient = clientDao.findByClient(clientId);
+        Client registerClient = clientDao.findClient(clientId);
         if(registerClient == null){
             throw new NotFoundException(404, "not found client");
         }

@@ -50,7 +50,7 @@
         or exists (select 1
                     from Token aaa
                     where aaa.token_id = #{tokenId}
-                    and aaa.user_id = 'admin'
+                    and aaa.user_code = '1'
                     and 'gauth' != a.client_id)
     </select>
 

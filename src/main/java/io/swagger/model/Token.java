@@ -18,8 +18,8 @@ public class Token   {
   @JsonProperty("tokenId")
   private String tokenId = null;
 
-  @JsonProperty("userId")
-  private String userId = null;
+  @JsonProperty("userCode")
+  private int userCode;
 
   @JsonProperty("clientId")
   private String clientId = null;
@@ -51,22 +51,22 @@ public class Token   {
     this.tokenId = tokenId;
   }
 
-  public Token userId(String userId) {
-    this.userId = userId;
+  public Token userId(int userCode) {
+    this.userCode = userCode;
     return this;
   }
 
    /**
-   * Get userId
-   * @return userId
+   * Get userCode
+   * @return userCode
   **/
   @ApiModelProperty(value = "")
-  public String getUserId() {
-    return userId;
+  public int getUserCode() {
+    return userCode;
   }
 
-  public void setUserId(String userId) {
-    this.userId = userId;
+  public void setUserCode(int userCode) {
+    this.userCode = userCode;
   }
 
   public Token clientId(String clientId) {
@@ -157,7 +157,7 @@ public class Token   {
     }
     Token token = (Token) o;
     return Objects.equals(this.tokenId, token.tokenId) &&
-        Objects.equals(this.userId, token.userId) &&
+        Objects.equals(this.userCode, token.userCode) &&
         Objects.equals(this.clientId, token.clientId) &&
         Objects.equals(this.createTime, token.createTime) &&
         Objects.equals(this.expireDate, token.expireDate) &&
@@ -166,7 +166,7 @@ public class Token   {
 
   @Override
   public int hashCode() {
-    return Objects.hash(tokenId, userId, clientId, createTime, expireDate, scopes);
+    return Objects.hash(tokenId, userCode, clientId, createTime, expireDate, scopes);
   }
 
   @Override
@@ -175,7 +175,7 @@ public class Token   {
     sb.append("class Token {\n");
     
     sb.append("    tokenId: ").append(toIndentedString(tokenId)).append("\n");
-    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+    sb.append("    userCode: ").append(toIndentedString(userCode)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("    createTime: ").append(toIndentedString(createTime)).append("\n");
     sb.append("    expireDate: ").append(toIndentedString(expireDate)).append("\n");

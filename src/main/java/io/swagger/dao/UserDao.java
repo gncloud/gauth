@@ -43,12 +43,7 @@ public class UserDao {
      * 유저아이디로 조회
      * */
     public User getUser(User user) {
-
-
-        User registerUser = sqlSession.selectOne("user.getUser", user);
-
-
-        return registerUser;
+        return sqlSession.selectOne("user.getUser", user);
     }
 
     /*
@@ -104,7 +99,7 @@ public class UserDao {
      * 회원 가입 대기 유저 조회
      */
     public PendingUserResponse findPendUser(String activateKey) {
-        return sqlSession.selectOne("user.findActivateKeyByPendUser", activateKey);
+        return sqlSession.selectOne("user.findPendUser", activateKey);
     }
 
     /*

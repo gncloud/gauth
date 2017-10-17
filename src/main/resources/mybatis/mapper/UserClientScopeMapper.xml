@@ -16,7 +16,7 @@
     <select id="findRelationCount" parameterType="User" resultType="Integer">
         SELECT count(*)
           FROM UserClientScope
-         WHERE user_code = #{userId}
+         WHERE user_code = #{userCode}
     </select>
 
     <insert id="insertRelation" parameterType="UserClientScope">
@@ -25,7 +25,7 @@
         scope_id,
         client_id)
         VALUES
-        (#{userId},
+        (#{userCode},
         #{scopeId,jdbcType=VARCHAR},
         #{clientId})
     </insert>
@@ -35,7 +35,7 @@
                scope_id,
                client_id
           FROM UserClientScope
-         where user_code = #{userId}
+         where user_code = #{userCode}
         <if test="scopeId != null and scopeId != ''">
             and scope_id = #{scopeId}
         </if>
@@ -44,7 +44,7 @@
 
     <!--<delete id="deleteRelationByUserCode" parameterType="UserClientScope">-->
         <!--DELETE FROM UserClientScope-->
-         <!--WHERE user_code = #{userId}-->
+         <!--WHERE user_code = #{userCode}-->
         <!--<if test="clientId != null and clientId != ''">-->
             <!--AND client_id = #{clientId}-->
         <!--</if>-->
@@ -55,13 +55,15 @@
         scope_id,
         client_id
         FROM UserClientScope
-        where user_code = #{userId}
+        where user_code in (select user_code
+                              from User
+                            where user_id = #{userId})
     </select>
 
     <select id="isRelationCount" parameterType="AuthenticationRequest" resultType="Integer">
         SELECT count(*)
         FROM UserClientScope
-        where user_code = #{userId}
+        where user_code = #{userCode}
           AND client_id = #{clientId}
     </select>
 
@@ -71,8 +73,8 @@
         <if test="scopeId != null and scopeId != ''">
             and scope_id = #{scopeId}
         </if>
-        <if test="userId != null and userId != ''">
-            and user_code = #{userId}
+        <if test="userCode != null and userCode != ''">
+            and user_code = #{userCode}
         </if>
     </delete>
 

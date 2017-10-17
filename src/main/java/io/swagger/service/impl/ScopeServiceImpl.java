@@ -56,7 +56,6 @@ public class ScopeServiceImpl implements ScopeService {
      * client id reqired
      */
     @Override
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Scope insertScope(Scope scope) throws Exception {
 
         String clientId = scope.getClientId();
@@ -80,8 +79,8 @@ public class ScopeServiceImpl implements ScopeService {
         } else {
             scope.setIsDefault("0");
         }
-
         scopeDao.insertScope(scope);
+        scope.setIsDefault(null);
         return scopeDao.findScope(scope);
     }
 
@@ -149,7 +148,7 @@ public class ScopeServiceImpl implements ScopeService {
     }
 
 
-    public List<Scope> findByDefailtScopes(String clientId){
-        return scopeDao.findByDefailtScopes(clientId);
+    public List<Scope> findDefaultByScopes(String clientId){
+        return scopeDao.findDefaultByScopes(clientId);
     }
 }

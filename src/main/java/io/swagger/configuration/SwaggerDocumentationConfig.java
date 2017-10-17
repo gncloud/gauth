@@ -4,7 +4,6 @@ import io.swagger.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -42,13 +41,5 @@ public class SwaggerDocumentationConfig extends WebMvcConfigurerAdapter{
                 .directModelSubstitute(org.joda.time.LocalDate.class, java.sql.Date.class)
                 .directModelSubstitute(org.joda.time.DateTime.class, java.util.Date.class)
                 .apiInfo(apiInfo());
-    }
-
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        TokenValidateInterceptor tokenValidateInterceptor = new TokenValidateInterceptor();
-        tokenValidateInterceptor.setTokenService(tokenService);
-        registry.addInterceptor(tokenValidateInterceptor);
-        super.addInterceptors(registry);
     }
 }

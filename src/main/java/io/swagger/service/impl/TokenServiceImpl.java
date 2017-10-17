@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.AccessControlException;
 import java.util.Date;
@@ -45,12 +47,15 @@ public class TokenServiceImpl implements TokenService{
     /*
      * 로그인 토큰 생성
      */
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public Token createToken(AuthenticationRequest user) throws Exception {
 
 
         User findUser = new User();
         findUser.setUserId(user.getUserId());
-        Iterator<UserClientScope> findUserScopeList = userClientScopeService.selectUserMappingList(findUser).iterator();
+        User registerUser = userService.getUser(user.getUserId());
+
+        Iterator<UserClientScope> findUserScopeList = userClientScopeService.selectUserMappingList(registerUser).iterator();
         boolean isAdmin = false;
         while (findUserScopeList.hasNext()){
             UserClientScope userClientScope = findUserScopeList.next();
@@ -61,13 +66,14 @@ public class TokenServiceImpl implements TokenService{
         }
 
         // 유저가 클라이언트에 등록 여부를 확인한다.
+        user.setUserCode(registerUser.getUserCode());
         if(!userClientScopeService.isUserClientScope(user) && !isAdmin){
             logger.debug("user userClientScope empty");
             throw new AccessControlException("user userClientScope empty");
         }
 
         // 기존 토큰 삭제
-        User registerUser = userService.getUser(user.getUserId());
+        registerUser = userService.getUser(user.getUserId());
         if(registerUser != null){
             deleteUserCodeByToken(registerUser.getUserCode());
         }
@@ -78,11 +84,11 @@ public class TokenServiceImpl implements TokenService{
         Date expireDate = DateUtil.appendDate(requestDate, min);
 
         // 토큰 생성
-        String userToken = generateToken(user.getUserId(), DateUtil.dateFormat(expireDate));
+        String userToken = generateToken(registerUser.getUserId(), DateUtil.dateFormat(expireDate));
 
         // DB 저장
         Token token = new Token();
-        token.setUserId(user.getUserId());
+        token.setUserCode(registerUser.getUserCode());
         token.setClientId(user.getClientId());
         token.setTokenId(userToken);
         token.setCreateTime(DateUtil.dateFormat(requestDate));
@@ -111,6 +117,7 @@ public class TokenServiceImpl implements TokenService{
     /*
      * 토큰 아이디로 토큰 정보 삭제
      */
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteToken(String tokenId){
         tokenDao.deleteToken(tokenId);
     }
@@ -193,7 +200,6 @@ public class TokenServiceImpl implements TokenService{
 
         Token token = new Token();
         token.setTokenId(authentication);
-//        token.setClientId(TokenService.ADMIN_CLIENT);
         Token registerAdminToken = tokenDao.findByAdminToken(token);
 
         if(registerAdminToken == null || !DateUtil.isExpireDate(registerAdminToken.getExpireDate())){
@@ -206,6 +212,7 @@ public class TokenServiceImpl implements TokenService{
      * delete client
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteUserCodeByToken(int userCode){
         tokenDao.deleteTokenByUserCode(userCode);
     }
@@ -214,6 +221,7 @@ public class TokenServiceImpl implements TokenService{
      * 클라이언트 연결된 토큰 삭제
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteClientIdByToken(String clientId){
         tokenDao.deleteClientIdByToken(clientId);
     }

@@ -6,6 +6,8 @@ import io.swagger.service.ScopeService;
 import io.swagger.service.UserClientScopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +32,13 @@ public class UserClientScopeImpl implements UserClientScopeService {
      * 유저 클라이언트 등록
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public List<UserClientScope> insertUserClientScope(UserClientScope userClientScope){
 
         // 기존 정보 삭제
         deleteUserClientScope(userClientScope);
 
-        List<Scope> scopesList = scopeService.findByDefailtScopes(userClientScope.getClientId());
+        List<Scope> scopesList = scopeService.findDefaultByScopes(userClientScope.getClientId());
 
         int scopeSize = scopesList.size();
         for(int i=0; i < scopeSize; i++){
@@ -59,6 +62,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      * 유저 스코프 등록
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public List<UserClientScope> insertUserScope(UserClientScope userClientScope) {
         userClientScopeDao.insertRelation(userClientScope);
         return userClientScopeDao.findRelation(userClientScope);
@@ -68,6 +72,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      * 유저 클라이언트 삭제
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteUserClientScope(UserClientScope userClientScope){
         userClientScopeDao.deleteUserClientScope(userClientScope);
     }
@@ -76,6 +81,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      * 클라이언트 삭제
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteClient(String clientId){
         UserClientScope userClientScope = new UserClientScope();
         userClientScope.setClientId(clientId);
@@ -134,6 +140,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      * 클라이언트의 스코프 삭제
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteClientScope(UserClientScope userClientScope) {
         userClientScopeDao.deleteUserClientScope(userClientScope);
     }
@@ -150,6 +157,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      * 유저 스코프 삭제
      */
     @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteUserScope(UserClientScope userClientScope) {
         userClientScopeDao.deleteUserClientScope(userClientScope);
     }

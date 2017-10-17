@@ -26,18 +26,18 @@ public class ScopeDao {
     }
 
     public Scope findScope(Scope scope) {
-        return  sqlSession.selectOne("scope.findScope", scope);
+        return  sqlSession.selectOne("scope.findScopes", scope);
     }
 
     public List<Scope> findScopes(Scope scope) {
-        return  sqlSession.selectList("scope.findScope", scope);
+        return  sqlSession.selectList("scope.findScopes", scope);
     }
 
     public void updateScope(Scope scope) {
         sqlSession.update("scope.updateScope", scope);
     }
 
-    public List<Scope> findByDefailtScopes(String clientId){
-        return sqlSession.selectList("scope.findByDefailtScopes", clientId);
+    public List<Scope> findDefaultByScopes(String clientId){
+        return sqlSession.selectList("scope.findDefaultByScopes", clientId);
     }
 }

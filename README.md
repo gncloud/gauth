@@ -45,11 +45,11 @@
 
 | GET | /user | my info |
 | POST | /users | user sign up |
-| PUT | /users/{userId} | update user |
-| GET | /users/{userId} | user info (admin only) |
+| PUT | /users/{userCode} | update user |
+| GET | /users/{userCode} | user info (admin only) |
 | GET | /users?state=pending | list pending users (admin only) |
 | GET | /users | user info keyword search (admin Only) |
-| DELETE | /users/{userId} | delete user |
+| DELETE | /users/{userCode} | delete user |
 | DELETE | /users?state=pending&activateKey={key} <br> /users?state=pending&email={email} | delete one pending user |
 | DELETE | /users?state=pending&truncate=true | delete all pending users |
 

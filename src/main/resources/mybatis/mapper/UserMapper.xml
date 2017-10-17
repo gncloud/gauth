@@ -47,10 +47,10 @@
                    company
              FROM User
             WHERE 1=1
-        <if test="userCode != null and userCode != ''">
-              and user_code = #{userCode}
+        <if test="userCode >= 0">
+              and user_code = ${userCode}
         </if>
-        <if test="userId != null and userId != ''">
+        <if test="userId != null and !userId.equals('')">
               and user_id = #{userId}
         </if>
     </select>
@@ -64,7 +64,7 @@
                phone = #{phone},
                address = #{address},
                company = #{company},
-         WHERE user_code = #{userId}
+         WHERE user_code = #{userCode}
     </update>
 
     <select id="findTokenByUser" parameterType="String" resultType="User">

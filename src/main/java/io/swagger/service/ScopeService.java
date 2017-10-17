@@ -38,5 +38,5 @@ public interface ScopeService {
     /*
      * 클라이언트의 default scope 조회
      */
-    List<Scope> findByDefailtScopes(String clientId);
+    List<Scope> findDefaultByScopes(String clientId);
 }

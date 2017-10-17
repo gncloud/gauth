@@ -54,7 +54,7 @@
         AND client_id = #{clientId}
     </update>
 
-    <select id="findByDefailtScopes" parameterType="String" resultType="Scope">
+    <select id="findDefaultByScopes" parameterType="String" resultType="Scope">
         select scope_id
         , client_id
         , description

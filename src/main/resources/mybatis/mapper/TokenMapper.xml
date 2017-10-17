@@ -4,7 +4,7 @@
 
     <resultMap id="TokenMap" type="Token">
         <result property="clientId" column="client_id" javaType="java.lang.String" jdbcType="VARCHAR"/>
-        <collection property="scopes" column="{clientId=client_id,userId=user_id}" javaType="java.util.ArrayList" ofType="String" select="token.selectScopeList"/>
+        <collection property="scopes" column="{clientId=client_id,userCode=user_code}" javaType="java.util.ArrayList" ofType="String" select="token.selectInternalScopeList"/>
     </resultMap>
 
     <insert id="insertToken" parameterType="Token">
@@ -16,7 +16,7 @@
         expire_date)
         VALUES
         (#{tokenId},
-        #{userId},
+        #{userCode},
         #{clientId},
         #{createTime},
         #{expireDate})
@@ -29,14 +29,14 @@
 			   create_time,
 			   expire_date
           from Token
-         where token_id = #{tokenId}
+         where token_id = #{param1}
     </select>
 
-    <select id="selectScopeList" parameterType="java.util.Map" resultType="String">
+    <select id="selectInternalScopeList" parameterType="java.util.Map" resultType="String">
         select scope_id
         from UserClientScope
         where client_id = #{clientId}
-          AND user_code = #{userId}
+          AND user_code = #{userCode}
     </select>
 
     <select id="findUserByToken" resultType="Token" parameterType="AuthenticationRequest">
@@ -46,7 +46,7 @@
 			   create_time,
 			   expire_date
           from Token
-         where user_code = #{userId}
+         where user_code = #{userCode}
            and client_id = #{clientId}
     </select>
 

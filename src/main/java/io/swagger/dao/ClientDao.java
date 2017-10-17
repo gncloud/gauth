@@ -29,8 +29,8 @@ public class ClientDao {
     /*
      * 클라이언트 조회
      */
-    public Client findByClient(String clientId) {
-        return sqlSession.selectOne("client.findByClient", clientId);
+    public Client findClient(String clientId) {
+        return sqlSession.selectOne("client.findClient", clientId);
     }
     /*
      * 클라이언트 수정

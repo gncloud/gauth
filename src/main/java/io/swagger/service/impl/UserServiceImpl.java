@@ -79,6 +79,7 @@ public class UserServiceImpl implements UserService {
     public User getUser(String userId) {
         User user = new User();
         user.setUserId(userId);
+        user.setUserCode(-1);
         return userDao.getUser(user);
     }
 
@@ -127,7 +128,7 @@ public class UserServiceImpl implements UserService {
         userDao.insertUser(user);
 
         // 등록된 DB 유저 가져오기
-        User registerUser = getUser(user.getUserCode());
+        User registerUser = getUser(user.getUserId());
 
         // 처음 회원가입한 클라이언트 관계 테이블 등록
         UserClientScope userClientScope = new UserClientScope();
@@ -177,7 +178,7 @@ public class UserServiceImpl implements UserService {
         // 토큰으로 왔을 시 토큰으로 아이디 조회
 //        if(user.getTokenId() != null && !"".equals(user.getTokenId())){
 //            targetUser = userDao.findByTokenToUserInfo(user.getTokenId());
-//            user.setUserId(targetUser.getUserId());
+//            user.setUserCode(targetUser.getUserCode());
 //        }
 
         userDao.updateUser(user);

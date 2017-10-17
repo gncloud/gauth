@@ -17,6 +17,9 @@ public class AuthenticationRequest   {
   @JsonProperty("userId")
   private String userId = null;
 
+  @JsonProperty("userCode")
+  private int userCode;
+
   @JsonProperty("password")
   private String password = null;
 
@@ -46,7 +49,15 @@ public class AuthenticationRequest   {
     return this;
   }
 
-   /**
+  public void setUserCode(int userCode) {
+    this.userCode = userCode;
+  }
+
+  public int getUserCode() {
+    return userCode;
+  }
+
+  /**
    * Get password
    * @return password
   **/
@@ -92,13 +103,14 @@ public class AuthenticationRequest   {
     }
     AuthenticationRequest authenticationRequest = (AuthenticationRequest) o;
     return Objects.equals(this.userId, authenticationRequest.userId) &&
+            Objects.equals(this.userCode, authenticationRequest.userCode) &&
         Objects.equals(this.password, authenticationRequest.password) &&
         Objects.equals(this.clientId, authenticationRequest.clientId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, password, clientId);
+    return Objects.hash(userCode, userId, password, clientId);
   }
 
   @Override
@@ -107,6 +119,7 @@ public class AuthenticationRequest   {
     sb.append("class AuthenticationRequest {\n");
     
     sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+    sb.append("    userCode: ").append(toIndentedString(userCode)).append("\n");
     sb.append("    password: ").append(toIndentedString(password)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("}");

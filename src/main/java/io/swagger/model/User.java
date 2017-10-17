@@ -16,7 +16,7 @@ import java.util.Objects;
 public class User   {
 
   @JsonProperty("userCode")
-  private Integer userCode = null;
+  private int userCode;
 
   @JsonProperty("userId")
   private String userId = null;
@@ -50,6 +50,7 @@ public class User   {
     return this;
   }
 
+  
    /**
    * Get userCode
    * @return userCode
@@ -58,6 +59,7 @@ public class User   {
   public int getUserCode() {
     return userCode;
   }
+
 
   public String getUserId() {
     return userId;
@@ -88,6 +90,7 @@ public class User   {
   public void setPassword(String password) {
     this.password = DigestUtils.sha512Hex(password);
   }
+
 
   public boolean isEqualsPassword(String password){
     return DigestUtils.sha512Hex(password).equals(this.password);
