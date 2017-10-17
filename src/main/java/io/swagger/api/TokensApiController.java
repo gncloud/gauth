@@ -1,10 +1,8 @@
 package io.swagger.api;
 
+import io.swagger.annotations.ApiParam;
 import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Token;
-
-import io.swagger.annotations.*;
-
 import io.swagger.model.User;
 import io.swagger.service.TokenService;
 import io.swagger.service.UserService;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.security.AccessControlException;
-import java.util.List;
 
 
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
@@ -47,14 +44,19 @@ public class TokensApiController implements TokensApi {
         }
     }
 
-    public ResponseEntity<?> tokensGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+    public ResponseEntity<?> tokensGet(@ApiParam(value = "token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
-            tokenService.isAdminToken(authorization);
-            List<Token> registerTokenList = tokenService.selectToken();
-            return new ResponseEntity<List<Token>>(registerTokenList, HttpStatus.OK);
+            Token registerToken = tokenService.getToken(authorization);
+            if(registerToken == null){
+                throw new NotFoundException(404, "token empty");
+            }
+            return new ResponseEntity<Token>(registerToken, HttpStatus.OK);
         } catch (AccessControlException e){
             logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (NotFoundException e){
+            logger.warn("tokensGet {}", e.getMessage());
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), HttpStatus.NOT_FOUND);
         } catch (Exception e){
             logger.error("tokensGet", e);
             return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), HttpStatus.BAD_REQUEST);

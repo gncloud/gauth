@@ -19,12 +19,12 @@ public interface TokensApi {
     ResponseEntity<?> tokenDelete(@ApiParam(value = "user token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 
 
-    @ApiOperation(value = "Token All List (admin Only)", notes = "Token All List (admin Only)", response = Token.class, responseContainer = "List", tags={  })
+    @ApiOperation(value = "myToken", notes = "Token", response = Token.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = Token.class) })
     @RequestMapping(value = "/token",
         method = RequestMethod.GET)
-    ResponseEntity<?> tokensGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
+    ResponseEntity<?> tokensGet(@ApiParam(value = "myToken", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 
 
     @ApiOperation(value = "create token / login action", notes = "create token / login action", response = Token.class, tags={  })

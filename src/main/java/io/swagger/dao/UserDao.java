@@ -92,7 +92,7 @@ public class UserDao {
      * 대기 회원 activateKey 기준 삭제
      */
     public void deletePendUserActivateKey(String activateKey){
-        sqlSession.delete("user.deletePendUserActivateKey", activateKey);
+        sqlSession.delete("user.deletePendUserByActivateKey", activateKey);
     }
 
     /*

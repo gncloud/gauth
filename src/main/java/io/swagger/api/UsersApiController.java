@@ -141,14 +141,39 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target", required = true) @PathVariable("userCode") int userCode,
                                                @ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
-                                               @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId,
-                                               @ApiParam(value = "state" ,required=false ) @RequestParam String state,
-                                               @ApiParam(value = "truncate" ,required=false ) @RequestParam String truncate,
-                                               @ApiParam(value = "activateKey" ,required=false ) @RequestParam String activateKey,
-                                               @ApiParam(value = "email" ,required=false ) @RequestParam String email) {
+                                               @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId) {
         try {
 
+            userService.deleteUser(userCode, clientId);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e){
+            HttpStatus httpStatus;
+            if(e instanceof ApiException){
+                httpStatus = HttpStatus.BAD_REQUEST;
+                logger.warn("bad request {}", e.getMessage());
+            }else{
+                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+                logger.error("usersUserIdDelete error", e);
+            }
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
+        }
+    }
+
+    public ResponseEntity<?> usersDelete(@ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                  @ApiParam(value = "state" ,required=false ) @RequestParam(defaultValue = "") String state,
+                                  @ApiParam(value = "truncate" ,required=false ) @RequestParam(defaultValue = "") String truncate,
+                                  @ApiParam(value = "activateKey" ,required=false ) @RequestParam(defaultValue = "") String activateKey,
+                                  @ApiParam(value = "email" ,required=false ) @RequestParam(defaultValue = "") String email){
+
+        try {
+            tokenService.isAdminToken(authorization);
+
             if( state != null && UserService.PENDING_STATUS.equals(state) ){
+                // pendUser delete : email or activateKey
                 if(email != null && !"".equals(email)){
                     userService.deleteEmailByPendUser(email);
                 }else if(activateKey != null && !"".equals(activateKey)){
@@ -159,9 +184,6 @@ public class UsersApiController implements UsersApi {
                     //email, activateKey, truncate 요청이 없을 경우
                     throw new ApiException("using [email|activateKey|truncate]");
                 }
-            }else if(clientId != null && !"".equals(clientId)){
-
-                userService.deleteUser(userCode, clientId);
             }else{
                 throw new ApiException("invalid state");
             }
@@ -183,7 +205,7 @@ public class UsersApiController implements UsersApi {
         }
     }
 
-    public ResponseEntity<?> usersUserIdGet(@ApiParam(value = "search userId",required=true ) @PathVariable("userCode") String userCode,
+    public ResponseEntity<?> usersUserIdGet(@ApiParam(value = "search userId", required = true) @PathVariable("userCode") int userCode,
                                             @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
             tokenService.isAdminToken(authorization);
@@ -207,11 +229,11 @@ public class UsersApiController implements UsersApi {
         }
     }
 
-    public ResponseEntity<?> usersUseridPut(@ApiParam(value = "search userId",required=true ) @PathVariable("userId") String userId,
+    public ResponseEntity<?> usersUseridPut(@ApiParam(value = "userCode",required=true ) @PathVariable("userCode") int userCode,
                                             @ApiParam(value = "user token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
                                             @RequestBody User user) {
         try {
-            user.setUserId(userId);
+            user.setUserCode(userCode);
             User registerUser = userService.updateUser(user);
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (Exception e){

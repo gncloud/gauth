@@ -41,32 +41,39 @@ public interface UsersApi {
     @ApiOperation(value = "delete user", notes = "delete user", response = Void.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
-    @RequestMapping(value = "/users/{userId}",
+    @RequestMapping(value = "/users/{userCode}",
         method = RequestMethod.DELETE)
     ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target", required = true) @PathVariable("userCode") int userCode,
                                         @ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
-                                        @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId,
-                                        @ApiParam(value = "state" ,required=false ) @RequestParam String state,
-                                        @ApiParam(value = "truncate" ,required=false ) @RequestParam String truncate,
-                                        @ApiParam(value = "activateKey" ,required=false ) @RequestParam String activateKey,
-                                        @ApiParam(value = "email" ,required=false ) @RequestParam String email);
+                                        @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId);
+
+    @ApiOperation(value = "delete user", notes = "delete user", response = Void.class, tags={  })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Void.class) })
+    @RequestMapping(value = "/users",
+            method = RequestMethod.DELETE)
+    ResponseEntity<?> usersDelete(@ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
+                                    @ApiParam(value = "state" ,required=false ) @RequestParam(defaultValue = "") String state,
+                                    @ApiParam(value = "truncate" ,required=false ) @RequestParam(defaultValue = "") String truncate,
+                                    @ApiParam(value = "activateKey" ,required=false ) @RequestParam(defaultValue = "") String activateKey,
+                                    @ApiParam(value = "email" ,required=false ) @RequestParam(defaultValue = "") String email);
 
 
     @ApiOperation(value = "user info (admin only)", notes = "user info (admin only)", response = User.class, tags={  })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "OK", response = User.class) })
-    @RequestMapping(value = "/users/{userId}",
+    @RequestMapping(value = "/users/{userCode}",
         method = RequestMethod.GET)
-    ResponseEntity<?> usersUserIdGet(@ApiParam(value = "search userId", required = true) @PathVariable("userId") String userId,
+    ResponseEntity<?> usersUserIdGet(@ApiParam(value = "search userId", required = true) @PathVariable("userCode") int userCode,
                                         @ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization);
 
 
     @ApiOperation(value = "update user", notes = "update user", response = User.class, tags={  })
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Scope.class) })
-    @RequestMapping(value = "/users/{userId}",
+    @RequestMapping(value = "/users/{userCode}",
             method = RequestMethod.PUT)
-    ResponseEntity<?> usersUseridPut(@ApiParam(value = "update user", required = true) @PathVariable("userId") String userId,
+    ResponseEntity<?> usersUseridPut(@ApiParam(value = "userCode",required=true ) @PathVariable("userCode") int userCode,
                                        @ApiParam(value = "user token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                        @ApiParam(value = "") @RequestBody User user);
 

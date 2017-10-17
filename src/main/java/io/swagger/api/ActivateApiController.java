@@ -42,7 +42,7 @@ public class ActivateApiController implements ActivateApi {
     }
 
     @Override
-    public ResponseEntity<?> activatesPut(@ApiParam(value = "") @RequestParam(value = "activateKey" ,required=true ) String activateKey) {
+    public ResponseEntity<?> activatesPost(@ApiParam(value = "") @RequestParam(value = "activateKey" ,required=true ) String activateKey) {
         try {
 
             PendingUserResponse registerPendingUser = userService.updatePendUserActive(activateKey);

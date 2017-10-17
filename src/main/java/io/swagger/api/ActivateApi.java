@@ -26,6 +26,6 @@ public interface ActivateApi {
             @ApiResponse(code = 200, message = "OK", response = PendingUserResponse.class) })
     @RequestMapping(value = "/activate",
             method = RequestMethod.POST)
-    ResponseEntity<?> activatesPut(@ApiParam(value = "") @RequestParam(value = "activateKey" ,required=true ) String activateKey);
+    ResponseEntity<?> activatesPost(@ApiParam(value = "") @RequestParam(value = "activateKey" ,required=true ) String activateKey);
 
 }

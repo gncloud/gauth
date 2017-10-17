@@ -24,35 +24,30 @@
 | POST | /activate | active pending user |
 | DELETE | /clients/{clientId} | delete client |
 | GET | /clients/{clientId} | client info |
-| PUT | /clients/{clientId} | update client |
 | GET | /clients | client list (admin Only) |
 | POST| /clients | create client (admin Only) |
-
+| PUT | /clients/{clientId} | update client |
 | POST | /userClientScope | create UserClientScope |
 | DELETE | /userClientScope | delete user scope |
-
 | GET | /scopes | scope info list (admin Only) |
 | POST | /scopes | create scope (admin Only) |
 | DELETE | /scopes/{scopeId} | delete scope |
 | GET | /scopes/{scopeId} | scope info |
 | PUT | /scopes/{scopeId} | update scope |
 | DELETE | /token | remove Token |
-| GET | /token | Token All List (admin Only) |
+| GET | /token | myToken Info |
 | POST | /tokens | create token / login action |
 | DELETE | /tokens/{tokenId} | delete token (admin Only) |
 | GET | /tokens/{tokenId} | read token info |
-
-
 | GET | /user | my info |
 | POST | /users | user sign up |
 | PUT | /users/{userCode} | update user |
 | GET | /users/{userCode} | user info (admin only) |
 | GET | /users?state=pending | list pending users (admin only) |
-| GET | /users | user info keyword search (admin Only) |
 | DELETE | /users/{userCode} | delete user |
 | DELETE | /users?state=pending&activateKey={key} <br> /users?state=pending&email={email} | delete one pending user |
 | DELETE | /users?state=pending&truncate=true | delete all pending users |
-
+| GET | /users | user info keyword search (admin Only) |
 
 
 ### 클라이언트 등록

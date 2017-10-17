@@ -19,7 +19,7 @@ public class UserClientScopeDao {
 
 
     public Integer findUserCount(int userCode) {
-        return sqlSession.selectOne("userClientScope.findUserCount", userCode);
+        return sqlSession.selectOne("userClientScope.findRelationCount", userCode);
     }
 
     public void insertRelation(UserClientScope userClientScope) {

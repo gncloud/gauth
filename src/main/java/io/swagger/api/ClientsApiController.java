@@ -175,10 +175,10 @@ public class ClientsApiController implements ClientsApi {
         }
     }
 
-    public ResponseEntity<?> userClientScopePost(@RequestParam(value = "clientId", required = true) String clientId,
-                                                 @RequestBody(required = false) UserClientScope userClientScope) {
+    public ResponseEntity<?> userClientScopePost(@RequestBody(required = false) UserClientScope userClientScope) {
         try {
             int userCode = userClientScope.getUserCode();
+            String clientId = userClientScope.getClientId();
 
             User registerUser = userService.getUser(userCode);
             Client registerClient = clientService.findByClient(clientId);
@@ -216,13 +216,10 @@ public class ClientsApiController implements ClientsApi {
     }
 
     @Override
-    public ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
-                                                   @RequestParam(value = "userCode", required = true) int userCode,
+    public ResponseEntity<?> clientsClientIdDelete(@RequestParam(value = "userCode", required = true) int userCode,
                                                    @RequestParam(value = "clientId", required = true) String clientId,
-                                                   @RequestParam(value = "scopeId", required = true) String scopeId) {
+                                                   @RequestParam(value = "scopeId", required = false) String scopeId) {
         try {
-
-            tokenService.isAdminToken(authorization);
 
             UserClientScope userClientScope = new UserClientScope();
             userClientScope.setClientId(clientId);

@@ -58,12 +58,25 @@
 
     <update id="updateUser" parameterType="User">
         UPDATE User
-           SET password = #{password},
-               email = #{email},
-               name = #{name},
-               phone = #{phone},
-               address = #{address},
-               company = #{company},
+           SET user_code = #{userCode},
+        <if test="password != null and password != ''">
+            password = #{password},
+        </if>
+        <if test="email != null and email != ''">
+            email = #{email},
+        </if>
+        <if test="name != null and name != ''">
+            name = #{name},
+        </if>
+        <if test="phone != null and phone != ''">
+            phone = #{phone},
+        </if>
+        <if test="address != null and address != ''">
+            address = #{address},
+        </if>
+        <if test="company != null and company != ''">
+            company = #{company}
+        </if>
          WHERE user_code = #{userCode}
     </update>
 
@@ -105,7 +118,7 @@
         or exists (select 1
                     from Token aaa
                     where aaa.token_id = #{adminToken}
-                    and aaa.user_id = 'admin'))
+                    and aaa.user_code = (select user_code from User where user_id = 'admin')))
         <if test="search != null and search != ''">
             and (a.user_id = #{search}
             or a.user_code = #{search}
@@ -184,7 +197,7 @@
         or exists (select 1
                     from Token aaa
                     where aaa.token_id = #{adminToken}
-                    and aaa.user_id = 'admin'))
+                    and aaa.user_code = (select user_code from User where user_id = 'admin')))
         <if test="search != null and search != ''">
             and (a.user_id = #{search}
             or a.user_code = #{search}
@@ -210,7 +223,7 @@
         or exists (select 1
         from Token aaa
         where aaa.token_id = #{tokenId}
-        and aaa.user_id = 'admin'))
+        and aaa.user_code = (select user_code from User where user_id = 'admin')))
         order by expire_date
     </select>
     

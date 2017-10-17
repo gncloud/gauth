@@ -61,8 +61,7 @@ public interface ClientsApi {
             @ApiResponse(code = 200, message = "OK", response = Client.class) })
     @RequestMapping(value = "/userClientScope",
             method = RequestMethod.POST)
-    ResponseEntity<?> userClientScopePost(@RequestParam(value = "clientId", required = true) String clientId,
-                                          @RequestBody UserClientScope userClientScope);
+    ResponseEntity<?> userClientScopePost(@RequestBody UserClientScope userClientScope);
 
 
     @ApiOperation(value = "delete user scope", notes = "delete user scope", response = Void.class, tags={  })
@@ -70,9 +69,8 @@ public interface ClientsApi {
             @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/userClientScope",
             method = RequestMethod.DELETE)
-    ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
-                                            @RequestParam(value = "userCode", required = true) int userCode,
+    ResponseEntity<?> clientsClientIdDelete(@RequestParam(value = "userCode", required = true) int userCode,
                                             @RequestParam(value = "clientId", required = true) String clientId,
-                                            @RequestParam(value = "scopeId", required = true) String scopeId);
+                                            @RequestParam(value = "scopeId", required = false) String scopeId);
 
 }

@@ -69,7 +69,7 @@
 
     <delete id="deleteUserClientScope" parameterType="UserClientScope">
         DELETE FROM UserClientScope
-        WHERE client_id = #{clientId}
+         WHERE client_id = #{clientId}
         <if test="scopeId != null and scopeId != ''">
             and scope_id = #{scopeId}
         </if>
