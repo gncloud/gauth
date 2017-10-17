@@ -25,18 +25,19 @@
                     )
     </insert>
 
-    <delete id="deleteUser" parameterType="String">
-        DELETE FROM User WHERE user_id = #{param1}
+    <delete id="deleteUser" parameterType="Integer">
+        DELETE FROM User WHERE user_code = #{param1}
     </delete>
 
-    <select id="isUserId" resultType="Integer" parameterType="String">
+    <select id="isUserIdCount" resultType="Integer" parameterType="String">
             SELECT count(*)
               FROM User
-             where upper(user_id) = upper(#{param1})
+             where user_id = #{param1}
     </select>
 
-    <select id="findByUser" resultType="User" parameterType="String">
-            SELECT user_id,
+    <select id="getUser" resultType="User" parameterType="User">
+            SELECT user_code,
+                   user_id,
                    password,
                    email,
                    name,
@@ -45,8 +46,16 @@
                    address,
                    company
              FROM User
-            WHERE user_id = #{param1}
+            WHERE 1=1
+        <if test="userCode != null and userCode != ''">
+              and user_code = #{userCode}
+        </if>
+        <if test="userId != null and userId != ''">
+            and user_id = #{userId}
+        </if>
+
     </select>
+
 
     <update id="updateUser" parameterType="User">
         UPDATE User
@@ -55,12 +64,13 @@
                name = #{name},
                phone = #{phone},
                address = #{address},
-               company = #{company}
-         WHERE user_id = #{userCode}
+               company = #{company},
+         WHERE user_code = #{userCode}
     </update>
 
-    <select id="fienByTokenToUserInfo" parameterType="String" resultType="User">
+    <select id="fienTokenByUser" parameterType="String" resultType="User">
         SELECT user_id,
+               user_code,
                email,
                name,
                register_date,
@@ -69,13 +79,14 @@
                company,
                #{param1} as token
          FROM User
-        where user_id = (select user_id
+        where user_code = (select user_code
                            from Token
                           where token_id = #{param1})
     </select>
 
-    <select id="findByUsers" resultType="User">
-        SELECT distinct a.user_id,
+    <select id="findUsers" resultType="User">
+        SELECT distinct auser_code,
+                a.user_id,
                 a.email,
                 a.name,
                 a.register_date,
@@ -83,12 +94,12 @@
                 a.address,
                 a.company
         FROM User a
-        left join UserClientScope b on a.user_id = b.user_id
+        left join UserClientScope b on a.user_code = b.user_code
         where 1=1
         and a.user_id != 'admin'
         and (b.client_id in (select aa.client_id
                             from UserClientScope aa
-                            join Token bb on aa.user_id = bb.user_id
+                            join Token bb on aa.user_code = bb.user_code
                             where bb.token_id= #{adminToken}
                             and aa.scope_id = 'Admin'
                             and aa.client_id != 'gauth')
@@ -98,6 +109,7 @@
                     and aaa.user_id = 'admin'))
         <if test="search != null and search != ''">
             and (a.user_id = #{search}
+            or a.user_code = #{search}
             or a.email = #{search}
             or a.company = #{search}
             or a.name = #{search})
@@ -105,24 +117,22 @@
         limit ${p}, 20
     </select>
 
-    <insert id="insertPendingUser" parameterType="PendingUserResponse">
+    <insert id="insertPendUser" parameterType="PendingUserResponse">
         insert into Pending (email, activate_key, status, expire_date, client_id)
-        values(
-        #{email}, #{activateKey}, #{status}, #{expireDate},#{clientId}
-        )
+        values( #{email}, #{activateKey}, #{status}, #{expireDate},#{clientId} )
     </insert>
 
-    <select id="findByPendingUser" parameterType="PendingUserResponse" resultType="PendingUserResponse">
+    <select id="findPendUser" resultType="PendingUserResponse">
         select email
               , status
               , activate_key
               , expire_date
               , client_id
           from Pending
-          where activate_key = #{activateKey}
+          where activate_key = #{param1}
     </select>
 
-    <select id="findByLastPending" parameterType="String" resultType="PendingUserResponse">
+    <select id="findPendUserByEmail" parameterType="String" resultType="PendingUserResponse">
         select email
         , status
         , activate_key
@@ -134,17 +144,17 @@
         limit 1
     </select>
 
-    <delete id="deletePendUserEmail" parameterType="String">
+    <delete id="deleteEmailByPendUser" parameterType="String">
         DELETE FROM Pending
           WHERE email = #{param1}
     </delete>
 
-    <delete id="deletePendUserActivateKey" parameterType="String">
+    <delete id="deletePendUserByActivateKey" parameterType="String">
         DELETE FROM Pending
         WHERE activate_key = #{param1}
     </delete>
 
-    <update id="updatePendingStatus" parameterType="PendingUserResponse">
+    <update id="updateStatusByPendUser" parameterType="PendingUserResponse">
         update Pending
             set status = #{status}
           where activate_key = #{activateKey}
@@ -160,15 +170,15 @@
                    and expire_date >= now()) as count
     </select>
 
-    <select id="selectUserCount" resultType="Integer">
+    <select id="findCountByUsers" resultType="Integer">
         select count(distinct 1)
           from User a
-        left join UserClientScope b on a.user_id = b.user_id
+        left join UserClientScope b on a.user_code = b.user_code
         where 1=1
         and a.user_id != 'admin'
         and (b.client_id in (select aa.client_id
                             from UserClientScope aa
-                            join Token bb on aa.user_id = bb.user_id
+                            join Token bb on aa.user_code = bb.user_code
                             where bb.token_id= #{adminToken}
                             and aa.scope_id = 'Admin'
                             and aa.client_id != 'gauth')
@@ -178,13 +188,14 @@
                     and aaa.user_id = 'admin'))
         <if test="search != null and search != ''">
             and (a.user_id = #{search}
+            or a.user_code = #{search}
             or a.email = #{search}
             or a.company = #{search}
             or a.name = #{search})
         </if>
     </select>
 
-    <select id="findByPendingUserInfoList" parameterType="Token" resultType="PendingUserResponse">
+    <select id="selectPendUsers" parameterType="Token" resultType="PendingUserResponse">
         select email
               , activate_key
               , status
@@ -193,7 +204,7 @@
         from Pending
         where (client_id in (select aa.client_id
                                 from UserClientScope aa
-                                join Token bb on aa.user_id = bb.user_id
+                                join Token bb on aa.user_code = bb.user_code
                                 where bb.token_id= #{tokenId}
                                 and aa.scope_id = 'Admin'
                                 and aa.client_id != 'gauth')
@@ -205,7 +216,7 @@
     </select>
     
     <delete id="deleteAllPendUser">
-        delete  from Pending
+        delete from Pending
     </delete>
 
 </mapper>

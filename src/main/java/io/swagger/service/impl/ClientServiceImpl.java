@@ -1,9 +1,12 @@
 package io.swagger.service.impl;
 
+import io.swagger.api.ApiException;
+import io.swagger.api.NotFoundException;
 import io.swagger.dao.ClientDao;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
 import io.swagger.model.Token;
+import io.swagger.model.UserClientScope;
 import io.swagger.service.ClientService;
 import io.swagger.service.ScopeService;
 import io.swagger.service.TokenService;
@@ -72,23 +75,23 @@ public class ClientServiceImpl implements ClientService {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void deleteClient(String clientId) {
-        List<Scope> scopes = scopeService.findByDefailtScopes(clientId);
+    public void deleteClient(String clientId) throws ApiException, Exception {
 
-        userClientScopeService.deleteClient(clientId);
+        Client registerClient = findByClient(clientId);
 
-        for (int i = 0; i < scopes.size(); i++) {
-            Scope target = new Scope();
-            target.setClientId(clientId);
-            target.setScopeId(scopes.get(i).getScopeId());
-            try {
-                scopeService.deleteScope(target);
-            } catch (Exception e) {
-
-            }
+        if(registerClient == null){
+            throw new ApiException("not found client");
         }
 
-        tokenService.deleteClient(clientId);
+        Scope scope = new Scope();
+        scope.setClientId(registerClient.getClientId());
+        scopeService.deleteScope(scope);
+
+        UserClientScope userClientScope = new UserClientScope();
+        userClientScope.setClientId(registerClient.getClientId());
+        userClientScopeService.deleteUserClientScope(userClientScope);
+
+        tokenService.deleteClientIdByToken(clientId);
 
         clientDao.deleteClient(clientId);
     }
@@ -97,8 +100,12 @@ public class ClientServiceImpl implements ClientService {
      * 클라이언트 조회
      */
     @Override
-    public Client findByClient(String clientId) {
-        return clientDao.findByClient(clientId);
+    public Client findByClient(String clientId) throws NotFoundException {
+        Client registerClient = clientDao.findByClient(clientId);
+        if(registerClient == null){
+            throw new NotFoundException(404, "not found client");
+        }
+        return registerClient;
     }
 
     /*
@@ -106,7 +113,7 @@ public class ClientServiceImpl implements ClientService {
      */
     @Override
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public Client updateClient(Client client) {
+    public Client updateClient(Client client) throws NotFoundException {
         clientDao.updateClient(client);
         return findByClient(client.getClientId());
     }

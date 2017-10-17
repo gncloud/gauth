@@ -1,7 +1,6 @@
 package io.swagger.service;
 
 
-import io.swagger.model.Client;
 import io.swagger.model.Scope;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,12 +13,12 @@ public interface ScopeService {
     /*
      * scope 조회
      */
-    Scope selectScope(Scope scope) throws Exception;
+    Scope findScope(Scope scope) throws Exception;
 
     /*
      * 클라이언트의 scope 조회
      */
-    List<Scope> selectClientScope(Client client) throws Exception;
+    List<Scope> selectClientScope(String clientId);
 
     /*
      * scope 등록

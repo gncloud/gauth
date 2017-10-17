@@ -1,6 +1,5 @@
 package io.swagger.dao;
 
-import io.swagger.model.Client;
 import io.swagger.model.Scope;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +12,10 @@ public class ScopeDao {
 
     @Autowired
     private SqlSession sqlSession;
-
-    public List<Scope> selectClientScopeList(Scope scope) {
-        return sqlSession.selectList("scope.selectClientScopeList", scope);
-    }
+//
+//    public List<Scope> findClientIdByScopes(Scope scope) {
+//        return sqlSession.selectList("scope.findClientIdByScopes", scope);
+//    }
 
     public void insertScope(Scope scope) {
         sqlSession.insert("scope.insertScope", scope);
@@ -26,16 +25,16 @@ public class ScopeDao {
         sqlSession.delete("scope.deleteScope", scope);
     }
 
-    public Scope findByScope(Scope scope) {
-        return sqlSession.selectOne("scope.findByScope", scope);
+    public Scope findScope(Scope scope) {
+        return  sqlSession.selectOne("scope.findScope", scope);
+    }
+
+    public List<Scope> findScopes(Scope scope) {
+        return  sqlSession.selectList("scope.findScope", scope);
     }
 
     public void updateScope(Scope scope) {
         sqlSession.update("scope.updateScope", scope);
-    }
-
-    public void updateDefaultN(Client client){
-        sqlSession.update("scope.updateDefaultN", client);
     }
 
     public List<Scope> findByDefailtScopes(String clientId){

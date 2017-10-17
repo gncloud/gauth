@@ -13,8 +13,8 @@ import java.util.Objects;
 @javax.annotation.Generated(value = "class io.swagger.codegen.languages.SpringCodegen", date = "2017-09-17T06:54:37.818Z")
 
 public class UserClientScope   {
-  @JsonProperty("userId")
-  private String userId = null;
+  @JsonProperty("userCode")
+  private int userCode;
 
   @JsonProperty("scopeId")
   private String scopeId = null;
@@ -22,22 +22,22 @@ public class UserClientScope   {
   @JsonProperty("clientId")
   private String clientId = null;
 
-  public UserClientScope userId(String userId) {
-    this.userId = userId;
+  public UserClientScope userId(int userCode) {
+    this.userCode = userCode;
     return this;
   }
 
    /**
-   * Get userId
-   * @return userId
+   * Get userCode
+   * @return userCode
   **/
   @ApiModelProperty(value = "")
-  public String getUserId() {
-    return userId;
+  public int getUserCode() {
+    return userCode;
   }
 
-  public void setUserId(String userId) {
-    this.userId = userId;
+  public void setUserCode(int userCode) {
+    this.userCode = userCode;
   }
 
   public UserClientScope scopeId(String scopeId) {
@@ -86,14 +86,14 @@ public class UserClientScope   {
       return false;
     }
     UserClientScope userClientScope = (UserClientScope) o;
-    return Objects.equals(this.userId, userClientScope.userId) &&
+    return Objects.equals(this.userCode, userClientScope.userCode) &&
         Objects.equals(this.scopeId, userClientScope.scopeId) &&
         Objects.equals(this.clientId, userClientScope.clientId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(userId, scopeId, clientId);
+    return Objects.hash(userCode, scopeId, clientId);
   }
 
   @Override
@@ -101,7 +101,7 @@ public class UserClientScope   {
     StringBuilder sb = new StringBuilder();
     sb.append("class UserClientScope {\n");
     
-    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+    sb.append("    userCode: ").append(toIndentedString(userCode)).append("\n");
     sb.append("    scopeId: ").append(toIndentedString(scopeId)).append("\n");
     sb.append("    clientId: ").append(toIndentedString(clientId)).append("\n");
     sb.append("}");

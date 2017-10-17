@@ -64,7 +64,7 @@ public class UsersApiController implements UsersApi {
                 int userSize = registerUserList.size();
                 ArrayList<String> searchUserList = new ArrayList<>();
                 for(int i=0; i < userSize; i++){
-                    searchUserList.add(registerUserList.get(i).getUserCode());
+                    searchUserList.add(registerUserList.get(i).getUserId());
                 }
                 List<UserClientScope> userClientScopeList = userClientScopeService.findByUserSearchList(searchUserList);
 
@@ -73,7 +73,7 @@ public class UsersApiController implements UsersApi {
                 int userClientScopeListSize = userClientScopeList.size();
                 for(int i=0; i<userSize; i++){
                     Map<String, Object> appendUser = new HashMap<>();
-                    appendUser.put("userId",       registerUserList.get(i).getUserCode());
+                    appendUser.put("userId",       registerUserList.get(i).getUserId());
                     appendUser.put("address",      registerUserList.get(i).getAddress());
                     appendUser.put("company",      registerUserList.get(i).getCompany());
                     appendUser.put("email",        registerUserList.get(i).getEmail());
@@ -82,8 +82,8 @@ public class UsersApiController implements UsersApi {
                     appendUser.put("registerDate", registerUserList.get(i).getRegisterDate());
                     List<UserClientScope> scopeList = new ArrayList<>();
                     for(int j=0; j < userClientScopeListSize; j++){
-                        String userId = registerUserList.get(i).getUserCode();
-                        if(userId.equals(userClientScopeList.get(j).getUserId())){
+                        String userId = registerUserList.get(i).getUserId();
+                        if(userId.equals(userClientScopeList.get(j).getUserCode())){
                             UserClientScope tempUserClientScope = new UserClientScope();
                             tempUserClientScope.setClientId(userClientScopeList.get(j).getClientId());
                             tempUserClientScope.setScopeId(userClientScopeList.get(j).getScopeId());
@@ -139,7 +139,7 @@ public class UsersApiController implements UsersApi {
         }
     }
 
-    public ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target", required = true) @PathVariable("userId") String userId,
+    public ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target", required = true) @PathVariable("userCode") int userCode,
                                                @ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                                @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId,
                                                @ApiParam(value = "state" ,required=false ) @RequestParam String state,
@@ -150,7 +150,7 @@ public class UsersApiController implements UsersApi {
 
             if( state != null && UserService.PENDING_STATUS.equals(state) ){
                 if(email != null && !"".equals(email)){
-                    userService.deletePendUserEmail(email);
+                    userService.deleteEmailByPendUser(email);
                 }else if(activateKey != null && !"".equals(activateKey)){
                     userService.deletePendUserActivateKey(activateKey);
                 }else if(truncate != null && "true".equals(truncate)){
@@ -159,11 +159,11 @@ public class UsersApiController implements UsersApi {
                     //email, activateKey, truncate 요청이 없을 경우
                     throw new ApiException("using [email|activateKey|truncate]");
                 }
-            }else if(userId != null
-                    && !"".equals(userId)
-                    && clientId != null
-                    && !"".equals(clientId)){
-                userService.deleteUser(userId, clientId);
+            }else if(clientId != null && !"".equals(clientId)){
+
+                userService.deleteUser(userCode, clientId);
+            }else{
+                throw new ApiException("invalid state");
             }
 
             return new ResponseEntity<>(HttpStatus.OK);
@@ -183,11 +183,11 @@ public class UsersApiController implements UsersApi {
         }
     }
 
-    public ResponseEntity<?> usersUserIdGet(@ApiParam(value = "search userId",required=true ) @PathVariable("userId") String userId,
+    public ResponseEntity<?> usersUserIdGet(@ApiParam(value = "search userId",required=true ) @PathVariable("userCode") String userCode,
                                             @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
             tokenService.isAdminToken(authorization);
-            User registerUser = userService.findByUser(userId);
+            User registerUser = userService.getUser(userCode);
 
             Map<String, Object> result = new HashMap<>();
             result.put("userInfo", registerUser);
@@ -211,7 +211,7 @@ public class UsersApiController implements UsersApi {
                                             @ApiParam(value = "user token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
                                             @RequestBody User user) {
         try {
-            user.setUserCode(userId);
+            user.setUserId(userId);
             User registerUser = userService.updateUser(user);
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (Exception e){

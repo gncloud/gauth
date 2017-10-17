@@ -71,7 +71,7 @@ public interface ClientsApi {
     @RequestMapping(value = "/userClientScope",
             method = RequestMethod.DELETE)
     ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
-                                            @RequestParam(value = "userId", required = true) String userId,
+                                            @RequestParam(value = "userCode", required = true) int userCode,
                                             @RequestParam(value = "clientId", required = true) String clientId,
                                             @RequestParam(value = "scopeId", required = true) String scopeId);
 

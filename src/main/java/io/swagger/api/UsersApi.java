@@ -43,7 +43,7 @@ public interface UsersApi {
         @ApiResponse(code = 200, message = "OK", response = Void.class) })
     @RequestMapping(value = "/users/{userId}",
         method = RequestMethod.DELETE)
-    ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target", required = true) @PathVariable("userId") String userId,
+    ResponseEntity<?> usersUserIdDelete(@ApiParam(value = "delete target", required = true) @PathVariable("userCode") int userCode,
                                         @ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                         @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId,
                                         @ApiParam(value = "state" ,required=false ) @RequestParam String state,

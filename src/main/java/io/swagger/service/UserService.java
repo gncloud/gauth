@@ -1,5 +1,6 @@
 package io.swagger.service;
 
+import io.swagger.api.ApiException;
 import io.swagger.model.PendingUserRequest;
 import io.swagger.model.PendingUserResponse;
 import io.swagger.model.Token;
@@ -25,16 +26,19 @@ public interface UserService {
     final String ACTIVE_STATUS = "active";
 
     /*
-     * 유저 조회
-     * 아이디로 조회
+     * 유저 코드로 조회
      * */
-    User findByUser(String userId);
+    User getUser(int userCode);
 
     /*
-     * 아이디 중복 확인
-     * 아이디로 조회
+     * 유저 아이디로 조회
      * */
-    Integer isUserId(String userId);
+    User getUser(String userId);
+
+    /*
+     * 유저 아이디로 조회
+     * */
+    Integer isUserIdCount(String userId);
 
     /*
      * 회원가입
@@ -49,7 +53,7 @@ public interface UserService {
     /*
      * 토큰으로 회원 정보 조회
      */
-    User fienByTokenToUserInfo(String token);
+    User fienTokenByUser(String token);
 
     /*
      * 유저 전체 조회
@@ -57,24 +61,25 @@ public interface UserService {
     List<User> findByUsers(Map<String, String> search);
 
     /*
-     * 회원 가입 대기 유저 정보 등록
+     * 대기 유저 등록
      */
     public PendingUserResponse insertPendingUser(PendingUserRequest pendingUserRequest) throws Exception;
 
     /*
-     * 회원 가입 대기 유저 조회
+     * activateKey로 대기 유저 조회
      */
-    public PendingUserResponse findByPendingUserInfo(String activateKey);
+//    PendingUserResponse findActivateKeyByPendUser(String activateKey);
+
+    /*
+     * activateKey 활성화
+     */
+    PendingUserResponse updatePendUserActive(String activateKey) throws ApiException;
+
 
     /*
      * 강제 회원삭제
      */
-    void deleteUser(String userId, String client);
-
-    /*
-     * 대기회원상태
-     */
-    PendingUserResponse updatePendingStatus(String activateKey);
+    void deleteUser(int userCode, String client);
 
     /*
      * 유저 수
@@ -94,7 +99,7 @@ public interface UserService {
     /*
      * 대기 유저 삭제 target : email
      */
-    void deletePendUserEmail(String email);
+    void deleteEmailByPendUser(String email);
 
     /*
      * 대기 유저 삭제 target : activateKey

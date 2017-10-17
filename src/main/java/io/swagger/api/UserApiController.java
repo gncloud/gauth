@@ -2,6 +2,7 @@ package io.swagger.api;
 
 import io.swagger.annotations.ApiParam;
 import io.swagger.model.User;
+import io.swagger.service.TokenService;
 import io.swagger.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +22,15 @@ public class UserApiController implements UserApi {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private TokenService tokenService;
 
     public ResponseEntity<?> userGet(@ApiParam(value = "User Authentication BEARER Token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
-            User registerUser = userService.fienByTokenToUserInfo(authorization);
+
+            tokenService.isTokenValid(authorization);
+
+            User registerUser = userService.fienTokenByUser(authorization);
 
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (Exception e){

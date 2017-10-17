@@ -1,5 +1,7 @@
 package io.swagger.service;
 
+import io.swagger.api.ApiException;
+import io.swagger.api.NotFoundException;
 import io.swagger.model.Client;
 import io.swagger.model.Token;
 import org.springframework.transaction.annotation.Propagation;
@@ -28,15 +30,15 @@ public interface ClientService {
     /*
      * 클라이언트 삭제
      */
-    void deleteClient(String clientId);
+    void deleteClient(String clientId) throws ApiException, Exception;
     /*
      * 클라이언트 조회
      */
-    Client findByClient(String clientId);
+    Client findByClient(String clientId) throws NotFoundException;
     /*
      * 클라이언트 수정
      */
-    Client updateClient(Client client);
+    Client updateClient(Client client) throws NotFoundException;
     /*
      * 클라이언트 전체 조회
      */

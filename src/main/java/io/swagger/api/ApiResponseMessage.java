@@ -16,7 +16,7 @@ public class ApiResponseMessage {
 	String type;
 	String message;
 	
-	public ApiResponseMessage(){}
+	public ApiResponseMessage(ApiResponseMessage apiResponseMessage, String message){}
 	
 	public ApiResponseMessage(int code, String message){
 		this.code = code;

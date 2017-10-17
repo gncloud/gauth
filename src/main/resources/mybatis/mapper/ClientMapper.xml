@@ -14,7 +14,7 @@
                         #{domain})
     </insert>
 
-    <select id="findByClient" resultType="Client" parameterType="String">
+    <select id="findClient" resultType="Client" parameterType="String">
         select client_id
               , client_secret
               , description
@@ -42,7 +42,7 @@
         from Client a
         where a.client_id in (select distinct aa.client_id
                                 from UserClientScope aa
-                                where aa.user_id in (select aaa.user_id
+                                where aa.user_code in (select aaa.user_code
                                                     from Token aaa
                                                     where aaa.token_id = #{tokenId})
                                                     and aa.scope_id = 'Admin'

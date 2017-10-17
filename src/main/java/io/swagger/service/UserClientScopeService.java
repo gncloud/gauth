@@ -1,7 +1,6 @@
 package io.swagger.service;
 
 import io.swagger.model.AuthenticationRequest;
-import io.swagger.model.Client;
 import io.swagger.model.User;
 import io.swagger.model.UserClientScope;
 import org.springframework.transaction.annotation.Propagation;
@@ -40,37 +39,37 @@ public interface UserClientScopeService {
     /*
      * 유저 삭제
      */
-    void deleteUser(String userId);
+    public void deleteClient(String clientId);
 
     /*
      * 유저로 관계 조회
      */
     List<UserClientScope> selectUserMappingList(User user);
 
-    /*
-     * 클라이언트로 관계 조회
-     */
-    List<UserClientScope> selectClientMappingList(Client client);
+//    /*
+//     * 클라이언트로 관계 조회
+//     */
+//    List<UserClientScope> selectClientMappingList(Client client);
 
-    /*
-     * 클라이언트로 전체 삭제
-     */
-    void deleteClient(String clientId);
+//    /*
+//     * 클라이언트로 전체 삭제
+//     */
+//    void deleteClient(String clientId);
 
     /*
      * 클라이언트 등록된 관계 수
      */
-    Integer findUserCount(String userId);
+    Integer findUserCount(int userCode);
 
     /*
      * 유저가 클라이언트 등록 여부를 확인
      */
     boolean isUserClientScope(AuthenticationRequest user);
 
-    /*
-     * 유저와 클라이언트 ScopeId 정보 조회
-     */
-    List<String> findByScopeIdList(UserClientScope userClientScope);
+//    /*
+//     * 유저와 클라이언트 ScopeId 정보 조회
+//     */
+//    List<String> findByScopeIdList(UserClientScope userClientScope);
 
     /*
      * 클라이언트의 스코프 제거

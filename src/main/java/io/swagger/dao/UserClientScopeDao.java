@@ -18,55 +18,47 @@ public class UserClientScopeDao {
     private SqlSession sqlSession;
 
 
-    public Integer findUserCount(String userId) {
-        return sqlSession.selectOne("userClientScope.findUserCount", userId);
+    public Integer findUserCount(int userCode) {
+        return sqlSession.selectOne("userClientScope.findUserCount", userCode);
     }
 
-    public void insertUserClientScope(UserClientScope userClientScope) {
-        sqlSession.insert("userClientScope.insertUserClientScope", userClientScope);
+    public void insertRelation(UserClientScope userClientScope) {
+        sqlSession.insert("userClientScope.insertRelation", userClientScope);
     }
 
-    public List<UserClientScope> findByUserClientScope(UserClientScope userClientScope) {
-        return sqlSession.selectList("userClientScope.findByUserClientScope", userClientScope);
+    public List<UserClientScope> findRelation(UserClientScope userClientScope) {
+        return sqlSession.selectList("userClientScope.findRelation", userClientScope);
     }
 
-    public void deleteUserClientScope(UserClientScope userClientScope) {
-        sqlSession.delete("userClientScope.deleteUserClientScope", userClientScope);
+//    public void deleteUserClientScope(int userCode) {
+//        sqlSession.delete("userClientScope.deleteRelationByUserCode", userCode);
+//    }
+
+    public List<UserClientScope> findUserCodeByRelations(User user) {
+        return sqlSession.selectList("userClientScope.findUserCodeByRelations", user);
     }
 
-    public void deleteUser(String userId) {
-        sqlSession.delete("userClientScope.deleteUser", userId);
-    }
-
-    public List<UserClientScope> fintUserMappingList(User user) {
-        return sqlSession.selectList("userClientScope.fintUserMappingList", user);
-    }
-
-    public List<UserClientScope> fintClientMappingList(Client client) {
+    public List<UserClientScope> findUserCodeByRelations(Client client) {
         return sqlSession.selectList("userClientScope.fintClientMappingList", client);
     }
 
-    public Integer isUserClientScope(AuthenticationRequest user){
+    public Integer isRelationCount(AuthenticationRequest user){
         return sqlSession.selectOne("userClientScope.isUserClientScope", user);
     }
 
-    public List<String> findByScopeIdList(UserClientScope userClientScope) {
-        return sqlSession.selectList("userClientScope.findByScopeIdList", userClientScope);
+//    public List<String> findByScopeIdList(UserClientScope userClientScope) {
+//        return sqlSession.selectList("userClientScope.findByScopeIdList", userClientScope);
+//    }
+
+//    public void deleteClientScope(UserClientScope userClientScope){
+//        sqlSession.delete("deleteClientScope", userClientScope);
+//    }
+
+    public List<UserClientScope> findRelationByUsers(ArrayList<String> searchUser) {
+        return sqlSession.selectList("userClientScope.findRelationByUsers", searchUser);
     }
 
-    public void deleteClient(String clientId) {
-        sqlSession.delete("userClientScope.deleteClient", clientId);
-    }
-
-    public void deleteClientScope(UserClientScope userClientScope){
-        sqlSession.delete("deleteClientScope", userClientScope);
-    }
-
-    public List<UserClientScope> findByUserSearchList(ArrayList<String> searchUser) {
-        return sqlSession.selectList("userClientScope.findByUserSearchList", searchUser);
-    }
-
-    public void deleteUserScope(UserClientScope userClientScope){
-        sqlSession.delete("deleteUserScope", userClientScope);
+    public void deleteUserClientScope(UserClientScope userClientScope){
+        sqlSession.delete("userClientScope.deleteUserClientScope", userClientScope);
     }
 }

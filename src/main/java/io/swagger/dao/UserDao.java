@@ -27,65 +27,65 @@ public class UserDao {
     /*
      * 유저 등록
      * */
-    public void insertUser(User user) {
-        sqlSession.insert("user.insertUser", user);
+    public void insertUser(User insertUser) {
+        sqlSession.insert("user.insertUser", insertUser);
     }
 
     /*
      * 아이디 중복 확인 (갯수 조회)
      * */
-    public int isUserId(String id) {
-        return sqlSession.selectOne("user.isUserId", id);
+    public int isUserIdCount(String userId) {
+        return sqlSession.selectOne("user.isUserIdCount", userId);
     }
 
     /*
      * 유저 조회
      * 유저아이디로 조회
      * */
-    public User findByUser(String userId) {
-        return sqlSession.selectOne("user.findByUser", userId);
+    public User getUser(User user) {
+        return sqlSession.selectOne("user.getUser", user);
     }
 
     /*
      * 유저 삭제
      * */
-    public void deleteUser(String user){
-        sqlSession.delete("user.deleteUser", user);
+    public void deleteUser(int userCode){
+        sqlSession.delete("user.deleteUser", userCode);
     }
 
     /*
      * 유저 수정
      * */
     public void updateUser(User user) {
-        sqlSession.update("user.updateUser",user);
+        sqlSession.update("user.updateUser", user);
     }
 
     /*
      *  토큰으로 회원정보 조회
      * */
-    public User fienByTokenToUserInfo(String token) {
-        return sqlSession.selectOne("user.fienByTokenToUserInfo", token);
+    public User fienTokenByUser(String token) {
+        return sqlSession.selectOne("user.fienTokenByUser", token);
     }
 
     /*
      * 유저 전체 조회
      */
-    public List<User> findByUsers(Map<String, String> search) {
-        return sqlSession.selectList("user.findByUsers", search);
+    public List<User> findUsers(Map<String, String> search) {
+        return sqlSession.selectList("user.findUsers", search);
     }
 
     /*
      * 회원 가입 대기 유저 정보 등록
      */
-    public void insertPendingUser(PendingUserResponse pendingUserResponse) throws Exception{
-        sqlSession.insert("user.insertPendingUser", pendingUserResponse);
+    public void insertPendUser(PendingUserResponse pendingUserResponse) throws Exception{
+        sqlSession.insert("user.insertPendUser", pendingUserResponse);
     }
 
     /*
      * 대기 회원 이메일 기준 삭제
      */
-    public void deletePendUserEmail(String email){
-        sqlSession.delete("user.deletePendUserEmail", email);
+    public void deleteEmailByPendUser(String email){
+        sqlSession.delete("user.deleteEmailByPendUser", email);
     }
 
     /*
@@ -98,22 +98,22 @@ public class UserDao {
     /*
      * 회원 가입 대기 유저 조회
      */
-    public PendingUserResponse findByPendingUser(PendingUserResponse pendingUserResponse) {
-        return sqlSession.selectOne("user.findByPendingUser", pendingUserResponse);
+    public PendingUserResponse findPendUser(String activateKey) {
+        return sqlSession.selectOne("user.findActivateKeyByPendUser", activateKey);
     }
 
     /*
      * 회원 가입 대기 유저 조회 email
      */
-    public PendingUserResponse findByLastPending(String email) {
-        return sqlSession.selectOne("user.findByLastPending", email);
+    public PendingUserResponse findPendUserByEmail(String email) {
+        return sqlSession.selectOne("user.findPendUserByEmail", email);
     }
 
     /*
      * 이메일 상태 pending 일괄 변경
      */
-    public void updatePendingStatus(PendingUserResponse pendingUserResponse){
-        sqlSession.update("user.updatePendingStatus", pendingUserResponse);
+    public void updateStatusByPendUser(PendingUserResponse pendingUserResponse){
+        sqlSession.update("user.updateStatusByPendUser", pendingUserResponse);
     }
 
     /*
@@ -127,15 +127,15 @@ public class UserDao {
     /*
      * 유저 수
      */
-    public int selectUserCount(Map<String, String> search) {
-        return sqlSession.selectOne("user.selectUserCount", search);
+    public int findCountByUsers(Map<String, String> search) {
+        return sqlSession.selectOne("user.findCountByUsers", search);
     }
 
     /*
      * 대기 유저 조회
      */
-    public List<PendingUserResponse> findByPendingUserInfoList(Token adminToken){
-        return sqlSession.selectList("user.findByPendingUserInfoList", adminToken);
+    public List<PendingUserResponse> selectPendUsers(Token adminToken){
+        return sqlSession.selectList("user.selectPendUsers", adminToken);
     }
 
     /*

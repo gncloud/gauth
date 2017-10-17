@@ -46,10 +46,12 @@ public class ClientsApiController implements ClientsApi {
     public ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "target client id",required=true ) @PathVariable("clientId") String clientId,
                                                    @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
+
             tokenService.isAdminToken(authorization);
 
             clientService.deleteClient(clientId);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (AccessControlException e){
             logger.warn("AccessControlException {}", e.getMessage());
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -79,14 +81,18 @@ public class ClientsApiController implements ClientsApi {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             HttpStatus httpStatus;
-            if(e instanceof ApiException){
+            ApiResponseMessage apiResponseMessage = null;
+            if(e instanceof NotFoundException){
+                httpStatus = HttpStatus.NOT_FOUND;
+                logger.warn("NotFoundException {}", e.getMessage());
+            }else if(e instanceof ApiException){
                 httpStatus = HttpStatus.BAD_REQUEST;
                 logger.warn("bad request {}", e.getMessage());
-            }else{
+            }else {
                 httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
                 logger.error("clientsClientIdGet error", e);
             }
-            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(apiResponseMessage, e.getMessage()), httpStatus);
         }
     }
 
@@ -105,7 +111,10 @@ public class ClientsApiController implements ClientsApi {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             HttpStatus httpStatus;
-            if(e instanceof ApiException){
+            if(e instanceof NotFoundException){
+                httpStatus = HttpStatus.NOT_FOUND;
+                logger.warn("NotFoundException {}", e.getMessage());
+            }else if(e instanceof ApiException){
                 httpStatus = HttpStatus.BAD_REQUEST;
                 logger.warn("bad request {}", e.getMessage());
             }else{
@@ -169,8 +178,9 @@ public class ClientsApiController implements ClientsApi {
     public ResponseEntity<?> userClientScopePost(@RequestParam(value = "clientId", required = true) String clientId,
                                                  @RequestBody(required = false) UserClientScope userClientScope) {
         try {
-            String userId = userClientScope.getUserId();
-            User registerUser = userService.findByUser(userId);
+            int userCode = userClientScope.getUserCode();
+
+            User registerUser = userService.getUser(userCode);
             Client registerClient = clientService.findByClient(clientId);
             if(registerUser == null){
                 throw new ApiException("not found user");
@@ -182,12 +192,12 @@ public class ClientsApiController implements ClientsApi {
             if(userClientScope != null
                     && userClientScope.getScopeId() != null
                     && !"".equals(userClientScope.getScopeId())){
-                userClientScope.setUserId(userId);
+                userClientScope.setUserCode(userCode);
                 userClientScope.setClientId(clientId);
                 registerUserClientScopeList = userClientScopeService.insertUserScope(userClientScope);
             }else{
                 userClientScope = new UserClientScope();
-                userClientScope.setUserId(userId);
+                userClientScope.setUserCode(userCode);
                 userClientScope.setClientId(clientId);
                 registerUserClientScopeList = userClientScopeService.insertUserClientScope(userClientScope);
             }
@@ -207,7 +217,7 @@ public class ClientsApiController implements ClientsApi {
 
     @Override
     public ResponseEntity<?> clientsClientIdDelete(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
-                                                   @RequestParam(value = "userId", required = true) String userId,
+                                                   @RequestParam(value = "userCode", required = true) int userCode,
                                                    @RequestParam(value = "clientId", required = true) String clientId,
                                                    @RequestParam(value = "scopeId", required = true) String scopeId) {
         try {
@@ -216,19 +226,13 @@ public class ClientsApiController implements ClientsApi {
 
             UserClientScope userClientScope = new UserClientScope();
             userClientScope.setClientId(clientId);
-            userClientScope.setUserId(userId);
+            userClientScope.setUserCode(userCode);
             userClientScope.setScopeId(scopeId);
-            userClientScopeService.deleteUserScope(userClientScope);
+            userClientScopeService.deleteUserClientScope(userClientScope);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e){
-            HttpStatus httpStatus;
-            if(e instanceof ApiException){
-                httpStatus = HttpStatus.BAD_REQUEST;
-                logger.warn("bad request {}", e.getMessage());
-            }else{
-                httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
-                logger.error("clientsClientIdDelete error", e);
-            }
+            HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            logger.error("clientsClientIdDelete error", e);
             return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.toString()), httpStatus);
         }
     }

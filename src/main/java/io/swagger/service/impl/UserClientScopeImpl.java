@@ -35,25 +35,24 @@ public class UserClientScopeImpl implements UserClientScopeService {
         // 기존 정보 삭제
         deleteUserClientScope(userClientScope);
 
-        List<UserClientScope> insertList = new ArrayList<>();
         List<Scope> scopesList = scopeService.findByDefailtScopes(userClientScope.getClientId());
 
         int scopeSize = scopesList.size();
         for(int i=0; i < scopeSize; i++){
             UserClientScope target = new UserClientScope();
             target.setClientId(userClientScope.getClientId());
-            target.setUserId(userClientScope.getUserId());
+            target.setUserCode(userClientScope.getUserCode());
             target.setScopeId(scopesList.get(i).getScopeId());
 
             // 스코프 만큼 추가
-            userClientScopeDao.insertUserClientScope(target);
+            userClientScopeDao.insertRelation(target);
         }
 
         if(scopeSize == 0){
-            userClientScopeDao.insertUserClientScope(userClientScope);
+            userClientScopeDao.insertRelation(userClientScope);
         }
 
-        return userClientScopeDao.findByUserClientScope(userClientScope);
+        return userClientScopeDao.findRelation(userClientScope);
     }
 
     /*
@@ -61,8 +60,8 @@ public class UserClientScopeImpl implements UserClientScopeService {
      */
     @Override
     public List<UserClientScope> insertUserScope(UserClientScope userClientScope) {
-        userClientScopeDao.insertUserClientScope(userClientScope);
-        return userClientScopeDao.findByUserClientScope(userClientScope);
+        userClientScopeDao.insertRelation(userClientScope);
+        return userClientScopeDao.findRelation(userClientScope);
     }
 
     /*
@@ -78,38 +77,40 @@ public class UserClientScopeImpl implements UserClientScopeService {
      */
     @Override
     public void deleteClient(String clientId){
-        userClientScopeDao.deleteClient(clientId);
+        UserClientScope userClientScope = new UserClientScope();
+        userClientScope.setClientId(clientId);
+        userClientScopeDao.deleteUserClientScope(userClientScope);
     }
 
 
-    @Override
-    public void deleteUser(String userId) {
-        userClientScopeDao.deleteUser(userId);
-    }
+//    @Override
+//    public void deleteUser(String userId) {
+//        userClientScopeDao.deleteUser(userId);
+//    }
 
     /*
      * 유저로 연결 조회
      */
     @Override
     public List<UserClientScope> selectUserMappingList(User user){
-        return userClientScopeDao.fintUserMappingList(user);
+        return userClientScopeDao.findUserCodeByRelations(user);
     }
 
     /*
      * 클라이언트로 관계 조회
      */
-    @Override
-    public List<UserClientScope> selectClientMappingList(Client client){
-        return userClientScopeDao.fintClientMappingList(client);
-    }
+//    @Override
+//    public List<UserClientScope> selectClientMappingList(Client client){
+//        return userClientScopeDao.fintClientMappingList(client);
+//    }
 
 
     /*
      * 클라이언트 등록된 관계 수
      */
     @Override
-    public Integer findUserCount(String userId) {
-        return userClientScopeDao.findUserCount(userId);
+    public Integer findUserCount(int userCode) {
+        return userClientScopeDao.findUserCount(userCode);
     }
 
     /*
@@ -117,24 +118,24 @@ public class UserClientScopeImpl implements UserClientScopeService {
      */
     @Override
     public boolean isUserClientScope(AuthenticationRequest user) {
-        Integer userCnt = userClientScopeDao.isUserClientScope(user);
+        Integer userCnt = userClientScopeDao.isRelationCount(user);
         return (userCnt != null && userCnt >= 1);
     }
 
-    /*
-     * 유저와 클라이언트 ScopeId 정보 조회
-     */
-    @Override
-    public List<String> findByScopeIdList(UserClientScope userClientScope) {
-        return userClientScopeDao.findByScopeIdList(userClientScope);
-    }
+//    /*
+//     * 유저와 클라이언트 ScopeId 정보 조회
+//     */
+//    @Override
+//    public List<String> findByScopeIdList(UserClientScope userClientScope) {
+//        return userClientScopeDao.findByScopeIdList(userClientScope);
+//    }
 
     /*
      * 클라이언트의 스코프 삭제
      */
     @Override
     public void deleteClientScope(UserClientScope userClientScope) {
-        userClientScopeDao.deleteClientScope(userClientScope);
+        userClientScopeDao.deleteUserClientScope(userClientScope);
     }
 
     /*
@@ -142,7 +143,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      */
     @Override
     public List<UserClientScope> findByUserSearchList(ArrayList<String> searchUser) {
-        return userClientScopeDao.findByUserSearchList(searchUser);
+        return userClientScopeDao.findRelationByUsers(searchUser);
     }
 
     /*
@@ -150,7 +151,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      */
     @Override
     public void deleteUserScope(UserClientScope userClientScope) {
-        userClientScopeDao.deleteUserScope(userClientScope);
+        userClientScopeDao.deleteUserClientScope(userClientScope);
     }
 
 

@@ -2,7 +2,6 @@ package io.swagger.service.impl;
 
 import io.swagger.api.ApiException;
 import io.swagger.dao.ScopeDao;
-import io.swagger.model.Client;
 import io.swagger.model.Scope;
 import io.swagger.model.UserClientScope;
 import io.swagger.service.ScopeService;
@@ -31,14 +30,14 @@ public class ScopeServiceImpl implements ScopeService {
      * client id, scope id reqired
      */
     @Override
-    public Scope selectScope(Scope scope) throws Exception {
+    public Scope findScope(Scope scope) throws Exception {
         String clientId = scope.getClientId();
         String scopeId = scope.getScopeId();
         if(isNull(clientId) || isNull(scopeId)){
             throw new ApiException("invalid data");
         }
 
-        return scopeDao.findByScope(scope);
+        return scopeDao.findScope(scope);
     }
 
     /*
@@ -46,16 +45,10 @@ public class ScopeServiceImpl implements ScopeService {
      * client id reqired
      */
     @Override
-    public List<Scope> selectClientScope(Client client) throws Exception {
-        String clientId = client.getClientId();
-        if(isNull(clientId)){
-            throw new ApiException("invalid clientId");
-        }
-
+    public List<Scope> selectClientScope(String clientId) {
         Scope scope = new Scope();
-        scope.setClientId(client.getClientId());
-
-        return scopeDao.selectClientScopeList(scope);
+        scope.setClientId(clientId);
+        return scopeDao.findScopes(scope);
     }
 
     /*
@@ -68,8 +61,10 @@ public class ScopeServiceImpl implements ScopeService {
 
         String clientId = scope.getClientId();
         String scopeId = scope.getScopeId();
-        if(isNull(clientId) || isNull(scopeId)){
-            throw new ApiException("invalid data");
+        if(isNull(clientId)){
+            throw new ApiException("invalid clientId");
+        }else if(isNull(scopeId)){
+            throw new ApiException("invalid scopeId");
         }
 
         String isDefault = scope.getIsDefault();
@@ -87,7 +82,7 @@ public class ScopeServiceImpl implements ScopeService {
         }
 
         scopeDao.insertScope(scope);
-        return scopeDao.findByScope(scope);
+        return scopeDao.findScope(scope);
     }
 
     /*
@@ -98,16 +93,17 @@ public class ScopeServiceImpl implements ScopeService {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
     public void deleteScope(Scope scope) throws Exception {
 
-        userClientScopeService.deleteClient(scope.getClientId());
-
         String clientId = scope.getClientId();
         String scopeId = scope.getScopeId();
-        if(isNull(clientId) || isNull(scopeId)){
-            throw new ApiException("invalid data");
+        if(isNull(clientId)){
+            throw new ApiException("invalid clientId");
+        }else if(isNull(scopeId)){
+            throw new ApiException("invalid scopeId");
         }
 
+        // 기존 스코프 삭제
         UserClientScope userClientScope = new UserClientScope();
-        userClientScope.setClientId(clientId);
+        userClientScope.setClientId(scope.getClientId());
         userClientScope.setScopeId(scopeId);
         userClientScopeService.deleteClientScope(userClientScope);
 
@@ -124,8 +120,10 @@ public class ScopeServiceImpl implements ScopeService {
 
         String clientId = scope.getClientId();
         String scopeId = scope.getScopeId();
-        if(isNull(clientId) || isNull(scopeId)){
-            throw new ApiException("invalid data");
+        if(isNull(clientId)){
+            throw new ApiException("invalid clientId");
+        }else if(isNull(scopeId)){
+            throw new ApiException("invalid scopeId");
         }
 
         String isDefault = scope.getIsDefault();
@@ -143,7 +141,7 @@ public class ScopeServiceImpl implements ScopeService {
 
         scopeDao.updateScope(scope);
 
-        return scopeDao.findByScope(scope);
+        return scopeDao.findScope(scope);
     }
 
     private boolean isNull(String clientId){

@@ -14,15 +14,15 @@ public class TokenDao {
     @Autowired
     private SqlSession sqlSession;
 
-    public void insertToekn(Token token) {
+    public void insertToken(Token token) {
         sqlSession.insert("token.insertToken", token);
     }
 
-    public Token findByToken(String tokenId) {
+    public Token getToken(String tokenId) {
         return sqlSession.selectOne("token.getToken", tokenId);
     }
-    public Token findByToken(AuthenticationRequest user) {
-        return sqlSession.selectOne("token.findTokenByUser", user);
+    public Token findUserByToken(AuthenticationRequest user) {
+        return sqlSession.selectOne("token.findUserByToken", user);
     }
 
     public void deleteToken(String tokenId) {
@@ -33,15 +33,15 @@ public class TokenDao {
         return sqlSession.selectList("token.selectTokens");
     }
 
-    public void deleteClientToken(AuthenticationRequest user) {
-        sqlSession.delete("token.deleteClientToken", user);
+    public void deleteTokenByUserCode(int userCode) {
+        sqlSession.delete("token.deleteTokenByUserCode", userCode);
     }
 
     public Token findByAdminToken(Token token) {
         return sqlSession.selectOne("token.findByAdminToken", token);
     }
 
-    public void deleteClient(String clientId) {
-        sqlSession.delete("token.deleteClient", clientId);
+    public void deleteClientIdByToken(String clientId) {
+        sqlSession.delete("token.deleteClientIdByToken", clientId);
     }
 }

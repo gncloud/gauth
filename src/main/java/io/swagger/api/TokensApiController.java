@@ -37,6 +37,7 @@ public class TokensApiController implements TokensApi {
 
     public ResponseEntity<?> tokenDelete(@RequestHeader(value="Authorization", required=true) String authorization) {
         try {
+
             tokenService.deleteToken(authorization);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e){
@@ -62,9 +63,10 @@ public class TokensApiController implements TokensApi {
     public ResponseEntity<?> tokensPost(@ApiParam(value = "" ,required=true ) @RequestBody AuthenticationRequest user) {
         try {
 
-            User targetUser = userService.findByUser(user.getUserId());
+            User targetUser = userService.getUser(user.getUserId());
+
             if(targetUser == null){
-                throw new ApiException("invalid userId");
+                throw new NotFoundException(404, "invalid userId");
             }else if(!targetUser.isEqualsPassword(user.getPassword())){
                 throw new ApiException("invalid password");
             }
@@ -75,7 +77,10 @@ public class TokensApiController implements TokensApi {
             return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.INFO, e.getMessage()), HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             HttpStatus httpStatus;
-            if(e instanceof ApiException){
+            if(e instanceof NotFoundException){
+                httpStatus = HttpStatus.NOT_FOUND;
+                logger.warn("NotFoundException {}", e.getMessage());
+            }else if(e instanceof ApiException){
                 httpStatus = HttpStatus.BAD_REQUEST;
                 logger.warn("bad request {}", e.getMessage());
             }else{

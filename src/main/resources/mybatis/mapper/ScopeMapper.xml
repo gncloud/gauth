@@ -2,14 +2,14 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="scope">
 
-    <select id="selectClientScopeList" parameterType="Scope" resultType="Scope">
-        select scope_id
-        , client_id
-        , description
-        , is_default
-        from Scope
-        where client_id = #{clientId}
-    </select>
+    <!--<select id="findClientIdByScopes" parameterType="Scope" resultType="Scope">-->
+        <!--select scope_id-->
+        <!--, client_id-->
+        <!--, description-->
+        <!--, is_default-->
+        <!--from Scope-->
+        <!--where client_id = #{clientId}-->
+    <!--</select>-->
 
     <insert id="insertScope" parameterType="Scope">
         INSERT INTO Scope
@@ -31,14 +31,19 @@
         AND client_id = #{clientId}
     </delete>
 
-    <select id="findByScope" parameterType="Scope" resultType="Scope">
+    <select id="findScopes" parameterType="Scope" resultType="Scope">
         select scope_id
         , client_id
         , description
         , is_default
         from Scope
         where client_id = #{clientId}
-        AND scope_id = #{scopeId}
+        <if test="scopeId != null and scopeId != ''">
+            AND scope_id = #{scopeId}
+        </if>
+        <if test="isDefault != null and isDefault != ''">
+            AND is_default != #{isDefault}
+        </if>
     </select>
 
     <update id="updateScope" parameterType="Scope">
@@ -47,12 +52,6 @@
           , is_default = #{isDefault}
         where scope_id = #{scopeId}
         AND client_id = #{clientId}
-    </update>
-
-    <update id="updateDefaultN" parameterType="Scope">
-        UPDATE Scope
-        SET is_default = 0
-        where client_id = #{clientId}
     </update>
 
     <select id="findByDefailtScopes" parameterType="String" resultType="Scope">

@@ -19,7 +19,7 @@ public interface ActivateApi {
         @ApiResponse(code = 200, message = "OK", response = PendingUserResponse.class) })
     @RequestMapping(value = "/register",
         method = RequestMethod.POST)
-    ResponseEntity<?> activatesPost(@ApiParam(value = "") @RequestBody PendingUserRequest pendingUserRequest);
+    ResponseEntity<?> registerPost(@ApiParam(value = "") @RequestBody PendingUserRequest pendingUserRequest);
 
     @ApiOperation(value = "active pending email", notes = "active pending email", response = PendingUserResponse.class, tags={  })
     @ApiResponses(value = {

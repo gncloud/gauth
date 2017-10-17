@@ -24,7 +24,7 @@ public class ActivateApiController implements ActivateApi {
     @Autowired
     private UserService userService;
 
-    public ResponseEntity<?> activatesPost(@ApiParam(value = ""  ) @RequestBody PendingUserRequest pendingUserRequest) {
+    public ResponseEntity<?> registerPost(@ApiParam(value = ""  ) @RequestBody PendingUserRequest pendingUserRequest) {
         try {
             PendingUserResponse pendingUserResponse = userService.insertPendingUser(pendingUserRequest);
             return new ResponseEntity<PendingUserResponse>(pendingUserResponse, HttpStatus.OK);
@@ -44,11 +44,9 @@ public class ActivateApiController implements ActivateApi {
     @Override
     public ResponseEntity<?> activatesPut(@ApiParam(value = "") @RequestParam(value = "activateKey" ,required=true ) String activateKey) {
         try {
-            PendingUserResponse pendingUserResponse = userService.findByPendingUserInfo(activateKey);
-            if(pendingUserResponse == null){
-                throw new ApiException("invalid ActivateKey");
-            }
-            PendingUserResponse registerPendingUser = userService.updatePendingStatus(pendingUserResponse.getActivateKey());
+
+            PendingUserResponse registerPendingUser = userService.updatePendUserActive(activateKey);
+
             return new ResponseEntity<PendingUserResponse>(registerPendingUser, HttpStatus.OK);
         }  catch (Exception e){
             HttpStatus httpStatus;

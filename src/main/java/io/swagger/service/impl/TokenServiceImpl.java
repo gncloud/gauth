@@ -1,6 +1,7 @@
 package io.swagger.service.impl;
 
 import io.swagger.api.ApiException;
+import io.swagger.api.NotFoundException;
 import io.swagger.dao.TokenDao;
 import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.Token;
@@ -48,7 +49,7 @@ public class TokenServiceImpl implements TokenService{
 
 
         User findUser = new User();
-        findUser.setUserCode(user.getUserId());
+        findUser.setUserId(user.getUserId());
         Iterator<UserClientScope> findUserScopeList = userClientScopeService.selectUserMappingList(findUser).iterator();
         boolean isAdmin = false;
         while (findUserScopeList.hasNext()){
@@ -66,8 +67,10 @@ public class TokenServiceImpl implements TokenService{
         }
 
         // 기존 토큰 삭제
-        deleteTokenByUserId(user.getUserId());
-
+        User registerUser = userService.getUser(user.getUserId());
+        if(registerUser != null){
+            deleteUserCodeByToken(registerUser.getUserCode());
+        }
 
         // 요청시간과 만료시간 생성
         Date requestDate = DateUtil.requestDate();
@@ -85,7 +88,7 @@ public class TokenServiceImpl implements TokenService{
         token.setCreateTime(DateUtil.dateFormat(requestDate));
         token.setExpireDate(DateUtil.dateFormat(expireDate));
 
-        tokenDao.insertToekn(token);
+        tokenDao.insertToken(token);
 
         Token registerToken = getToken(token.getTokenId());
 
@@ -97,7 +100,7 @@ public class TokenServiceImpl implements TokenService{
      */
     public Token getToken(String tokenId) throws Exception {
 
-        Token registerToken = tokenDao.findByToken(tokenId);
+        Token registerToken = tokenDao.getToken(tokenId);
         if(registerToken == null){
             throw new ApiException("invalid Token");
         }
@@ -147,7 +150,11 @@ public class TokenServiceImpl implements TokenService{
         isUser(token);
 
         // DB 저장된 토큰 추가 정보 조회
-        Token registerToken = tokenDao.findByToken(token);
+        Token registerToken = tokenDao.getToken(token);
+
+        if(registerToken == null){
+            throw new NotFoundException(404, "invalid tokem");
+        }
 
         boolean isExpireDate = DateUtil.isExpireDate(registerToken.getExpireDate());
         if(!isExpireDate){
@@ -162,7 +169,7 @@ public class TokenServiceImpl implements TokenService{
      */
     private void isUser(String token) throws Exception {
         // 토큰으로 유저 정보 조회
-        User registerUser = userService.fienByTokenToUserInfo(token);
+        User registerUser = userService.fienTokenByUser(token);
         if(registerUser == null){
             logger.debug("Not Found User : {}", token);
             throw new ApiException("invalid token");
@@ -175,7 +182,7 @@ public class TokenServiceImpl implements TokenService{
      */
     @Override
     public Token findTokenByUser(AuthenticationRequest authenticationRequest) throws Exception {
-        return tokenDao.findByToken(authenticationRequest);
+        return tokenDao.findUserByToken(authenticationRequest);
     }
 
     /*
@@ -195,19 +202,20 @@ public class TokenServiceImpl implements TokenService{
         return registerAdminToken;
     }
 
-    @Override
-    public void deleteTokenByUserId(String userId){
-        AuthenticationRequest user = new AuthenticationRequest();
-        user.setUserId(userId);
-        tokenDao.deleteClientToken(user);
-    }
-
     /*
      * delete client
      */
     @Override
-    public void deleteClient(String clientId){
-        tokenDao.deleteClient(clientId);
+    public void deleteUserCodeByToken(int userCode){
+        tokenDao.deleteTokenByUserCode(userCode);
+    }
+
+    /*
+     * 클라이언트 연결된 토큰 삭제
+     */
+    @Override
+    public void deleteClientIdByToken(String clientId){
+        tokenDao.deleteClientIdByToken(clientId);
     }
 
     /*

@@ -3,6 +3,7 @@ package io.swagger.api;
 import io.swagger.annotations.ApiParam;
 import io.swagger.model.Client;
 import io.swagger.model.Scope;
+import io.swagger.service.ClientService;
 import io.swagger.service.ScopeService;
 import io.swagger.service.TokenService;
 import org.slf4j.Logger;
@@ -33,13 +34,22 @@ public class ScopesApiController implements ScopesApi {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private ClientService clientService;
+
     public ResponseEntity<?> scopesGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
                                        @ApiParam(value = ""  ) @RequestParam String clientId) {
         try {
             tokenService.isAdminToken(authorization);
-            Client searchClient = new Client();
-            searchClient.setClientId(clientId);
-            List<Scope> clientScopeList = scopeService.selectClientScope(searchClient);
+
+
+            Client registerClient = clientService.findByClient(clientId);
+
+            if(registerClient == null){
+                throw new NotFoundException(404, "not found client");
+            }
+
+            List<Scope> clientScopeList = scopeService.selectClientScope(registerClient.getClientId());
 
             return new ResponseEntity<List<Scope>>(clientScopeList, HttpStatus.OK);
         } catch (AccessControlException e){
@@ -47,7 +57,10 @@ public class ScopesApiController implements ScopesApi {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             HttpStatus httpStatus;
-            if(e instanceof ApiException){
+            if(e instanceof NotFoundException){
+                httpStatus = HttpStatus.NOT_FOUND;
+                logger.warn("NotFoundException {}", e.getMessage());
+            }else if(e instanceof ApiException){
                 httpStatus = HttpStatus.BAD_REQUEST;
                 logger.warn("bad request {}", e.getMessage());
             }else{
@@ -121,7 +134,7 @@ public class ScopesApiController implements ScopesApi {
             scope.setScopeId(scopeId);
             scope.setClientId(clientId);
 
-            Scope registerScope = scopeService.selectScope(scope);
+            Scope registerScope = scopeService.findScope(scope);
 
             return new ResponseEntity<Scope>(registerScope, HttpStatus.OK);
         } catch (AccessControlException e){

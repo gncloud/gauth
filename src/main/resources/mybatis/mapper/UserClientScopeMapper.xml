@@ -2,26 +2,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="userClientScope">
     
-    <select id="findByUserSearchList" resultType="UserClientScope" parameterType="java.util.List">
-        SELECT user_id,
+    <select id="findRelationByUsers" resultType="UserClientScope" parameterType="java.util.List">
+        SELECT user_code,
         scope_id,
         client_id
         FROM UserClientScope
-        <foreach collection="list" close=")" item="user" open="where user_id in (" separator=",">
+        <foreach collection="list" close=")" item="user" open="where user_code in (" separator=",">
             #{user}
         </foreach>
         order by client_id
     </select>
     
-    <select id="findUserCount" parameterType="User" resultType="Integer">
+    <select id="findRelationCount" parameterType="User" resultType="Integer">
         SELECT count(*)
           FROM UserClientScope
-         WHERE user_id = #{userCode}
+         WHERE user_code = #{userCode}
     </select>
 
-    <insert id="insertUserClientScope" parameterType="UserClientScope">
+    <insert id="insertRelation" parameterType="UserClientScope">
         INSERT INTO UserClientScope
-        (user_id,
+        (user_code,
         scope_id,
         client_id)
         VALUES
@@ -30,67 +30,50 @@
         #{clientId})
     </insert>
 
-    <select id="findByUserClientScope" parameterType="UserClientScope" resultType="UserClientScope">
-        SELECT user_id,
+    <select id="findRelation" parameterType="UserClientScope" resultType="UserClientScope">
+        SELECT user_code,
                scope_id,
                client_id
           FROM UserClientScope
-         where user_id = #{userCode}
+         where user_code = #{userCode}
         <if test="scopeId != null and scopeId != ''">
             and scope_id = #{scopeId}
         </if>
            and client_id = #{clientId}
     </select>
 
-    <delete id="deleteClient" parameterType="String">
-        DELETE FROM UserClientScope
-        WHERE client_id = #{clientId}
-    </delete>
+    <!--<delete id="deleteRelationByUserCode" parameterType="UserClientScope">-->
+        <!--DELETE FROM UserClientScope-->
+         <!--WHERE user_code = #{userCode}-->
+        <!--<if test="clientId != null and clientId != ''">-->
+            <!--AND client_id = #{clientId}-->
+        <!--</if>-->
+    <!--</delete>-->
 
-    <delete id="deleteUserClientScope" parameterType="UserClientScope">
-        DELETE FROM UserClientScope
-         WHERE user_id = #{userCode}
-           AND client_id = #{clientId}
-    </delete>
-
-    <delete id="deleteUser" parameterType="String">
-        DELETE FROM UserClientScope
-         WHERE user_id = #{param1}
-    </delete>
-
-    <select id="fintUserMappingList" parameterType="User" resultType="UserClientScope">
-        SELECT user_id,
+    <select id="findUserCodeByRelations" parameterType="User" resultType="UserClientScope">
+        SELECT user_code,
         scope_id,
         client_id
         FROM UserClientScope
-        where user_id = #{userCode}
+        where user_code = #{userCode}
     </select>
 
-    <select id="isUserClientScope" parameterType="AuthenticationRequest" resultType="Integer">
+    <select id="isRelationCount" parameterType="AuthenticationRequest" resultType="Integer">
         SELECT count(*)
         FROM UserClientScope
-        where user_id = #{userCode}
+        where user_code = #{userCode}
           AND client_id = #{clientId}
     </select>
 
-    <select id="findByScopeIdList" parameterType="UserClientScope" resultType="String">
-        SELECT scope_id
-        FROM UserClientScope
-        where user_id = #{userCode}
-        AND client_id = #{clientId}
-    </select>
-
-    <delete id="deleteClientScope" parameterType="UserClientScope">
+    <delete id="deleteUserClientScope" parameterType="UserClientScope">
         DELETE FROM UserClientScope
         WHERE client_id = #{clientId}
-          and scope_id = #{scopeId}
-    </delete>
-
-    <delete id="deleteUserScope" parameterType="UserClientScope">
-        DELETE FROM UserClientScope
-        WHERE client_id = #{clientId}
-          and scope_id = #{scopeId}
-          and user_id = #{userCode}
+        <if test="scopeId != null and scopeId != ''">
+            and scope_id = #{scopeId}
+        </if>
+        <if test="userCode != null and userCode != ''">
+            and user_code = #{userCode}
+        </if>
     </delete>
 
 </mapper>
