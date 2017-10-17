@@ -47,10 +47,10 @@
                    company
              FROM User
             WHERE 1=1
-        <if test="userCode != null and userCode != ''.toString()">
+        <if test="userCode != null and userCode != ''">
               and user_code = #{userCode}
         </if>
-        <if test="userId != null and userId != ''.toString()">
+        <if test="userId != null and userId != ''">
               and user_id = #{userId}
         </if>
     </select>
@@ -84,7 +84,7 @@
     </select>
 
     <select id="findUsers" resultType="User">
-        SELECT distinct auser_code,
+        SELECT distinct a.user_code,
                 a.user_id,
                 a.email,
                 a.name,
