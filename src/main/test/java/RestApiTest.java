@@ -74,13 +74,17 @@ public class RestApiTest {
         }
 
         //초기 어드민 로그인
-        AuthenticationRequest actionUser = new AuthenticationRequest();
-        actionUser.setUserId("admin");
-        actionUser.setPassword("1111");
-        actionUser.setClientId("gauth");
+//        AuthenticationRequest actionUser = new AuthenticationRequest();
+//        actionUser.setUserId("admin");
+//        actionUser.setPassword("1111");
+//        actionUser.setClientId("gauth");
+        Map<String, String> loginUser = new HashMap<>();
+        loginUser.put("userId", "admin");
+        loginUser.put("password", "1111");
+        loginUser.put("clientId", "gauth");
         String response = "";
         try {
-            response = request("/tokens", "post", actionUser, null)
+            response = request("/tokens", "post", loginUser, null)
                     .getResponse().getContentAsString();
 
         } catch (UnsupportedEncodingException e) {
@@ -165,19 +169,19 @@ public class RestApiTest {
     private String signup(String clientId, String userId, String password
                         , String addr, String company, String email
                         , String name, String phone, String activateKey){
-        User user = new User();
-        user.setPassword(password);
-        user.setUserId(userId);
-        user.setAddress(addr);
-        user.setCompany(company);
-        user.setEmail(email);
-        user.setName(name);
-        user.setPhone(phone);
+        Map<String, String> addUser = new HashMap<>();
+        addUser.put("password", password);
+        addUser.put("userId", userId);
+        addUser.put("addr", addr);
+        addUser.put("company", company);
+        addUser.put("email", email);
+        addUser.put("name", name);
+        addUser.put("phone", phone);
 
         String userCode = null;
         String content = null;
         try {
-            content = request("/users?clientId="+ clientId +"&activateKey=" + activateKey, "post", user, null)
+            content = request("/users?clientId="+ clientId +"&activateKey=" + activateKey, "post", addUser, null)
                             .getResponse().getContentAsString();
             userCode = new Gson().fromJson(content,Map.class).get("userCode").toString();
         } catch (UnsupportedEncodingException e) {
@@ -187,14 +191,16 @@ public class RestApiTest {
     }
 
     private String login(String clientId, String userId, String password){
-        AuthenticationRequest actionUser = new AuthenticationRequest();
-        actionUser.setUserId(userId);
-        actionUser.setPassword(password);
-        actionUser.setClientId(clientId);
         String content = null;
         String userToken = null;
+        Map<String, String> loginUser = new HashMap<>();
+        loginUser.put("password", password);
+        loginUser.put("userId", userId);
+        loginUser.put("clientId", clientId);
+
+
         try {
-            content = request("/tokens", "post", actionUser, null).getResponse().getContentAsString();
+            content = request("/tokens", "post", loginUser, null).getResponse().getContentAsString();
             userToken = new Gson().fromJson(content,Map.class).get("tokenId").toString();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();

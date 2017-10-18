@@ -6,7 +6,6 @@ import io.swagger.model.Token;
 import io.swagger.model.User;
 import io.swagger.service.TokenService;
 import io.swagger.service.UserService;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +69,7 @@ public class TokensApiController implements TokensApi {
 
             if(targetUser == null){
                 throw new NotFoundException(404, "invalid userId");
-            }else if(targetUser.isEqualsPassword(DigestUtils.sha512Hex(user.getPassword()))){
+            }else if(!targetUser.isEqualsPassword(user.getPassword())){
                 throw new ApiException("invalid password");
             }
             Token registerToken = tokenService.createToken(user);
