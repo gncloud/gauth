@@ -1,9 +1,8 @@
 package io.swagger.api;
 
-import io.swagger.model.Client;
-
 import io.swagger.annotations.*;
-import io.swagger.model.UserClientScope;
+import io.swagger.model.AuthenticationRequest;
+import io.swagger.model.Client;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -61,7 +60,7 @@ public interface ClientsApi {
             @ApiResponse(code = 200, message = "OK", response = Client.class) })
     @RequestMapping(value = "/userClientScope",
             method = RequestMethod.POST)
-    ResponseEntity<?> userClientScopePost(@RequestBody UserClientScope userClientScope);
+    ResponseEntity<?> userClientScopePost(@RequestBody AuthenticationRequest authenticationRequest);
 
 
     @ApiOperation(value = "delete user scope", notes = "delete user scope", response = Void.class, tags={  })

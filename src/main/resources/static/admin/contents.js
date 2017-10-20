@@ -42,6 +42,9 @@ var userList = function(){
                 $(userList).each(function(i,o){
                     var t = '<tr>';
                     t += '  <td class="td-center">';
+                    t +=        o.userCode;
+                    t += '  </td>';
+                    t += '  <td class="td-center">';
                     t +=        o.userId;
                     t += '  </td>';
                     t += '  <td class="td-center">';
@@ -72,7 +75,7 @@ var userList = function(){
                                 t += '<hr style="padding:0px;margin:0px;">';
                             }
                             t += '<a href="javascript:void(0);" onclick="updateUserScopeModal(\''
-                                + o.userId + '\',\''
+                                + o.userCode + '\',\''
                                 + socpeList[i].clientId
                                 + '\');">'
                                 + socpeList[i].clientId
@@ -88,7 +91,7 @@ var userList = function(){
                     }
                     t += '  </td>';
                     t += '</tr>';
-                    userClientScopeList[o.userId] = scopeAppendList;
+                    userClientScopeList[o.userCode] = scopeAppendList;
                     $('#userList tbody').append(t);
                 });
 
@@ -119,7 +122,7 @@ var userList = function(){
 var pendUserList = function(){
     $('#pendUserList tbody').empty();
     fnAjax({
-        url: '/v1/pendusers',
+        url: '/v1/users?state=pending',
         type: 'get',
         head:{'Authorization':getCookie('gauth')},
         success: function(data){
@@ -158,7 +161,7 @@ var pendUserList = function(){
 };
 var deletePendUser = function(activateKey){
     fnAjax({
-        url: '/v1/pendusers/' + activateKey,
+        url: '/v1/users?state=pending&activateKey=' + activateKey,
         type: 'delete',
         head:{'Authorization':getCookie('gauth')},
         success: function(data){
@@ -170,7 +173,7 @@ var deletePendUser = function(activateKey){
 }
 var deleteAllPendUser = function(){
     fnAjax({
-        url: '/v1/pendusers',
+        url: '/v1/users?state=pending&truncate=true',
         type: 'delete',
         head:{'Authorization':getCookie('gauth')},
         success: function(data){
@@ -182,16 +185,19 @@ var deleteAllPendUser = function(){
 };
 
 var updateUserScope = function(obj){
-    var userId = $(obj).data('user');
+    var userCode = $(obj).data('user');
     var clientId = $(obj).data('client');
     var scopeId = $(obj).data('scope');
     var isChecked = $(obj).is(':checked');
     if(isChecked){
         fnAjax({
-            url: '/v1/userClientScope/' + userId + '?clientId=' + clientId,
+            url: '/v1/userClientScope',
             type: 'post',
             head:{'Authorization':getCookie('gauth')},
-            data: {scopeId: scopeId},
+            data: {scopeId: scopeId
+                  ,userCode: userCode
+                  ,clientId: clientId
+            },
             success: function(data){
                 console.log(data);
             },
@@ -199,7 +205,7 @@ var updateUserScope = function(obj){
         });
     }else{
         fnAjax({
-            url: '/v1/userClientScope/' + userId + '?clientId=' + clientId + '&scopeId=' + scopeId,
+            url: '/v1/userClientScope?userCode=' + userCode + '&clientId=' + clientId + '&scopeId=' + scopeId,
             type: 'delete',
             head:{'Authorization':getCookie('gauth')},
             success: function(data){
@@ -211,8 +217,8 @@ var updateUserScope = function(obj){
     return false;
 };
 //유저의 클라이언트 권한 조회 모달
-var updateUserScopeModal = function(userId, clientId){
-    $('#updateUserScopeTitle').html(userId + '의 ' + clientId);
+var updateUserScopeModal = function(userCode, clientId){
+    $('#updateUserScopeTitle').html(userCode + '의 ' + clientId);
     $('#userScopeList tbody').empty();
     fnAjax({
         url:'/v1/scopes?clientId=' + clientId,
@@ -220,13 +226,13 @@ var updateUserScopeModal = function(userId, clientId){
         head:{'Authorization':getCookie('gauth')},
         success:function(data){
             $(data).each(function(i,o){
-                var scopes = userClientScopeList[userId][clientId];
-                var inputTag = '  <input type="checkbox" name="choiceScope" data-user="' + userId + '" data-client="' + o.clientId + '" data-scope="' + o.scopeId + '" onchange="updateUserScope(this);">';
+                var scopes = userClientScopeList[userCode][clientId];
+                var inputTag = '  <input type="checkbox" name="choiceScope" data-user="' + userCode + '" data-client="' + o.clientId + '" data-scope="' + o.scopeId + '" onchange="updateUserScope(this);">';
                 if(scopes !== undefined){
                     var scopeSize = scopes.length;
                     for(var i=0; i < scopeSize; i++){
                         if(scopes[i] == o.scopeId){
-                            inputTag = '  <input type="checkbox" name="choiceScope" checked="checked" onchange="updateUserScope(this);" data-user="' + userId + '" data-client="' + o.clientId + '" data-scope="' + o.scopeId + '">';
+                            inputTag = '  <input type="checkbox" name="choiceScope" checked="checked" onchange="updateUserScope(this);" data-user="' + userCode + '" data-client="' + o.clientId + '" data-scope="' + o.scopeId + '">';
                             break;
                         }
                     }

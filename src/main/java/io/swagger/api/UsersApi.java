@@ -25,7 +25,8 @@ public interface UsersApi {
     ResponseEntity<?> usersGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                @ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search,
                                @ApiParam(value = "current page") @RequestParam(value = "p", required = false) String p,
-                               @ApiParam(value = "state") @RequestParam(value = "state", required = false) String state);
+                               @ApiParam(value = "state") @RequestParam(value = "state", required = false) String state,
+                               @ApiParam(value = "clientId") @RequestParam(value = "clientId", required = false) String clientId);
 
 
     @ApiOperation(value = "user sign up", notes = "user sign up", response = User.class, tags={  })

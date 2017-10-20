@@ -24,6 +24,7 @@
             <div class="table-responsive">
                 <table class="table table-bordered" style="display: none" id="userList">
                     <colgroup>
+                        <col width="5%">
                         <col width="10%">
                         <col width="15%">
                         <col width="10%">
@@ -35,6 +36,7 @@
                     </colgroup>
                     <thead>
                     <tr>
+                        <th>ID</th>
                         <th>ID</th>
                         <th>이메일</th>
                         <th>이름</th>

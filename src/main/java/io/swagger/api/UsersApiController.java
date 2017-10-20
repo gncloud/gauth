@@ -38,8 +38,9 @@ public class UsersApiController implements UsersApi {
 
     public ResponseEntity<?> usersGet(@ApiParam(value = "admin token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                       @ApiParam(value = "search keyword") @RequestParam(value = "search", required = false) String search,
-                                      @ApiParam(value = "current page") @RequestParam(value = "p", required = false) String p,
-                                      @ApiParam(value = "state") @RequestParam(value = "state", required = false) String state) {
+                                      @ApiParam(value = "current page") @RequestParam(value = "p", required = false, defaultValue = "1") String p,
+                                      @ApiParam(value = "state") @RequestParam(value = "state", required = false) String state,
+                                      @ApiParam(value = "clientId") @RequestParam(value = "clientId", required = false) String clientId) {
         try {
             Token adminToken = tokenService.isAdminToken(authorization);
 
@@ -53,6 +54,7 @@ public class UsersApiController implements UsersApi {
                 searchMap.put("adminToken", adminToken.getTokenId());
                 int page = (Integer.parseInt(p) - 1) * 20;
                 searchMap.put("p", String.valueOf(page));
+                searchMap.put("clientId", clientId);
                 List<User> registerUserList = userService.findByUsers(searchMap);
                 int userCount = userService.selectUserCount(searchMap);
 
@@ -62,9 +64,9 @@ public class UsersApiController implements UsersApi {
                 result.put("pageInfo", responsePageInfo);
 
                 int userSize = registerUserList.size();
-                ArrayList<String> searchUserList = new ArrayList<>();
+                ArrayList<Integer> searchUserList = new ArrayList<>();
                 for(int i=0; i < userSize; i++){
-                    searchUserList.add(registerUserList.get(i).getUserId());
+                    searchUserList.add(registerUserList.get(i).getUserCode());
                 }
                 List<UserClientScope> userClientScopeList = userClientScopeService.findByUserSearchList(searchUserList);
 
@@ -73,6 +75,7 @@ public class UsersApiController implements UsersApi {
                 int userClientScopeListSize = userClientScopeList.size();
                 for(int i=0; i<userSize; i++){
                     Map<String, Object> appendUser = new HashMap<>();
+                    appendUser.put("userCode",       registerUserList.get(i).getUserCode());
                     appendUser.put("userId",       registerUserList.get(i).getUserId());
                     appendUser.put("address",      registerUserList.get(i).getAddress());
                     appendUser.put("company",      registerUserList.get(i).getCompany());
@@ -82,8 +85,8 @@ public class UsersApiController implements UsersApi {
                     appendUser.put("registerDate", registerUserList.get(i).getRegisterDate());
                     List<UserClientScope> scopeList = new ArrayList<>();
                     for(int j=0; j < userClientScopeListSize; j++){
-                        String userId = registerUserList.get(i).getUserId();
-                        if(userId.equals(userClientScopeList.get(j).getUserCode())){
+                        Integer userCode = registerUserList.get(i).getUserCode();
+                        if(userCode == userClientScopeList.get(j).getUserCode()){
                             UserClientScope tempUserClientScope = new UserClientScope();
                             tempUserClientScope.setClientId(userClientScopeList.get(j).getClientId());
                             tempUserClientScope.setScopeId(userClientScopeList.get(j).getScopeId());
@@ -122,6 +125,7 @@ public class UsersApiController implements UsersApi {
             if(registerUser.getToken() == null || "".equals(registerUser.getToken())){
                 registerUser.setToken("");
             }
+
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
         } catch (AccessControlException e){
             logger.warn("AccessControlException {}", e.getMessage());
@@ -143,6 +147,10 @@ public class UsersApiController implements UsersApi {
                                                @ApiParam(value = "User Authentication BEARER Token", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
                                                @ApiParam(value = "client id" ,required=true ) @RequestParam String clientId) {
         try {
+            Token registerToken = tokenService.isTokenValid(authorization, clientId);
+            if(registerToken == null){
+                throw new AccessControlException("invalid token");
+            }
 
             userService.deleteUser(userCode, clientId);
 
@@ -233,9 +241,16 @@ public class UsersApiController implements UsersApi {
                                             @ApiParam(value = "user token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization,
                                             @RequestBody User user) {
         try {
+            Token registerToken = tokenService.isTokenValid(authorization);
+            if(registerToken == null){
+                throw new AccessControlException("invalid token");
+            }
             user.setUserCode(userCode);
             User registerUser = userService.updateUser(user);
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);
+        } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             HttpStatus httpStatus;
             if(e instanceof ApiException){

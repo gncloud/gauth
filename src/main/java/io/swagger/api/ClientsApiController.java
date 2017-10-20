@@ -1,10 +1,7 @@
 package io.swagger.api;
 
 import io.swagger.annotations.ApiParam;
-import io.swagger.model.Client;
-import io.swagger.model.Token;
-import io.swagger.model.User;
-import io.swagger.model.UserClientScope;
+import io.swagger.model.*;
 import io.swagger.service.ClientService;
 import io.swagger.service.TokenService;
 import io.swagger.service.UserClientScopeService;
@@ -175,10 +172,11 @@ public class ClientsApiController implements ClientsApi {
         }
     }
 
-    public ResponseEntity<?> userClientScopePost(@RequestBody(required = false) UserClientScope userClientScope) {
+    public ResponseEntity<?> userClientScopePost(@RequestBody(required = false) AuthenticationRequest authenticationRequest) {
         try {
-            int userCode = userClientScope.getUserCode();
-            String clientId = userClientScope.getClientId();
+
+            String userCode = authenticationRequest.getUserId();
+            String clientId = authenticationRequest.getClientId();
 
             User registerUser = userService.getUser(userCode);
             Client registerClient = clientService.findByClient(clientId);
@@ -187,21 +185,25 @@ public class ClientsApiController implements ClientsApi {
             }else if(registerClient == null){
                 throw new ApiException("not found clientId");
             }
+            UserClientScope userClientScope = new UserClientScope();
 
             List<UserClientScope> registerUserClientScopeList = null;
             if(userClientScope != null
                     && userClientScope.getScopeId() != null
                     && !"".equals(userClientScope.getScopeId())){
-                userClientScope.setUserCode(userCode);
+                userClientScope.setUserCode(registerUser.getUserCode());
                 userClientScope.setClientId(clientId);
                 registerUserClientScopeList = userClientScopeService.insertUserScope(userClientScope);
             }else{
                 userClientScope = new UserClientScope();
-                userClientScope.setUserCode(userCode);
+                userClientScope.setUserCode(registerUser.getUserCode());
                 userClientScope.setClientId(clientId);
                 registerUserClientScopeList = userClientScopeService.insertUserClientScope(userClientScope);
             }
             return new ResponseEntity<List<UserClientScope>>(registerUserClientScopeList, HttpStatus.OK);
+        } catch (AccessControlException e){
+            logger.warn("clientsClientIdDelete {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             HttpStatus httpStatus;
             if(e instanceof ApiException){
@@ -227,6 +229,9 @@ public class ClientsApiController implements ClientsApi {
             userClientScope.setScopeId(scopeId);
             userClientScopeService.deleteUserClientScope(userClientScope);
             return new ResponseEntity<>(HttpStatus.OK);
+        } catch (AccessControlException e){
+            logger.warn("clientsClientIdDelete {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } catch (Exception e){
             HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
             logger.error("clientsClientIdDelete error", e);

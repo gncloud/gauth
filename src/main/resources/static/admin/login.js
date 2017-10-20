@@ -50,14 +50,14 @@ var loginRequest = function(userId, password){
                 alert('회원 정보가 없습니다.');
                 $('input').val('').eq(0).focus();
                 return false;
-            }else if(errorData == 'invalid password'){
-                alert('비밀번호가 잘못되었습니다.');
-                $('input:eq(1)').val('').focus();
+            }else if(errorData == 'userClientScope empty'){
+                alert('접근 권한이 없습니다.');
+                $('input').val('').eq(0).focus();
                 return false;
-            }else{
-                alert(x.responseText.message);
-                return false;
-            }
+            }else {
+                 alert(x.responseText);
+                 return false;
+             }
         }
     });
 

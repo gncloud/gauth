@@ -54,11 +54,15 @@ public class UserClientScopeDao {
 //        sqlSession.delete("deleteClientScope", userClientScope);
 //    }
 
-    public List<UserClientScope> findRelationByUsers(ArrayList<String> searchUser) {
+    public List<UserClientScope> findRelationByUsers(ArrayList<Integer> searchUser) {
         return sqlSession.selectList("userClientScope.findRelationByUsers", searchUser);
     }
 
     public void deleteUserClientScope(UserClientScope userClientScope){
         sqlSession.delete("userClientScope.deleteUserClientScope", userClientScope);
+    }
+
+    public List<UserClientScope> findUserCodeByRelation(int userCode){
+        return sqlSession.selectList("userClientScope.findUserCodeByRelation", userCode);
     }
 }

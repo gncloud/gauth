@@ -83,6 +83,11 @@ public class UserServiceImpl implements UserService {
         return userDao.getUser(user);
     }
 
+    @Override
+    public User getUser(AuthenticationRequest authenticationRequest) {
+        return userDao.getUser(authenticationRequest);
+    }
+
     /*
      * 유저 아이디 갯수 조회
      * */

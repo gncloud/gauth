@@ -25,6 +25,10 @@ public class ScopeDao {
         sqlSession.delete("scope.deleteScope", scope);
     }
 
+    public void deleteClientByScope(Scope scope) {
+        sqlSession.delete("scope.deleteClientByScope", scope);
+    }
+
     public Scope findScope(Scope scope) {
         return  sqlSession.selectOne("scope.findScopes", scope);
     }

@@ -109,6 +109,11 @@ public class ScopeServiceImpl implements ScopeService {
         scopeDao.deleteScope(scope);
     }
 
+    @Override
+    public void deleteClientByScope(Scope scope) throws Exception {
+        scopeDao.deleteClientByScope(scope);
+    }
+
     /*
      * scope 수정
      * client id, scope id reqired

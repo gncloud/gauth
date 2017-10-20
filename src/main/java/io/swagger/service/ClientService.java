@@ -20,6 +20,7 @@ import java.util.List;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public interface ClientService {
 
+    static String ADMIN_CLIENT_ID = "gauth";
     static String SCOPE_ADMIN = "Admin";
     static String SCOPE_USER = "User";
 
@@ -43,4 +44,5 @@ public interface ClientService {
      * 클라이언트 전체 조회
      */
     List<Client> selectClients(Token AdminToken);
+
 }

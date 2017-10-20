@@ -85,7 +85,7 @@ public class ClientServiceImpl implements ClientService {
 
         Scope scope = new Scope();
         scope.setClientId(registerClient.getClientId());
-        scopeService.deleteScope(scope);
+        scopeService.deleteClientByScope(scope);
 
         UserClientScope userClientScope = new UserClientScope();
         userClientScope.setClientId(registerClient.getClientId());

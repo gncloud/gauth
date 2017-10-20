@@ -55,6 +55,13 @@ public class UserClientScopeImpl implements UserClientScopeService {
             userClientScopeDao.insertRelation(userClientScope);
         }
 
+        return findRelation(userClientScope);
+    }
+
+    /*
+     * 연결 관계 조회
+     */
+    public List<UserClientScope> findRelation(UserClientScope userClientScope){
         return userClientScopeDao.findRelation(userClientScope);
     }
 
@@ -149,7 +156,7 @@ public class UserClientScopeImpl implements UserClientScopeService {
      * 전체 조회시 사용되는 클라이언트 정보 조회
      */
     @Override
-    public List<UserClientScope> findByUserSearchList(ArrayList<String> searchUser) {
+    public List<UserClientScope> findByUserSearchList(ArrayList<Integer> searchUser) {
         return userClientScopeDao.findRelationByUsers(searchUser);
     }
 
@@ -162,5 +169,9 @@ public class UserClientScopeImpl implements UserClientScopeService {
         userClientScopeDao.deleteUserClientScope(userClientScope);
     }
 
+    @Override
+    public List<UserClientScope> findUserCodeByRelation(int userCode){
+        return userClientScopeDao.findUserCodeByRelation(userCode);
+    }
 
 }

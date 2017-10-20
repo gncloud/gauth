@@ -42,6 +42,14 @@
            and client_id = #{clientId}
     </select>
 
+    <select id="findUserCodeByRelation" parameterType="Integer" resultType="UserClientScope">
+        SELECT user_code,
+        scope_id,
+        client_id
+        FROM UserClientScope
+        where user_code = #{param1}
+    </select>
+
     <!--<delete id="deleteRelationByUserCode" parameterType="UserClientScope">-->
         <!--DELETE FROM UserClientScope-->
          <!--WHERE user_code = #{userCode}-->

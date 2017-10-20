@@ -37,6 +37,10 @@ public interface UserClientScopeService {
     void deleteUserClientScope(UserClientScope userClientScope);
 
     /*
+     * 연결 관계 조회
+     */
+    List<UserClientScope> findRelation(UserClientScope userClientScope);
+    /*
      * 유저 삭제
      */
     public void deleteClient(String clientId);
@@ -79,10 +83,14 @@ public interface UserClientScopeService {
     /*
      * 전체 조회시 사용되는 클라이언트 정보 조회
      */
-    List<UserClientScope> findByUserSearchList(ArrayList<String> searchUser);
+    List<UserClientScope> findByUserSearchList(ArrayList<Integer> searchUser);
 
     /*
      * 유저 스코프 삭제
      */
     void deleteUserScope(UserClientScope userClientScope);
+    /*
+     * 유저 코드의 모든 관계 조회
+     */
+    List<UserClientScope> findUserCodeByRelation(int userCode);
 }

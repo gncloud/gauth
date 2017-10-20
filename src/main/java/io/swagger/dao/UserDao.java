@@ -1,5 +1,6 @@
 package io.swagger.dao;
 
+import io.swagger.model.AuthenticationRequest;
 import io.swagger.model.PendingUserResponse;
 import io.swagger.model.Token;
 import io.swagger.model.User;
@@ -44,6 +45,14 @@ public class UserDao {
      * */
     public User getUser(User user) {
         return sqlSession.selectOne("user.getUser", user);
+    }
+
+    /*
+     * 유저 조회 (로그인 시도)
+     * 유저아이디로 조회
+     * */
+    public User getUser(AuthenticationRequest authenticationRequest) {
+        return sqlSession.selectOne("user.loginAttempt", authenticationRequest);
     }
 
     /*

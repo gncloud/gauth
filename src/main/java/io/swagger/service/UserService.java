@@ -1,10 +1,7 @@
 package io.swagger.service;
 
 import io.swagger.api.ApiException;
-import io.swagger.model.PendingUserRequest;
-import io.swagger.model.PendingUserResponse;
-import io.swagger.model.Token;
-import io.swagger.model.User;
+import io.swagger.model.*;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +31,11 @@ public interface UserService {
      * 유저 아이디로 조회
      * */
     User getUser(String userId);
+
+    /*
+     * 유저 아이디, 비밀번호로 조회
+     * */
+    User getUser(AuthenticationRequest authenticationRequest);
 
     /*
      * 유저 아이디로 조회

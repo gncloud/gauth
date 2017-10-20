@@ -344,6 +344,20 @@ public class RestApiTest {
     }
 
 
+    private void selectClientByUsersGetAdmin(String clientId){
+        header.set("Authorization", "72e0b55925e8e70bac9fb0a22a4a428aa3a066a59c15ede5b0b0d91a8616835c");
+        request("/users?clientId=" + clientId , "get", null, header);
+    }
+
+    @Test
+    public void findClientByUser(){
+        selectClientByUsersGetAdmin("test");
+    }
+
+
+
+
+
     @Test
     public void clientTest() {
 

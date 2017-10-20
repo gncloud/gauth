@@ -38,7 +38,6 @@
     <select id="getUser" resultType="User" parameterType="User">
             SELECT user_code,
                    user_id,
-                   password,
                    email,
                    name,
                    register_date,
@@ -55,28 +54,43 @@
         </if>
     </select>
 
+    <select id="loginAttempt" resultType="User" parameterType="User">
+        SELECT user_code,
+        user_id,
+        email,
+        name,
+        register_date,
+        phone,
+        address,
+        company
+        FROM User
+        WHERE 1=1
+        and user_id = #{userId}
+        and password = #{password}
+    </select>
 
     <update id="updateUser" parameterType="User">
         UPDATE User
-           SET user_code = #{userCode},
-        <if test="password != null and password != ''">
-            password = #{password},
-        </if>
-        <if test="email != null and email != ''">
-            email = #{email},
-        </if>
-        <if test="name != null and name != ''">
-            name = #{name},
-        </if>
-        <if test="phone != null and phone != ''">
-            phone = #{phone},
-        </if>
-        <if test="address != null and address != ''">
-            address = #{address},
-        </if>
-        <if test="company != null and company != ''">
-            company = #{company}
-        </if>
+        <set>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="company != null and company != ''">
+                company = #{company}
+            </if>
+        </set>
          WHERE user_code = #{userCode}
     </update>
 
@@ -125,6 +139,9 @@
             or a.email = #{search}
             or a.company = #{search}
             or a.name = #{search})
+        </if>
+        <if test="clientId != null and clientId != ''">
+            and b.client_id = #{clientId}
         </if>
         limit ${p}, 20
     </select>
@@ -183,7 +200,7 @@
     </select>
 
     <select id="findCountByUsers" resultType="Integer">
-        select count(distinct 1)
+        select count(distinct a.user_code)
           from User a
         left join UserClientScope b on a.user_code = b.user_code
         where 1=1
@@ -204,6 +221,9 @@
             or a.email = #{search}
             or a.company = #{search}
             or a.name = #{search})
+        </if>
+        <if test="clientId != null and clientId != ''">
+            and b.client_id = #{clientId}
         </if>
     </select>
 

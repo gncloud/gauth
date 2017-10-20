@@ -31,6 +31,11 @@ public interface ScopeService {
     void deleteScope(Scope scope) throws Exception;
 
     /*
+     * 클라이언트 연결 scope 삭제
+     */
+    void deleteClientByScope(Scope scope) throws Exception;
+
+    /*
      * scope 수정
      */
     Scope updateScope(Scope scope) throws Exception;
