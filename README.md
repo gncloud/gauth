@@ -48,6 +48,7 @@
 | DELETE | /users?state=pending&activateKey={key} <br> /users?state=pending&email={email} | delete one pending user |
 | DELETE | /users?state=pending&truncate=true | delete all pending users |
 | GET | /users | user info keyword search (admin Only) |
+| HEAD | /validateToken | validate token check |
 
 
 ### 클라이언트 등록
