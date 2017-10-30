@@ -49,7 +49,7 @@
 | DELETE | /users?state=pending&truncate=true | delete all pending users |
 | GET | /users | user info keyword search (admin Only) |
 | HEAD | /validateToken | validate token check |
-
+| PUT | /tokens | refresh expire date |
 
 ### 클라이언트 등록
 - http://localhost:7979/v1/admin admin으로 로그인한다.
