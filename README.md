@@ -16,7 +16,7 @@
   
 ### API 요청 방법
 - 기본 경로 : http://localhost:7979/v1
-- API요청 정의는 http://localhost:7979/v1/api-docs에서 확인바람.
+- API요청 정의는 http://localhost:7979/v1/api-docs 에서 확인바람.
 
 | TYPE | URI | description |
 | ------ | ------ | ------ |
