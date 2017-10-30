@@ -44,4 +44,8 @@ public class TokenDao {
     public void deleteClientIdByToken(String clientId) {
         sqlSession.delete("token.deleteClientIdByToken", clientId);
     }
+
+    public void updateTokenExpireDate(Token token){
+        sqlSession.update("token.updateTokenExpireDate", token);
+    }
 }

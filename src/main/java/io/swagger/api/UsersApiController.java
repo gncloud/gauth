@@ -43,6 +43,7 @@ public class UsersApiController implements UsersApi {
                                       @ApiParam(value = "clientId") @RequestParam(value = "clientId", required = false) String clientId) {
         try {
             Token adminToken = tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             if(state != null && UserService.PENDING_STATUS.equals(state)){
                 List<PendingUserResponse> pendUserList = userService.findByPendingUserInfoList(adminToken);
@@ -151,6 +152,7 @@ public class UsersApiController implements UsersApi {
             if(registerToken == null){
                 throw new AccessControlException("invalid token");
             }
+            tokenService.refreshTokenExpireDate(authorization);
 
             userService.deleteUser(userCode, clientId);
 
@@ -179,6 +181,7 @@ public class UsersApiController implements UsersApi {
 
         try {
             tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             if( state != null && UserService.PENDING_STATUS.equals(state) ){
                 // pendUser delete : email or activateKey
@@ -217,6 +220,8 @@ public class UsersApiController implements UsersApi {
                                             @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
             tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
+
             User registerUser = userService.getUser(userCode);
 
             Map<String, Object> result = new HashMap<>();
@@ -245,6 +250,8 @@ public class UsersApiController implements UsersApi {
             if(registerToken == null){
                 throw new AccessControlException("invalid token");
             }
+            tokenService.refreshTokenExpireDate(authorization);
+
             user.setUserCode(userCode);
             User registerUser = userService.updateUser(user);
             return new ResponseEntity<User>(registerUser, HttpStatus.OK);

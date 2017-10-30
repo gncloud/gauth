@@ -29,6 +29,8 @@ public class ValidateTokenApiController implements ValidateTokenApi {
             if(registerToken == null){
                 throw new ApiException("invalid token");
             }
+            tokenService.refreshTokenExpireDate(authorization);
+
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e){
             HttpStatus httpStatus;

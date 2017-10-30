@@ -22,9 +22,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.AccessControlException;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class TokenServiceImpl implements TokenService{
@@ -239,4 +237,21 @@ public class TokenServiceImpl implements TokenService{
         return (value == null || "".equals(value));
     }
 
+    /*
+     * 토큰 재발행
+     */
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public Token refreshTokenExpireDate(String tokenId) {
+        Date requestDate = DateUtil.requestDate();
+        int min = tokenTimeout == null ? 60 : Integer.parseInt(tokenTimeout);
+        Date expireDate = DateUtil.appendDate(requestDate, min);
+
+        Token updateToken = new Token();
+        updateToken.setTokenId(tokenId);
+        updateToken.setExpireDate(DateUtil.dateFormat(expireDate));
+        tokenDao.updateTokenExpireDate(updateToken);
+
+        return tokenDao.getToken(tokenId);
+    }
 }

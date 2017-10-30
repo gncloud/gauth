@@ -64,4 +64,9 @@ public interface TokenService {
      * delete client
      */
     void deleteClientIdByToken(String clientId);
+
+    /*
+     * refresh token
+     */
+    Token refreshTokenExpireDate(String tokenId);
 }

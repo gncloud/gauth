@@ -51,4 +51,11 @@ public interface TokensApi {
         method = RequestMethod.GET)
     ResponseEntity<?> tokensTokenIdGet(@ApiParam(value = "read token info", required = true) @PathVariable("tokenId") String tokenId);
 
+    @ApiOperation(value = "refresh token", notes = "refresh token", response = Token.class, tags={  })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Token.class) })
+    @RequestMapping(value = "/tokens",
+            method = RequestMethod.PUT)
+    ResponseEntity<?> tokensPut(@ApiParam(value = "token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization);
+
 }

@@ -41,7 +41,7 @@ public class ScopesApiController implements ScopesApi {
                                        @ApiParam(value = ""  ) @RequestParam String clientId) {
         try {
             tokenService.isAdminToken(authorization);
-
+            tokenService.refreshTokenExpireDate(authorization);
 
             Client registerClient = clientService.findByClient(clientId);
 
@@ -76,6 +76,7 @@ public class ScopesApiController implements ScopesApi {
         try {
 
             tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             Scope registerScope = scopeService.insertScope(scope);
 
@@ -102,6 +103,7 @@ public class ScopesApiController implements ScopesApi {
         try {
 
             tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             Scope scope = new Scope();
             scope.setScopeId(scopeId);
@@ -159,6 +161,7 @@ public class ScopesApiController implements ScopesApi {
         try {
 
             tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             scope.setScopeId(scopeId);
 

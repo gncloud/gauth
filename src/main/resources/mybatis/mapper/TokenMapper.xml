@@ -90,4 +90,10 @@
                                                        from Token
                                                       where token_id = #{tokenId}))
     </select>
+
+    <update id="updateTokenExpireDate" parameterType="Token">
+        update Token
+           set expire_date = #{expireDate}
+         where token_id = #{tokenId}
+    </update>
 </mapper>

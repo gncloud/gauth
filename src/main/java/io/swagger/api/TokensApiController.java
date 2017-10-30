@@ -159,4 +159,22 @@ public class TokensApiController implements TokensApi {
         }
     }
 
+    @Override
+    public ResponseEntity<?> tokensPut(@ApiParam(value = "token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
+        try {
+            Token registerToken = tokenService.isTokenValid(authorization);
+            registerToken = tokenService.refreshTokenExpireDate(registerToken.getTokenId());
+
+            return new ResponseEntity<Token>(registerToken, HttpStatus.OK);
+        } catch (AccessControlException e){
+            logger.warn("AccessControlException {}", e.getMessage());
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e){
+            HttpStatus httpStatus;
+            httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+            logger.error("tokensTokenIdDelete error", e);
+            return new ResponseEntity<ApiResponseMessage>(new ApiResponseMessage(ApiResponseMessage.ERROR, e.getMessage()), httpStatus);
+        }
+    }
+
 }

@@ -33,6 +33,7 @@
                     <div>
                         <button class="btn btn-info" id="readToken">토큰조회</button>
                         <button class="btn btn-info" id="removeToken">토큰삭제</button>
+                        <button class="btn btn-info" id="updateTokenExpireDate">만료시간업데이트</button>
                         <br>
                         <div class="form-inline">
                             <input value="login.html" id="loginPage" class="form-control">
@@ -63,8 +64,13 @@ $(function(){
     $('#isLogin').click(function(){
         $.gauth.isLogin($('#loginPage').val());
     });
+    $('#updateTokenExpireDate').click(function(){
+        $.gauth.refreshExpireDate(refreshToken);
+    });
 });
-
+var refreshToken = function(token){
+    $('#tokenRes').html('토큰 만료시간 업데이트 :' + token);
+}
 </script>
 
 </body>

@@ -32,7 +32,7 @@
     <logger name="jdbc.resultsettable" level="DEBUG"/>
     <logger name="jdbc.connection" level="OFF"/>
 
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT"/>
         <appender-ref ref="dailyRollingFileAppender" />
     </root>

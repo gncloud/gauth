@@ -222,7 +222,7 @@ public class UserServiceImpl implements UserService {
         String clientId = pendingUserRequest.getClientId();
 
         if(email == null || "".equals(email) || !email.matches("^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$")){
-            throw new ApiException("invalid email");
+            throw new ApiException("invalid email pattern");
         }else if(clientId == null || "".equals(clientId)){
             throw new ApiException("invalid clientId");
         }

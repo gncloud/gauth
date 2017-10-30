@@ -29,6 +29,7 @@ public class UserApiController implements UserApi {
         try {
 
             tokenService.isTokenValid(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             User registerUser = userService.findTokenByUser(authorization);
 

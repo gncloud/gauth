@@ -9,7 +9,7 @@
 # openJdk install
 JAVA_RUN_FILE=/bin/java
 
-SERVICE_NAME=gauth
+SERVICE_NAME=gauth.sh
 SERVICE_HOME=/app/gauth
 PATH_TO_JAR=$SERVICE_HOME/target/gauth.war
 PID_PATH_NAME=/tmp/$SERVICE_NAME-pid

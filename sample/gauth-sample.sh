@@ -9,7 +9,7 @@
 # openJdk install
 JAVA_RUN_FILE=/bin/java
 
-SERVICE_NAME=gauth-sample
+SERVICE_NAME=gauth-sample.sh
 SERVICE_HOME=/app/gauth/sample
 PATH_TO_JAR=$SERVICE_HOME/target/gauth-sample.jar
 PID_PATH_NAME=/tmp/$SERVICE_NAME-pid

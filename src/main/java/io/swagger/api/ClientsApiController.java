@@ -45,6 +45,7 @@ public class ClientsApiController implements ClientsApi {
         try {
 
             tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             clientService.deleteClient(clientId);
 
@@ -69,6 +70,7 @@ public class ClientsApiController implements ClientsApi {
                                                 @ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
             tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             Client registerClient = clientService.findByClient(clientId);
 
@@ -98,6 +100,7 @@ public class ClientsApiController implements ClientsApi {
                                                 @ApiParam(value = ""  ) @RequestBody Client client) {
         try {
             tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             client.setClientId(clientId);
             Client registerClient = clientService.updateClient(client);
@@ -125,6 +128,7 @@ public class ClientsApiController implements ClientsApi {
     public ResponseEntity<?> clientsGet(@ApiParam(value = "admin token" ,required=true ) @RequestHeader(value="Authorization", required=true) String authorization) {
         try {
             Token AdminToken = tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             List<Client> registerClients = clientService.selectClients(AdminToken);
 
@@ -149,6 +153,7 @@ public class ClientsApiController implements ClientsApi {
                                          @ApiParam(value = "" ,required=true ) @RequestBody Client client) {
         try {
             tokenService.isAdminToken(authorization);
+            tokenService.refreshTokenExpireDate(authorization);
 
             Client registerClient = clientService.insertClient(client);
 

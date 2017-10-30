@@ -169,6 +169,21 @@
             }, function(){
                 location.href = loginUrl;
             });
+        },
+        refreshExpireDate: function(fnSuccess){
+            var tokenId = this.getCookie();
+            var data = this.getReq('/tokens', 'put', {}, {Authorization: tokenId});
+            this.api(data, function(response, obj){
+                if(response.code == '200'){
+                    $.gauth.setCookie(response);
+                    fnSuccess(JSON.stringify(response.result));
+                }else {
+                    console.log('fail',response, obj);
+                }
+                return response;
+            }, function(){
+               console.log('error');
+            });
         }
     }
     $.gauth = gauth;
